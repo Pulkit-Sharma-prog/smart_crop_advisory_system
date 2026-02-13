@@ -2,7 +2,24 @@ import { Cloud, Sprout, Bug, Calendar, TrendingUp, ArrowRight } from 'lucide-rea
 
 interface LandingPageProps {
   onNavigate: (page: string) => void;
+  t: Record<string, string>;
 }
+
+/* ---------- Animation presets ---------- */
+const fadeUp = {
+  hidden: { opacity: 0, y: 60 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const stagger = {
+  show: {
+    transition: { staggerChildren: 0.15 },
+  },
+};
 
 export default function LandingPage({ onNavigate }: LandingPageProps) {
   const features = [
