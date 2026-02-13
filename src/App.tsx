@@ -1,58 +1,68 @@
-import { useState } from 'react';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import LandingPage from './pages/LandingPage';
-import Dashboard from './pages/Dashboard';
-import WeatherAdvisory from './pages/WeatherAdvisory';
-import SoilCropRecommendation from './pages/SoilCropRecommendation';
-import DiseaseDetection from './pages/DiseaseDetection';
-import FarmingSchedule from './pages/FarmingSchedule';
-import MarketPrices from './pages/MarketPrices';
+﻿import { Suspense, lazy } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { useAuth } from "./auth/AuthContext";
+import CopilotWidget from "./components/CopilotWidget";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { routes } from "./types/routes";
+
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const WeatherAdvisory = lazy(() => import("./pages/WeatherAdvisory"));
+const SoilCropRecommendation = lazy(() => import("./pages/SoilCropRecommendation"));
+const DiseaseDetection = lazy(() => import("./pages/DiseaseDetection"));
+const FarmingSchedule = lazy(() => import("./pages/FarmingSchedule"));
+const MarketPrices = lazy(() => import("./pages/MarketPrices"));
+const FarmTools = lazy(() => import("./pages/FarmTools"));
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('Home');
-  const [language, setLanguage] = useState('English');
-
-  const handleNavigate = (page: string) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleLanguageToggle = () => {
-    setLanguage(language === 'English' ? 'हिंदी' : 'English');
-  };
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'Home':
-        return <LandingPage onNavigate={handleNavigate} />;
-      case 'Dashboard':
-        return <Dashboard onNavigate={handleNavigate} />;
-      case 'Weather Advisory':
-        return <WeatherAdvisory />;
-      case 'Advisory':
-        return <SoilCropRecommendation />;
-      case 'Disease Detection':
-        return <DiseaseDetection />;
-      case 'Farming Schedule':
-        return <FarmingSchedule />;
-      case 'Market Prices':
-        return <MarketPrices />;
-      default:
-        return <LandingPage onNavigate={handleNavigate} />;
-    }
-  };
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar
-        currentPage={currentPage}
-        onNavigate={handleNavigate}
-        language={language}
-        onLanguageToggle={handleLanguageToggle}
-      />
-      <main className="flex-1">{renderPage()}</main>
-      <Footer />
+    <div className="min-h-screen flex flex-col app-shell">
+      <div className="content-layer">
+        <Navbar />
+        <main className="flex-1" role="main">
+          <Suspense
+            fallback={
+              <div className="max-w-7xl mx-auto p-8">
+                <div className="surface-card-strong p-8 text-forest-800 animate-pulse">Loading page...</div>
+              </div>
+            }
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 14, filter: "blur(4px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -10, filter: "blur(3px)" }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+              >
+                <Routes location={location}>
+                  <Route path={routes.home} element={<LandingPage />} />
+                  <Route path={routes.login} element={<LoginPage />} />
+
+                  <Route path={routes.dashboard} element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                  <Route path={routes.weather} element={<ProtectedRoute><WeatherAdvisory /></ProtectedRoute>} />
+                  <Route path={routes.advisory} element={<ProtectedRoute><SoilCropRecommendation /></ProtectedRoute>} />
+                  <Route path={routes.diseaseDetection} element={<ProtectedRoute><DiseaseDetection /></ProtectedRoute>} />
+                  <Route path={routes.farmingSchedule} element={<ProtectedRoute><FarmingSchedule /></ProtectedRoute>} />
+                  <Route path={routes.marketPrices} element={<ProtectedRoute><MarketPrices /></ProtectedRoute>} />
+                  <Route path={routes.farmTools} element={<ProtectedRoute><FarmTools /></ProtectedRoute>} />
+
+                  <Route path="*" element={<Navigate to={isAuthenticated ? routes.dashboard : routes.home} replace />} />
+                </Routes>
+              </motion.div>
+            </AnimatePresence>
+          </Suspense>
+        </main>
+        <Footer />
+        {isAuthenticated ? <CopilotWidget /> : null}
+      </div>
     </div>
   );
 }

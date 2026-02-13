@@ -1,193 +1,255 @@
-import { Cloud, Sprout, Bug, Calendar, TrendingUp, LayoutDashboard, CloudRain, Droplets, Wind, AlertTriangle } from 'lucide-react';
+﻿import {
+  AlertTriangle,
+  Calendar,
+  Cloud,
+  CloudRain,
+  Droplets,
+  LayoutDashboard,
+  RefreshCw,
+  Server,
+  Sprout,
+  TrendingUp,
+  Wind,
+} from "lucide-react";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { useAsyncData } from "../hooks/useAsyncData";
+import { generateAdvisoryAlerts } from "../services/alertService";
+import { saveLastDiseaseResult, saveLastLocationAdvisory, saveLastSoilResult, saveProfile } from "../services/farmProfileService";
+import { getMarketPrices } from "../services/marketService";
+import { getBackendHealth } from "../services/systemService";
+import { getForecast, getWeatherSnapshot } from "../services/weatherService";
+import { routes } from "../types/routes";
 
-interface DashboardProps {
-  onNavigate: (page: string) => void;
-}
+export default function Dashboard() {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
 
-export default function Dashboard({ onNavigate }: DashboardProps) {
+  const {
+    data: weather,
+    loading: weatherLoading,
+    error: weatherError,
+    reload: reloadWeather,
+  } = useAsyncData(getWeatherSnapshot, { cacheKey: "weather-snapshot", ttlMs: 60000 });
+
+  const { data: forecast } = useAsyncData(getForecast, { cacheKey: "weather-forecast", ttlMs: 60000 });
+
+  const { data: marketData, reload: reloadMarket } = useAsyncData(getMarketPrices, {
+    cacheKey: "market-prices",
+    ttlMs: 45000,
+  });
+
+  const { data: backendHealth, error: backendError, reload: reloadBackend } = useAsyncData(getBackendHealth, {
+    cacheKey: "backend-health",
+    ttlMs: 15000,
+  });
+
+  const topCrop = useMemo(() => {
+    if (!marketData || marketData.length === 0) {
+      return null;
+    }
+
+    return [...marketData].sort((a, b) => b.changePercent - a.changePercent)[0];
+  }, [marketData]);
+
+  const alerts = useMemo(() => generateAdvisoryAlerts(weather ?? null, marketData ?? null), [weather, marketData]);
+
+  const planner = useMemo(() => {
+    return (forecast ?? []).slice(0, 7).map((day) => {
+      const risky = day.rainChancePercent >= 70 || day.condition.toLowerCase().includes("heavy");
+      const moderate = day.rainChancePercent >= 40;
+      const status = risky ? "red" : moderate ? "yellow" : "green";
+      const action = risky
+        ? "Avoid spray; focus on drainage checks"
+        : moderate
+          ? "Light irrigation only, monitor sky"
+          : "Good day for sowing/spray operations";
+      return { ...day, status, action };
+    });
+  }, [forecast]);
+
+  const applyDemoScenario = (scenario: "rainy-risk" | "market-spike" | "balanced") => {
+    if (scenario === "rainy-risk") {
+      saveProfile({ farmerName: "Ravi", village: "Nashik", primaryCrop: "Tomato", landSizeAcres: 4 });
+      saveLastSoilResult({ healthLabel: "Moderate", healthScore: 62 });
+      saveLastDiseaseResult({ primary: { name: "Leaf Blight", confidence: 88 } });
+      saveLastLocationAdvisory({ climate: { zone: "Tropical wet-dry" }, soil: { soilType: "Clay loam" } });
+      return;
+    }
+
+    if (scenario === "market-spike") {
+      saveProfile({ farmerName: "Sita", village: "Indore", primaryCrop: "Onion", landSizeAcres: 7 });
+      saveLastSoilResult({ healthLabel: "Good", healthScore: 78 });
+      saveLastDiseaseResult({ primary: { name: "Mild Rust", confidence: 67 } });
+      saveLastLocationAdvisory({ climate: { zone: "Subtropical continental" }, soil: { soilType: "Alluvial loam" } });
+      return;
+    }
+
+    saveProfile({ farmerName: "Aman", village: "Belagavi", primaryCrop: "Maize", landSizeAcres: 5 });
+    saveLastSoilResult({ healthLabel: "Good", healthScore: 74 });
+    saveLastDiseaseResult({ primary: { name: "No major disease", confidence: 72 } });
+    saveLastLocationAdvisory({ climate: { zone: "Tropical humid" }, soil: { soilType: "Red loam" } });
+  };
+
+  const runRefresh = async () => {
+    await Promise.all([reloadWeather(), reloadMarket(), reloadBackend()]);
+  };
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <aside className="hidden md:flex md:flex-shrink-0">
-        <div className="w-64 bg-white shadow-lg">
-          <div className="h-full px-3 py-6 space-y-2">
-            <button
-              onClick={() => onNavigate('Dashboard')}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-forest-700 bg-forest-50 rounded-lg font-medium"
-            >
+    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-6">
+        <aside className="surface-card-strong p-3 h-fit lg:sticky lg:top-24" aria-label={t("dashboard.menu") || "Dashboard menu"}>
+          <div className="space-y-2">
+            <button onClick={() => navigate(routes.dashboard)} className="w-full flex items-center space-x-3 px-4 py-3 text-forest-800 bg-forest-50 rounded-xl font-semibold">
               <LayoutDashboard className="h-5 w-5" />
-              <span>Dashboard Overview</span>
+              <span>{t("dashboard.overview")}</span>
             </button>
-            <button
-              onClick={() => onNavigate('Weather Advisory')}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors"
-            >
-              <Cloud className="h-5 w-5" />
-              <span>Weather Advisory</span>
-            </button>
-            <button
-              onClick={() => onNavigate('Advisory')}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors"
-            >
-              <Sprout className="h-5 w-5" />
-              <span>Soil & Crop</span>
-            </button>
-            <button
-              onClick={() => onNavigate('Disease Detection')}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors"
-            >
-              <Bug className="h-5 w-5" />
-              <span>Disease Detection</span>
-            </button>
-            <button
-              onClick={() => onNavigate('Farming Schedule')}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors"
-            >
-              <Calendar className="h-5 w-5" />
-              <span>Farming Schedule</span>
-            </button>
-            <button
-              onClick={() => onNavigate('Market Prices')}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition-colors"
-            >
-              <TrendingUp className="h-5 w-5" />
-              <span>Market Prices</span>
+            <button onClick={() => navigate(routes.weather)} className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl font-semibold transition-colors"><Cloud className="h-5 w-5" /><span>{t("weather.title")}</span></button>
+            <button onClick={() => navigate(routes.advisory)} className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl font-semibold transition-colors"><Sprout className="h-5 w-5" /><span>{t("soil.title")}</span></button>
+            <button onClick={() => navigate(routes.diseaseDetection)} className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl font-semibold transition-colors"><AlertTriangle className="h-5 w-5" /><span>{t("disease.title")}</span></button>
+            <button onClick={() => navigate(routes.farmingSchedule)} className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl font-semibold transition-colors"><Calendar className="h-5 w-5" /><span>{t("schedule.title")}</span></button>
+            <button onClick={() => navigate(routes.marketPrices)} className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl font-semibold transition-colors"><TrendingUp className="h-5 w-5" /><span>{t("market.title")}</span></button>
+          </div>
+        </aside>
+
+        <main>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div>
+              <h1 className="section-title">{t("dashboard.overview")}</h1>
+              <p className="section-subtitle">{t("dashboard.subtitle")}</p>
+            </div>
+            <button onClick={() => void runRefresh()} className="btn-secondary">
+              <RefreshCw className="h-4 w-4" />
+              {t("dashboard.refresh")}
             </button>
           </div>
-        </div>
-      </aside>
 
-      <main className="flex-1 p-4 md:p-8">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard Overview</h1>
+          <div className="surface-card-strong p-5 mb-6 fade-up">
+            <h3 className="text-lg font-semibold text-forest-900 mb-3">Demo Mode Scenarios</h3>
+            <div className="flex flex-wrap gap-2">
+              <button className="btn-secondary !px-3 !py-2 text-sm" onClick={() => applyDemoScenario("rainy-risk")}>Rainy Risk Demo</button>
+              <button className="btn-secondary !px-3 !py-2 text-sm" onClick={() => applyDemoScenario("market-spike")}>Market Spike Demo</button>
+              <button className="btn-secondary !px-3 !py-2 text-sm" onClick={() => applyDemoScenario("balanced")}>Balanced Demo</button>
+            </div>
+            <p className="text-xs text-forest-700 mt-2">Use these before presenting Copilot and profile insights in front of judges.</p>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-sky-500 to-sky-600 rounded-xl shadow-lg p-6 text-white">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sky-100 text-sm font-medium mb-1">Current Weather</p>
-                  <h3 className="text-4xl font-bold mb-2">28°C</h3>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex items-center gap-2">
-                      <CloudRain className="h-4 w-4" />
-                      <span>Rain: 20%</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Droplets className="h-4 w-4" />
-                      <span>Humidity: 65%</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Wind className="h-4 w-4" />
-                      <span>Wind: 12 km/h</span>
-                    </div>
-                  </div>
+          <div className="surface-card-strong p-5 mb-6 fade-up">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold text-forest-900 mb-1">{t("dashboard.platformStatus")}</p>
+                <p className="text-sm text-forest-800/80">{t("dashboard.backend")}: <span className="font-semibold">{t("dashboard.connectionSummary")}</span></p>
+              </div>
+              <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${backendError ? "bg-red-50 text-red-700" : backendHealth?.status === "ok" ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"}`}>
+                <Server className="h-3.5 w-3.5" />
+                {backendError ? t("dashboard.disconnected") : backendHealth?.status === "ok" ? t("dashboard.operational") : t("dashboard.degraded")}
+              </div>
+            </div>
+          </div>
+
+          <div className="surface-card-strong p-5 mb-6 fade-up">
+            <h3 className="text-lg font-semibold text-forest-900 mb-3">Smart Alerts</h3>
+            <div className="space-y-3">
+              {alerts.map((alert) => (
+                <div key={alert.id} className={`rounded-xl border p-3 ${alert.severity === "high" ? "bg-red-50 border-red-200" : alert.severity === "medium" ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200"}`}>
+                  <p className="font-semibold text-forest-900 text-sm">{alert.title}</p>
+                  <p className="text-sm text-forest-800/90">{alert.message}</p>
                 </div>
-                <Cloud className="h-12 w-12 text-sky-200" />
+              ))}
+            </div>
+          </div>
+
+          <div className="surface-card-strong p-5 mb-6 fade-up">
+            <h3 className="text-lg font-semibold text-forest-900 mb-3">7-Day Best Day Planner</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 stagger-in">
+              {planner.map((day) => (
+                <div key={day.day} className={`rounded-xl border p-3 ${day.status === "red" ? "bg-red-50 border-red-200" : day.status === "yellow" ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200"}`}>
+                  <p className="font-semibold text-forest-900 text-sm">{day.day}</p>
+                  <p className="text-xs text-forest-800">{day.condition} | Rain {day.rainChancePercent}%</p>
+                  <p className="text-xs text-forest-800 mt-1">{day.action}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-6 stagger-in">
+            <div className="metric-card bg-gradient-to-br from-sky-500 to-sky-700 text-white">
+              <p className="text-sky-100 text-sm font-semibold mb-1">{t("dashboard.currentWeather")}</p>
+              <h3 className="text-4xl font-bold mb-2">{weatherLoading ? "--" : `${weather?.currentTempC ?? "--"} C`}</h3>
+              {weatherError ? (
+                <p className="text-sm text-red-100">{t("dashboard.weatherUnavailable")}</p>
+              ) : (
+                <div className="space-y-1 text-sm">
+                  <div className="flex items-center gap-2"><CloudRain className="h-4 w-4" /><span>{t("weather.rain")}: 20%</span></div>
+                  <div className="flex items-center gap-2"><Droplets className="h-4 w-4" /><span>{t("weather.humidity")}: {weather?.humidityPercent ?? "--"}%</span></div>
+                  <div className="flex items-center gap-2"><Wind className="h-4 w-4" /><span>{t("weather.wind")}: {weather?.windKmph ?? "--"} km/h</span></div>
+                </div>
+              )}
+            </div>
+
+            <div className="metric-card">
+              <h3 className="text-lg font-semibold text-forest-900 mb-4">{t("dashboard.todayAdvisory")}</h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-start gap-3">
+                  <div className="bg-forest-100 p-2 rounded-lg"><Sprout className="h-5 w-5 text-forest-600" /></div>
+                  <div><p className="font-semibold text-forest-900">{t("dashboard.idealSowing")}</p><p className="text-forest-800/80">{t("dashboard.soilMoisture")}</p></div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="bg-sky-100 p-2 rounded-lg"><Droplets className="h-5 w-5 text-sky-600" /></div>
+                  <div><p className="font-semibold text-forest-900">{t("dashboard.irrigationNeeded")}</p><p className="text-forest-800/80">{t("dashboard.irrigationLine")}</p></div>
+                </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Today's Advisory</h3>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <div className="bg-forest-100 p-2 rounded-lg">
-                    <Sprout className="h-5 w-5 text-forest-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">Ideal for Sowing</p>
-                    <p className="text-sm text-gray-600">Soil moisture is optimal</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="bg-sky-100 p-2 rounded-lg">
-                    <Droplets className="h-5 w-5 text-sky-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">Irrigation Needed</p>
-                    <p className="text-sm text-gray-600">Water your crops today</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recommended Crop</h3>
+            <div className="metric-card">
+              <h3 className="text-lg font-semibold text-forest-900 mb-4">{t("dashboard.bestCropSell")}</h3>
               <div className="flex items-center gap-4">
-                <div className="bg-leaf-100 p-4 rounded-xl">
-                  <Sprout className="h-10 w-10 text-leaf-600" />
-                </div>
+                <div className="bg-leaf-100 p-4 rounded-xl"><TrendingUp className="h-10 w-10 text-leaf-600" /></div>
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">Wheat</p>
-                  <p className="text-sm text-gray-600">Best for your soil type</p>
-                  <div className="mt-2">
-                    <span className="inline-block bg-forest-100 text-forest-700 text-xs font-medium px-3 py-1 rounded-full">
-                      NPK: 120-60-40
-                    </span>
-                  </div>
+                  <p className="text-2xl font-bold text-forest-900">{topCrop?.crop ?? "N/A"}</p>
+                  <p className="text-sm text-forest-800/80">{topCrop?.market ?? t("dashboard.noMarketData")}</p>
+                  {topCrop ? <span className="inline-block mt-2 bg-forest-100 text-forest-700 text-xs font-semibold px-3 py-1 rounded-full">+{topCrop.changePercent}%</span> : null}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-red-50 border-l-4 border-red-500 rounded-lg shadow-md p-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 stagger-in">
+            <div className="surface-card-strong p-6 border-l-4 border-red-500">
               <div className="flex items-start gap-4">
                 <AlertTriangle className="h-6 w-6 text-red-600 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="text-lg font-bold text-red-900 mb-2">Weather Alert</h3>
-                  <p className="text-red-800 mb-3">
-                    Heavy rainfall expected in the next 48 hours. Avoid fertilizer application
-                    and postpone spraying activities.
-                  </p>
-                  <button
-                    onClick={() => onNavigate('Weather Advisory')}
-                    className="text-red-700 font-medium hover:text-red-900 text-sm underline"
-                  >
-                    View Details →
+                  <h3 className="text-lg font-bold text-red-900 mb-2">{t("dashboard.weatherAlert")}</h3>
+                  <p className="text-red-800 mb-3 text-sm">{t("dashboard.weatherAlertDesc")}</p>
+                  <button onClick={() => navigate(routes.weather)} className="text-red-700 font-semibold hover:text-red-900 text-sm underline">
+                    {t("dashboard.viewDetails")}
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Market Price Snapshot</h3>
+            <div className="surface-card-strong p-6">
+              <h3 className="text-lg font-semibold text-forest-900 mb-4">{t("dashboard.marketSnapshot")}</h3>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-900">Wheat</p>
-                    <p className="text-sm text-gray-600">Local Mandi</p>
+                {(marketData ?? []).slice(0, 2).map((item) => (
+                  <div key={`${item.crop}-${item.market}`} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
+                    <div>
+                      <p className="font-semibold text-forest-900">{item.crop}</p>
+                      <p className="text-sm text-forest-800/80">{item.market}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-forest-900">Rs {item.pricePerKg}/kg</p>
+                      <p className="text-sm text-green-600 font-semibold">{item.changePercent > 0 ? "+" : ""}{item.changePercent}%</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-gray-900">₹2,150/kg</p>
-                    <p className="text-sm text-green-600 flex items-center justify-end gap-1">
-                      <TrendingUp className="h-3 w-3" />
-                      +5.2%
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-900">Rice</p>
-                    <p className="text-sm text-gray-600">Regional Market</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-gray-900">₹1,980/kg</p>
-                    <p className="text-sm text-green-600 flex items-center justify-end gap-1">
-                      <TrendingUp className="h-3 w-3" />
-                      +2.8%
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
-              <button
-                onClick={() => onNavigate('Market Prices')}
-                className="mt-4 w-full py-2 text-forest-600 font-medium hover:bg-forest-50 rounded-lg transition-colors"
-              >
-                View All Prices →
-              </button>
+              <button onClick={() => navigate(routes.marketPrices)} className="btn-secondary w-full mt-4">{t("dashboard.viewAllPrices")}</button>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

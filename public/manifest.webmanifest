@@ -1,0 +1,15 @@
+﻿{
+  "name": "Smart Crop Advisory",
+  "short_name": "CropAI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f7f2",
+  "theme_color": "#1f6c4a",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

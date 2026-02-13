@@ -1,10 +1,18 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+﻿import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    exclude: ['lucide-react'],
+    exclude: ["lucide-react"],
+  },
+  test: {
+    environment: "jsdom",
+    setupFiles: "./src/test/setup.ts",
+    globals: true,
+    exclude: ["e2e/**", "backend/**", "node_modules/**", "dist/**"],
+    coverage: {
+      reporter: ["text", "html"],
+    },
   },
 });
