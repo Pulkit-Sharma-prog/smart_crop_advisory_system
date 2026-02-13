@@ -16,7 +16,10 @@ const boolFromEnv = z
   });
 
 const envSchema = z.object({
-  VITE_API_BASE_URL: z.string().url().default("http://localhost:3000"),
+  VITE_API_BASE_URL: z
+    .union([z.string().url(), z.literal("")])
+    .optional()
+    .transform((value) => (value && value.trim() ? value : "http://localhost:3000")),
   VITE_USE_MOCK_DATA: boolFromEnv.default(true),
   VITE_ALLOW_API_FALLBACK: boolFromEnv.default(true),
   VITE_API_TIMEOUT_MS: z.coerce.number().int().positive().default(8000),
@@ -24,7 +27,7 @@ const envSchema = z.object({
   VITE_DEBUG_LOGS: boolFromEnv.default(false),
 });
 
-const parsed = envSchema.parse({
+const parsedResult = envSchema.safeParse({
   VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
   VITE_USE_MOCK_DATA: import.meta.env.VITE_USE_MOCK_DATA,
   VITE_ALLOW_API_FALLBACK: import.meta.env.VITE_ALLOW_API_FALLBACK,
@@ -32,6 +35,17 @@ const parsed = envSchema.parse({
   VITE_API_RETRY_COUNT: import.meta.env.VITE_API_RETRY_COUNT,
   VITE_DEBUG_LOGS: import.meta.env.VITE_DEBUG_LOGS,
 });
+
+const parsed = parsedResult.success
+  ? parsedResult.data
+  : {
+      VITE_API_BASE_URL: "http://localhost:3000",
+      VITE_USE_MOCK_DATA: true,
+      VITE_ALLOW_API_FALLBACK: true,
+      VITE_API_TIMEOUT_MS: 8000,
+      VITE_API_RETRY_COUNT: 1,
+      VITE_DEBUG_LOGS: false,
+    };
 
 export const appEnv = {
   apiBaseUrl: parsed.VITE_API_BASE_URL,
