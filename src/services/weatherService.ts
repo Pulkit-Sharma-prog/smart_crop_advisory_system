@@ -18,6 +18,16 @@ export interface WeatherSnapshot {
   windKmph: number;
   highC: number;
   lowC: number;
+  condition?: string;
+  location?: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
+export interface WeatherLocationInput {
+  latitude: number;
+  longitude: number;
 }
 
 const snapshotSchema = z.object({
@@ -27,6 +37,13 @@ const snapshotSchema = z.object({
   windKmph: z.number(),
   highC: z.number(),
   lowC: z.number(),
+  condition: z.string().optional(),
+  location: z
+    .object({
+      latitude: z.number(),
+      longitude: z.number(),
+    })
+    .optional(),
 });
 
 const forecastItemSchema = z.object({
@@ -48,13 +65,18 @@ function fallbackForecast(error: unknown): WeatherForecastItem[] {
   return mockWeatherForecast;
 }
 
-export async function getWeatherSnapshot(): Promise<WeatherSnapshot> {
+function toQuery(location?: WeatherLocationInput) {
+  if (!location) return "";
+  return `?latitude=${encodeURIComponent(location.latitude)}&longitude=${encodeURIComponent(location.longitude)}`;
+}
+
+export async function getWeatherSnapshot(location?: WeatherLocationInput): Promise<WeatherSnapshot> {
   if (appEnv.useMockData) {
     return mockWeatherSnapshot;
   }
 
   try {
-    const response = await apiRequest<unknown>("/api/weather/snapshot");
+    const response = await apiRequest<unknown>(`/api/weather/snapshot${toQuery(location)}`);
     return snapshotSchema.parse(response);
   } catch (error) {
     if (appEnv.allowApiFallback) {
@@ -65,13 +87,13 @@ export async function getWeatherSnapshot(): Promise<WeatherSnapshot> {
   }
 }
 
-export async function getForecast(): Promise<WeatherForecastItem[]> {
+export async function getForecast(location?: WeatherLocationInput): Promise<WeatherForecastItem[]> {
   if (appEnv.useMockData) {
     return mockWeatherForecast;
   }
 
   try {
-    const response = await apiRequest<unknown>("/api/weather/forecast");
+    const response = await apiRequest<unknown>(`/api/weather/forecast${toQuery(location)}`);
     return forecastSchema.parse(response);
   } catch (error) {
     if (appEnv.allowApiFallback) {

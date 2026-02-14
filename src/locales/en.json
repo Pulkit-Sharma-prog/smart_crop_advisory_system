@@ -155,7 +155,21 @@
                     "activity2":  "Delay spray if rain chance is high.",
                     "activity3":  "Prioritize drainage maintenance this week.",
                     "activity4":  "Monitor humidity-sensitive crops daily.",
-                    "rain":  "Rain"
+                    "rain":  "Rain",
+                    "locationTitle":  "Location-based weather advisory",
+                    "locationSubtitle":  "Detect current location, enter coordinates, or click on map to get weather advisory for that exact area.",
+                    "detectCurrent":  "Detect current",
+                    "detecting":  "Detecting...",
+                    "latitude":  "Latitude",
+                    "longitude":  "Longitude",
+                    "latitudePlaceholder":  "20.5937",
+                    "longitudePlaceholder":  "78.9629",
+                    "mapHint":  "Click map to choose location",
+                    "applyLocation":  "Apply this location",
+                    "currentLocationLabel":  "Active location",
+                    "locationInvalid":  "Enter valid latitude and longitude values.",
+                    "geoUnsupported":  "Geolocation is not supported on this device/browser.",
+                    "geoDenied":  "Location permission denied. Enter coordinates manually."
                 },
     "soil":  {
                  "title":  "Soil and Crop Recommendation",

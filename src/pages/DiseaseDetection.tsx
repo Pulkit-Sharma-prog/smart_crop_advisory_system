@@ -78,16 +78,16 @@ export default function DiseaseDetection() {
   };
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6"><h1 className="section-title">{t("disease.title")}</h1><p className="section-subtitle">{t("disease.subtitle")}</p></div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <div className="space-y-6">
-            <div className="surface-card-strong p-6">
+            <div className="surface-card-strong p-5">
               <h2 className="text-xl font-bold text-forest-900 mb-6">{t("disease.uploadTitle")}</h2>
 
-              <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => void handleDrop(e)} className="border-2 border-dashed border-forest-200 rounded-2xl p-8 text-center hover:border-forest-500 transition-colors cursor-pointer bg-forest-50/40">
+              <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => void handleDrop(e)} className="border-2 border-dashed border-forest-200 rounded-2xl p-6 text-center hover:border-forest-500 transition-colors cursor-pointer bg-forest-50/40">
                 {!selectedImage ? (
                   <label className="cursor-pointer block">
                     <input type="file" accept="image/*" onChange={(e) => void handleImageUpload(e)} className="hidden" />
@@ -113,7 +113,7 @@ export default function DiseaseDetection() {
               </div>
             </div>
 
-            <div className="surface-card-strong bg-blue-50 border-blue-100 p-6">
+            <div className="surface-card-strong bg-blue-50 border-blue-100 p-5">
               <div className="flex items-start gap-3">
                 <ImageIcon className="h-5 w-5 text-blue-700 flex-shrink-0 mt-1" />
                 <div>
@@ -131,7 +131,7 @@ export default function DiseaseDetection() {
 
           <div className="space-y-6">
             {!hasResult ? (
-              <div className="surface-card-strong bg-gradient-to-br from-leaf-50 to-forest-50 p-8 flex items-center justify-center h-full">
+              <div className="surface-card-strong bg-gradient-to-br from-leaf-50 to-forest-50 p-6 flex items-center justify-center h-full">
                 <div className="text-center">
                   <Shield className="h-16 w-16 text-forest-600 mx-auto mb-4" />
                   <h3 className="text-xl font-bold text-forest-900 mb-2">{t("disease.readyTitle")}</h3>
@@ -141,7 +141,7 @@ export default function DiseaseDetection() {
               </div>
             ) : (
               <>
-                <div className="surface-card-strong p-6">
+                <div className="surface-card-strong p-5">
                   <h2 className="text-xl font-bold text-forest-900 mb-4">{t("disease.resultsTitle")}</h2>
                   <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
                     <div className="flex items-start gap-3">
@@ -173,7 +173,7 @@ export default function DiseaseDetection() {
                   </div>
                 </div>
 
-                <div className="surface-card-strong p-6">
+                <div className="surface-card-strong p-5">
                   <h3 className="text-lg font-bold text-forest-900 mb-4">{t("disease.treatmentTitle")}</h3>
                   <div className="space-y-4 text-sm text-forest-800">
                     {(result?.guidance.curativeActions ?? [t("disease.treat1"), t("disease.treat2"), t("disease.treat3")]).map((item) => (

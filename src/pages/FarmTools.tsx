@@ -21,7 +21,7 @@ export default function FarmTools() {
   const result = useMemo(() => calculateProfitability(scenario), [scenario]);
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-7xl mx-auto space-y-6">
         <div>
           <h1 className="section-title">{t("farmTools.title")}</h1>
@@ -29,7 +29,7 @@ export default function FarmTools() {
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <div className="surface-card-strong p-6 space-y-4">
+          <div className="surface-card-strong p-5 space-y-4">
             <h2 className="text-xl font-bold text-forest-900">{t("farmTools.profileTitle")}</h2>
 
             <input className="w-full px-3 py-2 border rounded-xl" placeholder={t("farmTools.farmerName")} value={profile.farmerName} onChange={(e) => { setSaved(false); setProfile((prev) => ({ ...prev, farmerName: e.target.value })); }} />
@@ -50,7 +50,7 @@ export default function FarmTools() {
             {saved ? <p className="text-sm text-green-700">{t("farmTools.saved")}</p> : null}
           </div>
 
-          <div className="surface-card-strong p-6 space-y-4">
+          <div className="surface-card-strong p-5 space-y-4">
             <h2 className="text-xl font-bold text-forest-900">{t("farmTools.simulatorTitle")}</h2>
 
             <div className="grid grid-cols-2 gap-3">

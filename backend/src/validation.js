@@ -8,6 +8,11 @@ export const soilInputSchema = z.object({
   landSize: z.number().min(0.1).max(10000),
 });
 
+export const weatherQuerySchema = z.object({
+  latitude: z.coerce.number().min(-90).max(90).optional(),
+  longitude: z.coerce.number().min(-180).max(180).optional(),
+});
+
 export const diseaseUploadSchema = z.object({
   file: z.object({
     originalname: z.string(),

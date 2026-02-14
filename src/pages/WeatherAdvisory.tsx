@@ -1,15 +1,53 @@
-﻿import { AlertTriangle, Cloud, CloudRain, Droplet, Droplets, Sun, Wind } from "lucide-react";
-import { useMemo } from "react";
+﻿import { AlertTriangle, Cloud, CloudRain, Droplet, Droplets, LocateFixed, MapPin, Sun, Wind } from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import LocationPickerMap from "../components/LocationPickerMap";
 import { useAsyncData } from "../hooks/useAsyncData";
-import { getForecast, getWeatherSnapshot } from "../services/weatherService";
+import { getForecast, getWeatherSnapshot, type WeatherLocationInput } from "../services/weatherService";
+
+const DEFAULT_LAT = 20.5937;
+const DEFAULT_LON = 78.9629;
 
 export default function WeatherAdvisory() {
   const { t } = useTranslation();
-  const { data: snapshot, loading, error, reload } = useAsyncData(getWeatherSnapshot, { cacheKey: "weather-snapshot", ttlMs: 60000 });
-  const { data: forecast } = useAsyncData(getForecast, { cacheKey: "weather-forecast", ttlMs: 60000 });
+  const [draftLat, setDraftLat] = useState(String(DEFAULT_LAT));
+  const [draftLon, setDraftLon] = useState(String(DEFAULT_LON));
+  const [activeLocation, setActiveLocation] = useState<WeatherLocationInput>({
+    latitude: DEFAULT_LAT,
+    longitude: DEFAULT_LON,
+  });
+  const [detectingLocation, setDetectingLocation] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+
+  const cacheSuffix = `${activeLocation.latitude.toFixed(4)}:${activeLocation.longitude.toFixed(4)}`;
+
+  const loadSnapshot = useCallback(
+    () => getWeatherSnapshot(activeLocation),
+    [activeLocation.latitude, activeLocation.longitude],
+  );
+
+  const loadForecast = useCallback(
+    () => getForecast(activeLocation),
+    [activeLocation.latitude, activeLocation.longitude],
+  );
+
+  const {
+    data: snapshot,
+    loading,
+    error,
+    reload: reloadSnapshot,
+  } = useAsyncData(loadSnapshot, {
+    cacheKey: `weather-snapshot-${cacheSuffix}`,
+    ttlMs: 60000,
+  });
+
+  const { data: forecast, reload: reloadForecast } = useAsyncData(loadForecast, {
+    cacheKey: `weather-forecast-${cacheSuffix}`,
+    ttlMs: 60000,
+  });
 
   const days = useMemo(() => forecast ?? [], [forecast]);
+
   const getDayLabel = (day: string) => {
     const map: Record<string, string> = {
       Today: t("common.dayToday"),
@@ -24,6 +62,7 @@ export default function WeatherAdvisory() {
     };
     return map[day] ?? day;
   };
+
   const getConditionLabel = (condition: string) => {
     const map: Record<string, string> = {
       Sunny: t("common.conditionSunny"),
@@ -35,26 +74,125 @@ export default function WeatherAdvisory() {
     return map[condition] ?? condition;
   };
 
+  const applyLocation = () => {
+    const latitude = Number(draftLat);
+    const longitude = Number(draftLon);
+
+    if (Number.isNaN(latitude) || Number.isNaN(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      setLocationError(t("weather.locationInvalid"));
+      return;
+    }
+
+    setLocationError(null);
+    setActiveLocation({ latitude, longitude });
+  };
+
+  const detectCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError(t("weather.geoUnsupported"));
+      return;
+    }
+
+    setDetectingLocation(true);
+    setLocationError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = Number(position.coords.latitude.toFixed(4));
+        const longitude = Number(position.coords.longitude.toFixed(4));
+
+        setDraftLat(String(latitude));
+        setDraftLon(String(longitude));
+        setActiveLocation({ latitude, longitude });
+        setDetectingLocation(false);
+      },
+      () => {
+        setLocationError(t("weather.geoDenied"));
+        setDetectingLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 12000 },
+    );
+  };
+
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-6xl mx-auto space-y-4">
         <div>
           <h1 className="section-title">{t("weather.title")}</h1>
           <p className="section-subtitle">{t("weather.subtitle")}</p>
         </div>
 
+        <div className="surface-card-strong p-4 md:p-5">
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div>
+              <h2 className="text-lg font-bold text-forest-900">{t("weather.locationTitle")}</h2>
+              <p className="text-sm text-forest-800/75 mt-1">{t("weather.locationSubtitle")}</p>
+            </div>
+            <button type="button" onClick={detectCurrentLocation} disabled={detectingLocation} className="btn-secondary !px-3 !py-2">
+              <LocateFixed className="h-4 w-4" />
+              {detectingLocation ? t("weather.detecting") : t("weather.detectCurrent")}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+            <div>
+              <label htmlFor="weather-lat" className="block text-xs font-semibold text-forest-800 mb-1">{t("weather.latitude")}</label>
+              <input
+                id="weather-lat"
+                value={draftLat}
+                onChange={(event) => setDraftLat(event.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl"
+                placeholder={t("weather.latitudePlaceholder")}
+              />
+            </div>
+            <div>
+              <label htmlFor="weather-lon" className="block text-xs font-semibold text-forest-800 mb-1">{t("weather.longitude")}</label>
+              <input
+                id="weather-lon"
+                value={draftLon}
+                onChange={(event) => setDraftLon(event.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl"
+                placeholder={t("weather.longitudePlaceholder")}
+              />
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <div className="text-xs text-forest-800/80 bg-forest-50 rounded px-2 py-1 inline-block mb-2">{t("weather.mapHint")}</div>
+            <LocationPickerMap
+              value={{ latitude: Number(draftLat) || DEFAULT_LAT, longitude: Number(draftLon) || DEFAULT_LON }}
+              className="h-48 md:h-56"
+              onChange={(next) => {
+                setDraftLat(next.latitude.toFixed(4));
+                setDraftLon(next.longitude.toFixed(4));
+              }}
+            />
+          </div>
+
+          <button type="button" onClick={applyLocation} className="btn-primary w-full">
+            <MapPin className="h-4 w-4" />
+            {t("weather.applyLocation")}
+          </button>
+
+          {locationError ? <p className="mt-3 text-sm text-red-600">{locationError}</p> : null}
+
+          <p className="mt-2 text-xs text-forest-700/80">
+            {t("weather.currentLocationLabel")}: {activeLocation.latitude.toFixed(4)}, {activeLocation.longitude.toFixed(4)}
+          </p>
+        </div>
+
         {error ? (
           <div className="surface-card-strong border border-red-200 bg-red-50 p-4">
             <p className="text-red-800">{t("weather.loadError")}</p>
-            <button onClick={() => void reload()} className="mt-2 text-sm underline text-red-900 font-semibold">{t("common.retry")}</button>
+            <button onClick={() => { void reloadSnapshot(); void reloadForecast(); }} className="mt-2 text-sm underline text-red-900 font-semibold">{t("common.retry")}</button>
           </div>
         ) : null}
 
-        <div className="surface-card-strong border-l-4 border-red-500 p-6">
+        <div className="surface-card-strong border-l-4 border-red-500 p-4 md:p-5">
           <div className="flex items-start gap-4">
-            <AlertTriangle className="h-6 w-6 text-red-600 flex-shrink-0 mt-1" />
+            <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-1" />
             <div>
-              <h3 className="text-lg font-bold text-red-900 mb-2">{t("weather.warningTitle")}</h3>
+              <h3 className="text-base font-bold text-red-900 mb-1">{t("weather.warningTitle")}</h3>
               <p className="text-red-800 mb-2 text-sm">{t("weather.warningDesc")}</p>
               <ul className="list-disc list-inside text-red-800 space-y-1 text-sm">
                 <li>{t("weather.warningPoint1")}</li>
@@ -65,58 +203,58 @@ export default function WeatherAdvisory() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <div className="metric-card bg-gradient-to-br from-sky-500 to-sky-700 text-white">
-            <div className="flex items-center justify-between mb-4"><h3 className="text-lg font-semibold">{t("weather.temperature")}</h3><Sun className="h-8 w-8" /></div>
-            <p className="text-4xl font-bold mb-2">{loading ? "--" : `${snapshot?.currentTempC ?? "--"} C`}</p>
-            <p className="text-sky-100">{t("weather.feelsLike")} {snapshot?.feelsLikeC ?? "--"} C</p>
-            <div className="mt-4 pt-4 border-t border-sky-400 text-sm flex justify-between">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <div className="metric-card bg-gradient-to-br from-sky-500 to-sky-700 text-white !p-4">
+            <div className="flex items-center justify-between mb-3"><h3 className="text-sm font-semibold">{t("weather.temperature")}</h3><Sun className="h-5 w-5" /></div>
+            <p className="text-3xl font-bold mb-1">{loading ? "--" : `${snapshot?.currentTempC ?? "--"} C`}</p>
+            <p className="text-sky-100 text-sm">{t("weather.feelsLike")} {snapshot?.feelsLikeC ?? "--"} C</p>
+            <div className="mt-3 pt-3 border-t border-sky-400 text-xs flex justify-between">
               <span>{t("weather.high")}: {snapshot?.highC ?? "--"} C</span>
               <span>{t("weather.low")}: {snapshot?.lowC ?? "--"} C</span>
             </div>
           </div>
 
-          <div className="metric-card bg-gradient-to-br from-blue-500 to-blue-700 text-white">
-            <div className="flex items-center justify-between mb-4"><h3 className="text-lg font-semibold">{t("weather.humidity")}</h3><Droplets className="h-8 w-8" /></div>
-            <p className="text-4xl font-bold mb-2">{snapshot?.humidityPercent ?? "--"}%</p>
-            <p className="text-blue-100">{t("weather.humidityDesc")}</p>
+          <div className="metric-card bg-gradient-to-br from-blue-500 to-blue-700 text-white !p-4">
+            <div className="flex items-center justify-between mb-3"><h3 className="text-sm font-semibold">{t("weather.humidity")}</h3><Droplets className="h-5 w-5" /></div>
+            <p className="text-3xl font-bold mb-1">{snapshot?.humidityPercent ?? "--"}%</p>
+            <p className="text-blue-100 text-sm">{t("weather.humidityDesc")}</p>
           </div>
 
-          <div className="metric-card bg-gradient-to-br from-teal-500 to-teal-700 text-white">
-            <div className="flex items-center justify-between mb-4"><h3 className="text-lg font-semibold">{t("weather.wind")}</h3><Wind className="h-8 w-8" /></div>
-            <p className="text-4xl font-bold mb-2">{snapshot?.windKmph ?? "--"} km/h</p>
-            <p className="text-teal-100">{t("weather.windDesc")}</p>
+          <div className="metric-card bg-gradient-to-br from-teal-500 to-teal-700 text-white !p-4">
+            <div className="flex items-center justify-between mb-3"><h3 className="text-sm font-semibold">{t("weather.wind")}</h3><Wind className="h-5 w-5" /></div>
+            <p className="text-3xl font-bold mb-1">{snapshot?.windKmph ?? "--"} km/h</p>
+            <p className="text-teal-100 text-sm">{t("weather.windDesc")}</p>
           </div>
         </div>
 
-        <div className="surface-card-strong p-6">
-          <h2 className="text-xl font-bold text-forest-900 mb-6">{t("weather.forecastTitle")}</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="surface-card-strong p-4 md:p-5">
+          <h2 className="text-lg font-bold text-forest-900 mb-4">{t("weather.forecastTitle")}</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {days.map((day) => (
-              <div key={day.day} className="surface-card p-4 text-center">
-                <p className="font-semibold text-forest-900 mb-3">{getDayLabel(day.day)}</p>
-                {day.condition.toLowerCase().includes("rain") ? <CloudRain className="h-10 w-10 mx-auto mb-3 text-sky-600" /> : <Cloud className="h-10 w-10 mx-auto mb-3 text-sky-600" />}
-                <p className="text-2xl font-bold text-forest-900 mb-1">{day.temperatureC} C</p>
-                <p className="text-xs text-forest-700/80 mb-2">{getConditionLabel(day.condition)}</p>
+              <div key={day.day} className="surface-card p-3 text-center">
+                <p className="font-semibold text-forest-900 mb-2 text-sm">{getDayLabel(day.day)}</p>
+                {day.condition.toLowerCase().includes("rain") ? <CloudRain className="h-8 w-8 mx-auto mb-2 text-sky-600" /> : <Cloud className="h-8 w-8 mx-auto mb-2 text-sky-600" />}
+                <p className="text-xl font-bold text-forest-900 mb-1">{day.temperatureC} C</p>
+                <p className="text-xs text-forest-700/80 mb-1">{getConditionLabel(day.condition)}</p>
                 <div className="flex items-center justify-center gap-1 text-sm text-blue-600"><CloudRain className="h-4 w-4" /><span>{day.rainChancePercent}%</span></div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <div className="surface-card-strong p-6">
-            <div className="flex items-center gap-3 mb-6"><div className="bg-blue-100 p-3 rounded-lg"><Droplet className="h-6 w-6 text-blue-600" /></div><h2 className="text-xl font-bold text-forest-900">{t("weather.irrigationTitle")}</h2></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div className="surface-card-strong p-4 md:p-5">
+            <div className="flex items-center gap-3 mb-4"><div className="bg-blue-100 p-2 rounded-lg"><Droplet className="h-5 w-5 text-blue-600" /></div><h2 className="text-lg font-bold text-forest-900">{t("weather.irrigationTitle")}</h2></div>
             <div className="space-y-3 text-sm text-forest-800">
-              <p className="p-4 bg-green-50 rounded-xl border border-green-200">{t("weather.irrigation1")}</p>
-              <p className="p-4 bg-yellow-50 rounded-xl border border-yellow-200">{t("weather.irrigation2")}</p>
-              <p className="p-4 bg-red-50 rounded-xl border border-red-200">{t("weather.irrigation3")}</p>
+              <p className="p-3 bg-green-50 rounded-xl border border-green-200">{t("weather.irrigation1")}</p>
+              <p className="p-3 bg-yellow-50 rounded-xl border border-yellow-200">{t("weather.irrigation2")}</p>
+              <p className="p-3 bg-red-50 rounded-xl border border-red-200">{t("weather.irrigation3")}</p>
             </div>
           </div>
 
-          <div className="surface-card-strong p-6">
-            <h2 className="text-xl font-bold text-forest-900 mb-6">{t("weather.activityTitle")}</h2>
-            <ul className="space-y-3 text-sm text-forest-800">
+          <div className="surface-card-strong p-4 md:p-5">
+            <h2 className="text-lg font-bold text-forest-900 mb-4">{t("weather.activityTitle")}</h2>
+            <ul className="space-y-2 text-sm text-forest-800">
               <li>{t("weather.activity1")}</li>
               <li>{t("weather.activity2")}</li>
               <li>{t("weather.activity3")}</li>

@@ -9,6 +9,7 @@ type LatLng = {
 interface LocationPickerMapProps {
   value: LatLng;
   onChange: (next: LatLng) => void;
+  className?: string;
 }
 
 function ClickHandler({ onChange }: { onChange: (next: LatLng) => void }) {
@@ -27,9 +28,9 @@ function Recenter({ value }: { value: LatLng }) {
   return null;
 }
 
-export default function LocationPickerMap({ value, onChange }: LocationPickerMapProps) {
+export default function LocationPickerMap({ value, onChange, className }: LocationPickerMapProps) {
   return (
-    <div className="h-64 w-full rounded-2xl overflow-hidden border border-forest-200">
+    <div className={`h-64 w-full rounded-2xl overflow-hidden border border-forest-200 ${className ?? ""}`}>
       <MapContainer
         center={[value.latitude, value.longitude]}
         zoom={6}

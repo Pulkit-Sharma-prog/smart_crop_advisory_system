@@ -3,14 +3,14 @@ import express from "express";
 import multer from "multer";
 import {
   computeSoilRecommendation,
+  getWeatherForecastForLocation,
+  getWeatherSnapshotForLocation,
   marketPrices,
   schedule,
-  weatherForecast,
-  weatherSnapshot,
 } from "./data.js";
 import { diagnosePlantDisease } from "./diseaseService.js";
 import { backendEnv } from "./env.js";
-import { diseaseUploadSchema, soilInputSchema } from "./validation.js";
+import { diseaseUploadSchema, soilInputSchema, weatherQuerySchema } from "./validation.js";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -35,12 +35,24 @@ export function createApp() {
     });
   });
 
-  app.get("/api/weather/snapshot", (_req, res) => {
-    res.json(weatherSnapshot);
+  app.get("/api/weather/snapshot", async (req, res, next) => {
+    try {
+      const parsed = weatherQuerySchema.parse(req.query);
+      const response = await getWeatherSnapshotForLocation(parsed.latitude, parsed.longitude);
+      res.json(response);
+    } catch (error) {
+      next(error);
+    }
   });
 
-  app.get("/api/weather/forecast", (_req, res) => {
-    res.json(weatherForecast);
+  app.get("/api/weather/forecast", async (req, res, next) => {
+    try {
+      const parsed = weatherQuerySchema.parse(req.query);
+      const response = await getWeatherForecastForLocation(parsed.latitude, parsed.longitude);
+      res.json(response);
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.get("/api/market/prices", (_req, res) => {

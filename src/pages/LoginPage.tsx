@@ -45,9 +45,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] px-4 sm:px-6 lg:px-8 py-10">
-      <div className="max-w-md mx-auto surface-card-strong p-7">
-        <h1 className="text-3xl font-bold text-forest-900 mb-2">{t("auth.loginTitle")}</h1>
+    <div className="min-h-[calc(100vh-80px)] px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-md mx-auto surface-card-strong p-6">
+        <h1 className="text-2xl font-bold text-forest-900 mb-2">{t("auth.loginTitle")}</h1>
         <p className="text-sm text-forest-800/75 mb-6">{t("auth.loginSubtitle")}</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>

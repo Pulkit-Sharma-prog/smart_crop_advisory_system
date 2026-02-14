@@ -121,7 +121,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-6">
         <aside className="surface-card-strong p-3 h-fit lg:sticky lg:top-24" aria-label={t("dashboard.menu") || "Dashboard menu"}>
           <div className="space-y-2">
@@ -149,7 +149,7 @@ export default function Dashboard() {
             </button>
           </div>
 
-          <div className="surface-card-strong p-5 mb-6 fade-up">
+          <div className="surface-card-strong p-4 mb-4 fade-up">
               <h3 className="text-lg font-semibold text-forest-900 mb-3">{t("dashboard.demoScenariosTitle")}</h3>
               <div className="flex flex-wrap gap-2">
               <button className="btn-secondary !px-3 !py-2 text-sm" onClick={() => applyDemoScenario("rainy-risk")}>{t("dashboard.demoRainyRisk")}</button>
@@ -159,7 +159,7 @@ export default function Dashboard() {
             <p className="text-xs text-forest-700 mt-2">{t("dashboard.demoHint")}</p>
           </div>
 
-          <div className="surface-card-strong p-5 mb-6 fade-up">
+          <div className="surface-card-strong p-4 mb-4 fade-up">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold text-forest-900 mb-1">{t("dashboard.platformStatus")}</p>
@@ -172,7 +172,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="surface-card-strong p-5 mb-6 fade-up">
+          <div className="surface-card-strong p-4 mb-4 fade-up">
             <h3 className="text-lg font-semibold text-forest-900 mb-3">{t("dashboard.smartAlertsTitle")}</h3>
             <div className="space-y-3">
               {alerts.map((alert) => (
@@ -184,7 +184,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="surface-card-strong p-5 mb-6 fade-up">
+          <div className="surface-card-strong p-4 mb-4 fade-up">
             <h3 className="text-lg font-semibold text-forest-900 mb-3">{t("dashboard.bestDayPlannerTitle")}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 stagger-in">
               {planner.map((day) => (
@@ -200,7 +200,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-6 stagger-in">
             <div className="metric-card bg-gradient-to-br from-sky-500 to-sky-700 text-white">
               <p className="text-sky-100 text-sm font-semibold mb-1">{t("dashboard.currentWeather")}</p>
-              <h3 className="text-4xl font-bold mb-2">{weatherLoading ? "--" : `${weather?.currentTempC ?? "--"} C`}</h3>
+              <h3 className="text-3xl font-bold mb-1">{weatherLoading ? "--" : `${weather?.currentTempC ?? "--"} C`}</h3>
               {weatherError ? (
                 <p className="text-sm text-red-100">{t("dashboard.weatherUnavailable")}</p>
               ) : (
@@ -240,7 +240,7 @@ export default function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 stagger-in">
-            <div className="surface-card-strong p-6 border-l-4 border-red-500">
+            <div className="surface-card-strong p-4 border-l-4 border-red-500">
               <div className="flex items-start gap-4">
                 <AlertTriangle className="h-6 w-6 text-red-600 flex-shrink-0 mt-1" />
                 <div>
@@ -253,7 +253,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="surface-card-strong p-6">
+            <div className="surface-card-strong p-4">
               <h3 className="text-lg font-semibold text-forest-900 mb-4">{t("dashboard.marketSnapshot")}</h3>
               <div className="space-y-3">
                 {(marketData ?? []).slice(0, 2).map((item) => (

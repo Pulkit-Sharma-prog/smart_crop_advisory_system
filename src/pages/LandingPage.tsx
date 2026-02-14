@@ -67,10 +67,10 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8 md:py-12">
       <div className="max-w-7xl mx-auto space-y-10">
-        <motion.section variants={sectionVariant} initial="hidden" animate="visible" className="hero-panel p-8 md:p-12 float-in">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-10">
+        <motion.section variants={sectionVariant} initial="hidden" animate="visible" className="hero-panel p-6 md:p-8 float-in">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center relative z-10">
             <div>
-              <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-4">
+              <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-3">
                 {t("landing.heroTitle")}
               </h1>
               <p className="text-forest-100 text-base md:text-lg max-w-2xl mb-8">
@@ -88,7 +88,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="surface-card bg-white/10 border-white/20 p-6 fade-up">
+            <div className="surface-card bg-white/10 border-white/20 p-4 fade-up">
               <h3 className="text-white font-semibold text-lg mb-4">{t("landing.quickTitle")}</h3>
               <div className="space-y-3 text-sm text-forest-100">
                 <p>{t("landing.quickLine1")}</p>
@@ -99,7 +99,7 @@ export default function LandingPage() {
           </div>
         </motion.section>
 
-        <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.08 }} className="surface-card-strong p-6 md:p-8">
+        <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.08 }} className="surface-card-strong p-5 md:p-6">
           <div className="text-center mb-10">
             <h2 className="section-title mb-3">{t("landing.featuresHeading")}</h2>
             <p className="section-subtitle max-w-2xl mx-auto">{t("landing.featuresSub")}</p>
@@ -122,7 +122,7 @@ export default function LandingPage() {
           </div>
         </motion.section>
 
-        <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.14 }} className="surface-card-strong p-6 md:p-8">
+        <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.14 }} className="surface-card-strong p-5 md:p-6">
           <div className="text-center mb-10">
             <h2 className="section-title mb-3">{t("landing.howItWorks")}</h2>
             <p className="section-subtitle">{t("landing.howItWorksSub")}</p>
@@ -131,7 +131,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 stagger-in">
             {steps.map((step) => (
               <motion.div key={step.number} whileHover={{ y: -3, scale: 1.01 }} className="surface-card p-5 text-center">
-                <div className="text-4xl font-extrabold text-forest-300 mb-3">{step.number}</div>
+                <div className="text-3xl font-extrabold text-forest-300 mb-2">{step.number}</div>
                 <h3 className="text-lg font-semibold text-forest-900 mb-2">{step.title}</h3>
                 <p className="text-sm text-forest-800/80">{step.description}</p>
               </motion.div>

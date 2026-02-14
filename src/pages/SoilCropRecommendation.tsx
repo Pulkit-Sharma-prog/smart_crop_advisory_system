@@ -92,7 +92,7 @@ export default function SoilCropRecommendation() {
   };
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="section-title">{t("soil.title")}</h1>
@@ -101,7 +101,7 @@ export default function SoilCropRecommendation() {
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 fade-up">
           <div className="space-y-6">
-            <div className="surface-card-strong p-6">
+            <div className="surface-card-strong p-5">
               <h2 className="text-xl font-bold text-forest-900 mb-6">{t("soil.formTitle")}</h2>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 stagger-in" noValidate>
                 <div>
@@ -138,7 +138,7 @@ export default function SoilCropRecommendation() {
               </form>
             </div>
 
-            <div className="surface-card-strong p-6">
+            <div className="surface-card-strong p-5">
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>
                   <h2 className="text-xl font-bold text-forest-900">{t("soil.locationTitle")}</h2>
@@ -183,7 +183,7 @@ export default function SoilCropRecommendation() {
 
           <div className="space-y-5 fade-up">
             {locationAdvisory ? (
-              <div className="surface-card-strong p-6">
+              <div className="surface-card-strong p-5">
                 <h2 className="text-xl font-bold text-forest-900 mb-4">{t("soil.locationResultTitle")}</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
@@ -235,15 +235,15 @@ export default function SoilCropRecommendation() {
 
             {result ? (
               <>
-                <div className="surface-card-strong p-6">
+                <div className="surface-card-strong p-5">
                   <h2 className="text-xl font-bold text-forest-900 mb-4">{t("soil.healthTitle")}</h2>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3"><div className="bg-green-100 p-3 rounded-full"><CheckCircle className="h-8 w-8 text-green-600" /></div><div><p className="text-2xl font-bold text-green-600">{result.healthLabel}</p><p className="text-sm text-forest-800/70">{t("soil.healthSummary")}</p></div></div>
-                    <div className="text-right"><p className="text-3xl font-bold text-forest-900">{result.healthScore}/100</p><p className="text-sm text-forest-800/70">{t("soil.healthScore")}</p></div>
+                    <div className="text-right"><p className="text-2xl font-bold text-forest-900">{result.healthScore}/100</p><p className="text-sm text-forest-800/70">{t("soil.healthScore")}</p></div>
                   </div>
                 </div>
 
-                <div className="surface-card-strong p-6">
+                <div className="surface-card-strong p-5">
                   <h2 className="text-xl font-bold text-forest-900 mb-4">{t("soil.recommendedCrops")}</h2>
                   <div className="space-y-3">
                     {result.crops.map((crop) => (
@@ -261,7 +261,7 @@ export default function SoilCropRecommendation() {
                   </div>
                 </div>
 
-                <div className="surface-card-strong p-6">
+                <div className="surface-card-strong p-5">
                   <h3 className="text-lg font-bold text-forest-900 mb-3">{t("soil.whyRecommendationTitle")}</h3>
                   <ul className="text-sm text-forest-800 list-disc list-inside space-y-1">
                     <li>{t("soil.whyPointPh", { value: lastSoilInput?.ph ?? "--" })}</li>
@@ -277,7 +277,7 @@ export default function SoilCropRecommendation() {
                 </div>
               </>
             ) : (
-              <div className="surface-card-strong bg-gradient-to-br from-forest-50 to-leaf-50 p-8 flex items-center justify-center">
+              <div className="surface-card-strong bg-gradient-to-br from-forest-50 to-leaf-50 p-6 flex items-center justify-center">
                 <div className="text-center"><Sprout className="h-16 w-16 text-forest-600 mx-auto mb-4" /><h3 className="text-xl font-bold text-forest-900 mb-2">{t("soil.awaitingTitle")}</h3><p className="text-forest-800/70 max-w-md">{t("soil.awaitingDesc")}</p></div>
               </div>
             )}
@@ -287,3 +287,4 @@ export default function SoilCropRecommendation() {
     </div>
   );
 }
+

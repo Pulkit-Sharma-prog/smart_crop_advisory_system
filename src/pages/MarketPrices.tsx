@@ -63,7 +63,7 @@ export default function MarketPrices() {
   const spread = topMarket && lowMarket ? topMarket.pricePerKg - lowMarket.pricePerKg : 0;
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6">
       <div className="max-w-7xl mx-auto space-y-6">
         <div>
           <h1 className="section-title">{t("market.title")}</h1>
@@ -77,7 +77,7 @@ export default function MarketPrices() {
           </div>
         ) : null}
 
-        <div className="hero-panel p-6 text-white fade-up">
+        <div className="hero-panel p-5 text-white fade-up">
           <div className="flex items-start gap-4 relative z-10">
             <div className="bg-white/20 p-3 rounded-lg"><Star className="h-8 w-8" /></div>
             <div className="flex-1">
@@ -86,15 +86,15 @@ export default function MarketPrices() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="bg-white/10 rounded-xl px-5 py-4">
                   <p className="text-forest-100 text-sm mb-1">{t("market.crop")}</p>
-                  <p className="text-2xl font-bold">{ranked.top?.crop ?? t("common.notAvailable")}</p>
+                  <p className="text-xl font-bold">{ranked.top?.crop ?? t("common.notAvailable")}</p>
                 </div>
                 <div className="bg-white/10 rounded-xl px-5 py-4">
                   <p className="text-forest-100 text-sm mb-1">{t("market.currentPrice")}</p>
-                  <p className="text-2xl font-bold">Rs {ranked.top?.pricePerKg ?? "--"}/kg</p>
+                  <p className="text-xl font-bold">Rs {ranked.top?.pricePerKg ?? "--"}/kg</p>
                 </div>
                 <div className="bg-white/10 rounded-xl px-5 py-4">
                   <p className="text-forest-100 text-sm mb-1">{t("market.priceIncrease")}</p>
-                  <p className="text-2xl font-bold text-leaf-200 flex items-center gap-1">
+                  <p className="text-xl font-bold text-leaf-200 flex items-center gap-1">
                     <TrendingUp className="h-5 w-5" />
                     {ranked.top?.changePercent ?? "--"}%
                   </p>
@@ -105,29 +105,29 @@ export default function MarketPrices() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 stagger-in">
-          <div className="surface-card-strong p-6">
+          <div className="surface-card-strong p-4">
             <div className="flex items-center justify-between mb-4"><h3 className="font-semibold text-forest-900">{t("market.topGainer")}</h3><TrendingUp className="h-5 w-5 text-green-600" /></div>
-            <p className="text-3xl font-bold text-forest-900 mb-1">{ranked.top?.crop ?? t("common.notAvailable")}</p>
+            <p className="text-2xl font-bold text-forest-900 mb-1">{ranked.top?.crop ?? t("common.notAvailable")}</p>
             <p className="text-green-600 font-semibold text-lg">{ranked.top?.changePercent ?? "--"}%</p>
             <p className="text-sm text-forest-800/70 mt-2">{ranked.top?.market ?? ""}</p>
           </div>
 
-          <div className="surface-card-strong p-6">
+          <div className="surface-card-strong p-4">
             <div className="flex items-center justify-between mb-4"><h3 className="font-semibold text-forest-900">{t("market.stablePrice")}</h3><Info className="h-5 w-5 text-blue-600" /></div>
-            <p className="text-3xl font-bold text-forest-900 mb-1">{ranked.stable?.crop ?? t("common.notAvailable")}</p>
+            <p className="text-2xl font-bold text-forest-900 mb-1">{ranked.stable?.crop ?? t("common.notAvailable")}</p>
             <p className="text-blue-600 font-semibold text-lg">{ranked.stable?.changePercent ?? "--"}%</p>
             <p className="text-sm text-forest-800/70 mt-2">{ranked.stable?.market ?? ""}</p>
           </div>
 
-          <div className="surface-card-strong p-6">
+          <div className="surface-card-strong p-4">
             <div className="flex items-center justify-between mb-4"><h3 className="font-semibold text-forest-900">{t("market.topLoser")}</h3><TrendingDown className="h-5 w-5 text-red-600" /></div>
-            <p className="text-3xl font-bold text-forest-900 mb-1">{ranked.low?.crop ?? t("common.notAvailable")}</p>
+            <p className="text-2xl font-bold text-forest-900 mb-1">{ranked.low?.crop ?? t("common.notAvailable")}</p>
             <p className="text-red-600 font-semibold text-lg">{ranked.low?.changePercent ?? "--"}%</p>
             <p className="text-sm text-forest-800/70 mt-2">{ranked.low?.market ?? ""}</p>
           </div>
         </div>
 
-        <div className="surface-card-strong p-6 fade-up">
+        <div className="surface-card-strong p-4 fade-up">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
             <div>
               <h2 className="text-xl font-bold text-forest-900">{t("market.compareTitle")}</h2>

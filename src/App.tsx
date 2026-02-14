@@ -31,8 +31,8 @@ function App() {
         <main className="flex-1" role="main">
           <Suspense
             fallback={
-              <div className="max-w-7xl mx-auto p-8">
-                <div className="surface-card-strong p-8 text-forest-800 animate-pulse">{t("app.loadingPage")}</div>
+              <div className="max-w-7xl mx-auto p-6">
+                <div className="surface-card-strong p-6 text-forest-800 animate-pulse">{t("app.loadingPage")}</div>
               </div>
             }
           >
