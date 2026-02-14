@@ -227,3 +227,78 @@ export function computeSoilRecommendation(input) {
     ],
   };
 }
+
+export function computeLocationAdvisory(input) {
+  const latitude = Number(input.latitude);
+  const longitude = Number(input.longitude);
+  const latBand = latitude >= 23 ? "north" : latitude <= 16 ? "south" : "central";
+  const rainScore = Math.round((Math.abs(longitude) % 1) * 100);
+  const isHumid = longitude > 84;
+
+  const climateByBand = {
+    north: {
+      zone: "Subtropical continental",
+      tempBandC: "8-38 C",
+      rainfallBandMm: rainScore > 45 ? "700-1100 mm" : "500-900 mm",
+      humidityBand: isHumid ? "Moderate-High" : "Low-Moderate",
+      seasonSignal: "Heat stress risk in late spring",
+    },
+    central: {
+      zone: "Tropical wet-dry",
+      tempBandC: "16-40 C",
+      rainfallBandMm: rainScore > 40 ? "800-1300 mm" : "600-1000 mm",
+      humidityBand: isHumid ? "Moderate" : "Low",
+      seasonSignal: "Monsoon-driven sowing window",
+    },
+    south: {
+      zone: "Tropical humid",
+      tempBandC: "20-36 C",
+      rainfallBandMm: rainScore > 35 ? "900-1600 mm" : "700-1200 mm",
+      humidityBand: "Moderate-High",
+      seasonSignal: "High disease pressure in humid periods",
+    },
+  };
+
+  const soilByBand = {
+    north: {
+      soilType: "Alluvial loam",
+      phBand: "6.8-7.6",
+      organicCarbon: "Medium",
+      drainage: "Good",
+    },
+    central: {
+      soilType: "Black cotton / clay loam",
+      phBand: "7.0-8.1",
+      organicCarbon: "Medium-Low",
+      drainage: "Moderate",
+    },
+    south: {
+      soilType: "Red loam / lateritic mix",
+      phBand: "5.9-7.0",
+      organicCarbon: "Medium",
+      drainage: "Fast",
+    },
+  };
+
+  const cropsByBand = {
+    north: ["Wheat", "Mustard", "Potato"],
+    central: ["Soybean", "Cotton", "Pigeon pea"],
+    south: ["Paddy", "Groundnut", "Millets"],
+  };
+
+  return {
+    locationLabel: `Lat ${latitude.toFixed(3)}, Lon ${longitude.toFixed(3)}`,
+    coordinates: { latitude, longitude },
+    climate: climateByBand[latBand],
+    soil: soilByBand[latBand],
+    recommendedCrops: cropsByBand[latBand],
+    actions: [
+      "Use weather-linked irrigation scheduling.",
+      "Split nutrient doses across growth stages.",
+      "Plan preventive pest and disease scouting weekly.",
+    ],
+    caution: isHumid
+      ? "High humidity can trigger fungal outbreaks; avoid dense canopy moisture buildup."
+      : "Heat spikes may reduce yield; protect crop during extreme afternoon temperatures.",
+  };
+}

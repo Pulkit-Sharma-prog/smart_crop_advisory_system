@@ -2,6 +2,7 @@
 import express from "express";
 import multer from "multer";
 import {
+  computeLocationAdvisory,
   computeSoilRecommendation,
   getWeatherForecastForLocation,
   getWeatherSnapshotForLocation,
@@ -10,7 +11,7 @@ import {
 } from "./data.js";
 import { diagnosePlantDisease } from "./diseaseService.js";
 import { backendEnv } from "./env.js";
-import { diseaseUploadSchema, soilInputSchema, weatherQuerySchema } from "./validation.js";
+import { diseaseUploadSchema, locationInputSchema, soilInputSchema, weatherQuerySchema } from "./validation.js";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -89,6 +90,16 @@ export function createApp() {
     try {
       const payload = soilInputSchema.parse(req.body);
       const response = computeSoilRecommendation(payload);
+      res.json(response);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/recommendations/location", (req, res, next) => {
+    try {
+      const payload = locationInputSchema.parse(req.body);
+      const response = computeLocationAdvisory(payload);
       res.json(response);
     } catch (error) {
       next(error);
