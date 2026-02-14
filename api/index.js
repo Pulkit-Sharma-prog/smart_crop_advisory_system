@@ -12,8 +12,16 @@ const HOP_BY_HOP_HEADERS = new Set([
 ]);
 
 function getBackendBaseUrl() {
-  const value = process.env.BACKEND_BASE_URL ?? "";
-  return value.trim().replace(/\/+$/, "");
+  const raw = (process.env.BACKEND_BASE_URL ?? "").trim();
+  if (!raw) return "";
+
+  const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    const parsed = new URL(withProtocol);
+    return `${parsed.origin}${parsed.pathname}`.replace(/\/+$/, "");
+  } catch {
+    return "";
+  }
 }
 
 function stripApiPrefix(pathname) {
@@ -59,7 +67,7 @@ export default async function handler(req, res) {
 
   if (!backendBaseUrl) {
     res.status(500).json({
-      message: "Missing BACKEND_BASE_URL env var in frontend deployment.",
+      message: "Invalid BACKEND_BASE_URL env var in frontend deployment.",
     });
     return;
   }
