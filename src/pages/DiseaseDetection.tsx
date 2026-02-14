@@ -11,7 +11,7 @@ export default function DiseaseDetection() {
   const [result, setResult] = useState<DiseaseResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const hasResult = useMemo(() => Boolean(result), [result]);
   const severity = useMemo(() => {
@@ -56,7 +56,7 @@ export default function DiseaseDetection() {
       const image = await readFile(file);
       setSelectedImage(image);
 
-      const analysis = await analyzeCropImage(file);
+      const analysis = await analyzeCropImage(file, i18n.language);
       setResult(analysis);
       saveLastDiseaseResult(analysis);
     } catch {

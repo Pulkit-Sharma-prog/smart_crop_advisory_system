@@ -58,7 +58,7 @@ const diseaseResultSchema = z.object({
   providerErrors: z.array(z.string()).default([]),
 });
 
-export async function analyzeCropImage(file: File): Promise<DiseaseResult> {
+export async function analyzeCropImage(file: File, language = "en"): Promise<DiseaseResult> {
   if (appEnv.useMockData) {
     return mockDiseaseResult;
   }
@@ -66,6 +66,7 @@ export async function analyzeCropImage(file: File): Promise<DiseaseResult> {
   try {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("language", language.toLowerCase().startsWith("hi") ? "hi" : "en");
 
     const response = await apiRequest<unknown>("/api/disease/analyze", {
       method: "POST",

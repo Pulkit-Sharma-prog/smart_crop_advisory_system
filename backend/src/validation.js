@@ -16,4 +16,5 @@ export const diseaseUploadSchema = z.object({
     buffer: z.instanceof(Buffer),
   }),
   crop: z.string().min(2).max(80).optional(),
+  language: z.enum(["en", "hi"]).optional(),
 });

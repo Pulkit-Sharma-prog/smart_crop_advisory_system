@@ -20,8 +20,8 @@ const envSchema = z.object({
     .union([z.string().url(), z.literal("")])
     .optional()
     .transform((value) => (value && value.trim() ? value : "http://localhost:3000")),
-  VITE_USE_MOCK_DATA: boolFromEnv.default(true),
-  VITE_ALLOW_API_FALLBACK: boolFromEnv.default(true),
+  VITE_USE_MOCK_DATA: boolFromEnv.default(false),
+  VITE_ALLOW_API_FALLBACK: boolFromEnv.default(false),
   VITE_API_TIMEOUT_MS: z.coerce.number().int().positive().default(8000),
   VITE_API_RETRY_COUNT: z.coerce.number().int().min(0).max(3).default(1),
   VITE_DEBUG_LOGS: boolFromEnv.default(false),
@@ -40,8 +40,8 @@ const parsed = parsedResult.success
   ? parsedResult.data
   : {
       VITE_API_BASE_URL: "http://localhost:3000",
-      VITE_USE_MOCK_DATA: true,
-      VITE_ALLOW_API_FALLBACK: true,
+      VITE_USE_MOCK_DATA: false,
+      VITE_ALLOW_API_FALLBACK: false,
       VITE_API_TIMEOUT_MS: 8000,
       VITE_API_RETRY_COUNT: 1,
       VITE_DEBUG_LOGS: false,

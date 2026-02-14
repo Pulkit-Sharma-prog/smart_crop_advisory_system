@@ -63,9 +63,14 @@ export function createApp() {
 
   app.post("/api/disease/analyze", upload.single("file"), async (req, res, next) => {
     try {
-      const parsed = diseaseUploadSchema.parse({ file: req.file });
+      const parsed = diseaseUploadSchema.parse({
+        file: req.file,
+        crop: req.body?.crop,
+        language: req.body?.language,
+      });
       const result = await diagnosePlantDisease(parsed.file, {
-        cropHint: typeof req.body?.crop === "string" ? req.body.crop : undefined,
+        cropHint: parsed.crop,
+        language: parsed.language,
       });
       res.json(result);
     } catch (error) {
