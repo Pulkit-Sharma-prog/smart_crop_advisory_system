@@ -24,16 +24,6 @@ function getBackendBaseUrl() {
   }
 }
 
-function stripApiPrefix(pathname) {
-  if (pathname.startsWith("/api/")) {
-    return pathname.slice(4);
-  }
-  if (pathname === "/api") {
-    return "/";
-  }
-  return pathname;
-}
-
 function copyHeaders(source) {
   const headers = {};
   Object.entries(source ?? {}).forEach(([key, value]) => {
@@ -74,7 +64,7 @@ export default async function handler(req, res) {
 
   const method = req.method ?? "GET";
   const incomingUrl = new URL(req.url ?? "/", "http://localhost");
-  const targetPath = stripApiPrefix(incomingUrl.pathname);
+  const targetPath = incomingUrl.pathname;
   const targetUrl = `${backendBaseUrl}${targetPath}${incomingUrl.search}`;
   const headers = copyHeaders(req.headers);
 
