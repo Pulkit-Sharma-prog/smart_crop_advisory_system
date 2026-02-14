@@ -1,5 +1,6 @@
 ﻿import { Suspense, lazy } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./auth/AuthContext";
 import CopilotWidget from "./components/CopilotWidget";
@@ -21,6 +22,7 @@ const FarmTools = lazy(() => import("./pages/FarmTools"));
 function App() {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen flex flex-col app-shell">
@@ -30,7 +32,7 @@ function App() {
           <Suspense
             fallback={
               <div className="max-w-7xl mx-auto p-8">
-                <div className="surface-card-strong p-8 text-forest-800 animate-pulse">Loading page...</div>
+                <div className="surface-card-strong p-8 text-forest-800 animate-pulse">{t("app.loadingPage")}</div>
               </div>
             }
           >

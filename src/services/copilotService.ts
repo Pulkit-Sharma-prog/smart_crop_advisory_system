@@ -5,67 +5,113 @@ export interface CopilotMessage {
   content: string;
 }
 
-function summarizeContext() {
+function summarizeContext(language: string) {
   const insights = loadRecentInsights();
   const lines: string[] = [];
+  const isHindi = language.toLowerCase().startsWith("hi");
 
   if (insights.soil && typeof insights.soil === "object" && insights.soil !== null && "healthLabel" in insights.soil) {
     const soil = insights.soil as { healthLabel?: string; healthScore?: number };
-    lines.push(`Last soil health: ${soil.healthLabel ?? "Unknown"} (${soil.healthScore ?? "--"}/100).`);
+    lines.push(
+      isHindi
+        ? `पिछला मिट्टी स्वास्थ्य: ${soil.healthLabel ?? "अज्ञात"} (${soil.healthScore ?? "--"}/100)।`
+        : `Last soil health: ${soil.healthLabel ?? "Unknown"} (${soil.healthScore ?? "--"}/100).`,
+    );
   }
 
   if (insights.location && typeof insights.location === "object" && insights.location !== null && "climate" in insights.location) {
     const location = insights.location as { climate?: { zone?: string }; soil?: { soilType?: string } };
-    lines.push(`Location advisory: ${location.climate?.zone ?? "Unknown zone"}, soil ${location.soil?.soilType ?? "Unknown"}.`);
+    lines.push(
+      isHindi
+        ? `स्थान सलाह: ${location.climate?.zone ?? "अज्ञात क्षेत्र"}, मिट्टी ${location.soil?.soilType ?? "अज्ञात"}।`
+        : `Location advisory: ${location.climate?.zone ?? "Unknown zone"}, soil ${location.soil?.soilType ?? "Unknown"}.`,
+    );
   }
 
   if (insights.disease && typeof insights.disease === "object" && insights.disease !== null && "primary" in insights.disease) {
     const disease = insights.disease as { primary?: { name?: string; confidence?: number } };
-    lines.push(`Last disease scan: ${disease.primary?.name ?? "Unknown"} (${disease.primary?.confidence ?? "--"}%).`);
+    lines.push(
+      isHindi
+        ? `पिछला रोग स्कैन: ${disease.primary?.name ?? "अज्ञात"} (${disease.primary?.confidence ?? "--"}%)।`
+        : `Last disease scan: ${disease.primary?.name ?? "Unknown"} (${disease.primary?.confidence ?? "--"}%).`,
+    );
   }
 
   return lines;
 }
 
-export function runCopilot(question: string): string {
+export function runCopilot(question: string, language = "en"): string {
   const q = question.toLowerCase();
-  const context = summarizeContext();
+  const context = summarizeContext(language);
+  const isHindi = language.toLowerCase().startsWith("hi");
 
-  if (q.includes("irrigation") || q.includes("water")) {
-    return [
-      "Irrigation suggestion:",
-      "1) Check top-soil moisture before evening watering.",
-      "2) If humidity is high, use lighter but more frequent irrigation.",
-      "3) Avoid overwatering in low-drainage plots.",
-      ...context,
-    ].join("\n");
+  if (q.includes("irrigation") || q.includes("water") || q.includes("सिंचाई") || q.includes("पानी")) {
+    return isHindi
+      ? [
+          "सिंचाई सुझाव:",
+          "1) शाम की सिंचाई से पहले ऊपरी मिट्टी की नमी जांचें।",
+          "2) आर्द्रता अधिक हो तो हल्की लेकिन बार-बार सिंचाई करें।",
+          "3) कम जलनिकासी वाले प्लॉट में अधिक पानी से बचें।",
+          ...context,
+        ].join("\n")
+      : [
+          "Irrigation suggestion:",
+          "1) Check top-soil moisture before evening watering.",
+          "2) If humidity is high, use lighter but more frequent irrigation.",
+          "3) Avoid overwatering in low-drainage plots.",
+          ...context,
+        ].join("\n");
   }
 
-  if (q.includes("disease") || q.includes("fungus") || q.includes("pest")) {
-    return [
-      "Disease management suggestion:",
-      "1) Remove visibly infected leaves first.",
-      "2) Spray in low-wind hours.",
-      "3) Re-check field in 3-4 days and repeat if spread continues.",
-      ...context,
-    ].join("\n");
+  if (q.includes("disease") || q.includes("fungus") || q.includes("pest") || q.includes("रोग") || q.includes("कीट")) {
+    return isHindi
+      ? [
+          "रोग प्रबंधन सुझाव:",
+          "1) दिखने वाली संक्रमित पत्तियां पहले हटाएं।",
+          "2) कम हवा वाले समय में छिड़काव करें।",
+          "3) 3-4 दिन बाद खेत फिर जांचें और फैलाव जारी हो तो दोहराएं।",
+          ...context,
+        ].join("\n")
+      : [
+          "Disease management suggestion:",
+          "1) Remove visibly infected leaves first.",
+          "2) Spray in low-wind hours.",
+          "3) Re-check field in 3-4 days and repeat if spread continues.",
+          ...context,
+        ].join("\n");
   }
 
-  if (q.includes("sell") || q.includes("mandi") || q.includes("market")) {
-    return [
-      "Market action plan:",
-      "1) Compare at least 2 mandis before dispatch.",
-      "2) Prioritize crops with positive short-term trend.",
-      "3) Split selling across days if price volatility is high.",
-      ...context,
-    ].join("\n");
+  if (q.includes("sell") || q.includes("mandi") || q.includes("market") || q.includes("बेच") || q.includes("बाजार")) {
+    return isHindi
+      ? [
+          "बाजार कार्य योजना:",
+          "1) माल भेजने से पहले कम से कम 2 मंडियों की तुलना करें।",
+          "2) अल्पकालीन सकारात्मक रुझान वाली फसलों को प्राथमिकता दें।",
+          "3) कीमत में उतार-चढ़ाव ज्यादा हो तो चरणों में बिक्री करें।",
+          ...context,
+        ].join("\n")
+      : [
+          "Market action plan:",
+          "1) Compare at least 2 mandis before dispatch.",
+          "2) Prioritize crops with positive short-term trend.",
+          "3) Split selling across days if price volatility is high.",
+          ...context,
+        ].join("\n");
   }
 
-  return [
-    "Smart advisory summary:",
-    "1) Keep crop-wise field records weekly.",
-    "2) Follow nutrient split dosing instead of one-time heavy application.",
-    "3) Use weather and mandi trend together before final decisions.",
-    ...context,
-  ].join("\n");
+  return isHindi
+    ? [
+        "स्मार्ट सलाह सारांश:",
+        "1) साप्ताहिक फसल-वार रिकॉर्ड रखें।",
+        "2) एक बार भारी मात्रा देने के बजाय पोषक तत्वों को चरणों में दें।",
+        "3) अंतिम निर्णय से पहले मौसम और मंडी रुझान दोनों देखें।",
+        ...context,
+      ].join("\n")
+    : [
+        "Smart advisory summary:",
+        "1) Keep crop-wise field records weekly.",
+        "2) Follow nutrient split dosing instead of one-time heavy application.",
+        "3) Use weather and mandi trend together before final decisions.",
+        ...context,
+      ].join("\n");
 }

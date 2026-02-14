@@ -10,6 +10,30 @@ export default function WeatherAdvisory() {
   const { data: forecast } = useAsyncData(getForecast, { cacheKey: "weather-forecast", ttlMs: 60000 });
 
   const days = useMemo(() => forecast ?? [], [forecast]);
+  const getDayLabel = (day: string) => {
+    const map: Record<string, string> = {
+      Today: t("common.dayToday"),
+      Tomorrow: t("common.dayTomorrow"),
+      Monday: t("common.dayMonday"),
+      Tuesday: t("common.dayTuesday"),
+      Wednesday: t("common.dayWednesday"),
+      Thursday: t("common.dayThursday"),
+      Friday: t("common.dayFriday"),
+      Saturday: t("common.daySaturday"),
+      Sunday: t("common.daySunday"),
+    };
+    return map[day] ?? day;
+  };
+  const getConditionLabel = (condition: string) => {
+    const map: Record<string, string> = {
+      Sunny: t("common.conditionSunny"),
+      Cloudy: t("common.conditionCloudy"),
+      "Partly Cloudy": t("common.conditionPartlyCloudy"),
+      Rainy: t("common.conditionRainy"),
+      "Heavy Rain": t("common.conditionHeavyRain"),
+    };
+    return map[condition] ?? condition;
+  };
 
   return (
     <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
@@ -70,10 +94,10 @@ export default function WeatherAdvisory() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {days.map((day) => (
               <div key={day.day} className="surface-card p-4 text-center">
-                <p className="font-semibold text-forest-900 mb-3">{day.day}</p>
+                <p className="font-semibold text-forest-900 mb-3">{getDayLabel(day.day)}</p>
                 {day.condition.toLowerCase().includes("rain") ? <CloudRain className="h-10 w-10 mx-auto mb-3 text-sky-600" /> : <Cloud className="h-10 w-10 mx-auto mb-3 text-sky-600" />}
                 <p className="text-2xl font-bold text-forest-900 mb-1">{day.temperatureC} C</p>
-                <p className="text-xs text-forest-700/80 mb-2">{day.condition}</p>
+                <p className="text-xs text-forest-700/80 mb-2">{getConditionLabel(day.condition)}</p>
                 <div className="flex items-center justify-center gap-1 text-sm text-blue-600"><CloudRain className="h-4 w-4" /><span>{day.rainChancePercent}%</span></div>
               </div>
             ))}

@@ -153,11 +153,11 @@ export default function SoilCropRecommendation() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                 <div>
                   <label htmlFor="lat" className="block text-xs font-semibold text-forest-800 mb-1">{t("soil.latitude")}</label>
-                  <input id="lat" value={latInput} onChange={(e) => setLatInput(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl" placeholder="20.5937" />
+                  <input id="lat" value={latInput} onChange={(e) => setLatInput(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl" placeholder={t("soil.latitudePlaceholder")} />
                 </div>
                 <div>
                   <label htmlFor="lon" className="block text-xs font-semibold text-forest-800 mb-1">{t("soil.longitude")}</label>
-                  <input id="lon" value={lonInput} onChange={(e) => setLonInput(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl" placeholder="78.9629" />
+                  <input id="lon" value={lonInput} onChange={(e) => setLonInput(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl" placeholder={t("soil.longitudePlaceholder")} />
                 </div>
               </div>
 
@@ -195,7 +195,7 @@ export default function SoilCropRecommendation() {
                   <div className="surface-card p-4">
                     <p className="text-xs text-forest-700 mb-1">{t("soil.soilType")}</p>
                     <p className="font-semibold text-forest-900">{locationAdvisory.soil.soilType}</p>
-                    <p className="text-xs text-forest-700 mt-2">pH {locationAdvisory.soil.phBand}</p>
+                    <p className="text-xs text-forest-700 mt-2">{t("soil.phBandLabel")} {locationAdvisory.soil.phBand}</p>
                   </div>
                 </div>
 
@@ -262,12 +262,12 @@ export default function SoilCropRecommendation() {
                 </div>
 
                 <div className="surface-card-strong p-6">
-                  <h3 className="text-lg font-bold text-forest-900 mb-3">Why this recommendation</h3>
+                  <h3 className="text-lg font-bold text-forest-900 mb-3">{t("soil.whyRecommendationTitle")}</h3>
                   <ul className="text-sm text-forest-800 list-disc list-inside space-y-1">
-                    <li>Soil pH: {lastSoilInput?.ph ?? "--"} (crop fit is pH sensitive).</li>
-                    <li>NPK signals: N {lastSoilInput?.nitrogen ?? "--"}, P {lastSoilInput?.phosphorus ?? "--"}, K {lastSoilInput?.potassium ?? "--"}.</li>
-                    <li>Land size input: {lastSoilInput?.landSize ?? "--"} acres for practical planning.</li>
-                    {locationAdvisory ? <li>Location climate and soil profile were included from coordinates-based advisory.</li> : null}
+                    <li>{t("soil.whyPointPh", { value: lastSoilInput?.ph ?? "--" })}</li>
+                    <li>{t("soil.whyPointNpk", { n: lastSoilInput?.nitrogen ?? "--", p: lastSoilInput?.phosphorus ?? "--", k: lastSoilInput?.potassium ?? "--" })}</li>
+                    <li>{t("soil.whyPointLand", { value: lastSoilInput?.landSize ?? "--" })}</li>
+                    {locationAdvisory ? <li>{t("soil.whyPointLocation")}</li> : null}
                   </ul>
                 </div>
 

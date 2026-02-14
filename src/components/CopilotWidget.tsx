@@ -1,5 +1,6 @@
 ﻿import { Mic, MicOff, Send, Volume2 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { runCopilot, type CopilotMessage } from "../services/copilotService";
 
 type SpeechRecognitionType = {
@@ -17,12 +18,15 @@ type WindowWithSpeech = Window & typeof globalThis & {
 };
 
 export default function CopilotWidget() {
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [listening, setListening] = useState(false);
   const [messages, setMessages] = useState<CopilotMessage[]>([
-    { role: "assistant", content: "Hello. I am your Farmer Copilot. Ask about crop, disease, irrigation, or market action." },
+    { role: "assistant", content: t("copilot.greeting") },
   ]);
+
+  const isHindi = i18n.language.toLowerCase().startsWith("hi");
 
   const recognition = useMemo(() => {
     const maybeWindow = window as WindowWithSpeech;
@@ -31,17 +35,17 @@ export default function CopilotWidget() {
     }
 
     const r = new maybeWindow.webkitSpeechRecognition();
-    r.lang = "en-IN";
+    r.lang = isHindi ? "hi-IN" : "en-IN";
     r.interimResults = false;
     r.maxAlternatives = 1;
     return r;
-  }, []);
+  }, [isHindi]);
 
   const ask = (question: string) => {
     const trimmed = question.trim();
     if (!trimmed) return;
 
-    const answer = runCopilot(trimmed);
+    const answer = runCopilot(trimmed, i18n.language);
     setMessages((prev) => [...prev, { role: "user", content: trimmed }, { role: "assistant", content: answer }]);
     setInput("");
   };
@@ -65,7 +69,7 @@ export default function CopilotWidget() {
     if (!lastAssistant) return;
 
     const utterance = new SpeechSynthesisUtterance(lastAssistant.content);
-    utterance.lang = "en-IN";
+    utterance.lang = isHindi ? "hi-IN" : "en-IN";
     window.speechSynthesis.speak(utterance);
   };
 
@@ -74,8 +78,8 @@ export default function CopilotWidget() {
       {open ? (
         <div className="w-[340px] max-w-[90vw] surface-card-strong p-4 shadow-2xl">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-bold text-forest-900">Farmer Copilot</h3>
-            <button onClick={() => setOpen(false)} className="text-xs text-forest-700">Close</button>
+            <h3 className="text-sm font-bold text-forest-900">{t("copilot.title")}</h3>
+            <button onClick={() => setOpen(false)} className="text-xs text-forest-700">{t("copilot.close")}</button>
           </div>
 
           <div className="h-64 overflow-y-auto rounded-xl border border-gray-100 bg-gray-50 p-3 space-y-2 mb-3">
@@ -94,22 +98,22 @@ export default function CopilotWidget() {
                 if (e.key === "Enter") ask(input);
               }}
               className="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm"
-              placeholder="Ask advisory question..."
+              placeholder={t("copilot.askPlaceholder")}
             />
             <button onClick={() => ask(input)} className="btn-primary !px-3 !py-2"><Send className="h-4 w-4" /></button>
           </div>
 
           <div className="flex gap-2 mt-2">
             <button onClick={startVoice} className="btn-secondary !px-3 !py-2 text-xs" disabled={!recognition || listening}>
-              {listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />} Voice
+              {listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />} {t("copilot.voice")}
             </button>
             <button onClick={speakLast} className="btn-secondary !px-3 !py-2 text-xs">
-              <Volume2 className="h-4 w-4" /> Read
+              <Volume2 className="h-4 w-4" /> {t("copilot.read")}
             </button>
           </div>
         </div>
       ) : (
-        <button onClick={() => setOpen(true)} className="btn-primary rounded-full px-4 py-3 shadow-xl pulse-glow">AI Copilot</button>
+        <button onClick={() => setOpen(true)} className="btn-primary rounded-full px-4 py-3 shadow-xl pulse-glow">{t("copilot.openButton")}</button>
       )}
     </div>
   );

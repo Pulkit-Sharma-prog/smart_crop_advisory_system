@@ -1,6 +1,7 @@
 ﻿{
     "app":  {
-                "title":  "Smart Crop Advisory"
+                "title":  "Smart Crop Advisory",
+                "loadingPage":  "Loading page..."
             },
     "nav":  {
                 "home":  "Home",
@@ -10,13 +11,29 @@
                 "language":  "Language",
                 "profile":  "Profile",
                 "menu":  "Menu",
-                "farmTools":  "Farm Tools"
+                "farmTools":  "Farm Tools",
+                "primaryNav":  "Primary navigation"
             },
     "common":  {
                    "loading":  "Loading...",
                    "error":  "Something went wrong",
                    "retry":  "Retry",
-                   "notAvailable":  "N/A"
+                   "notAvailable":  "N/A",
+                   "kgUnit":  "kg",
+                   "dayToday":  "Today",
+                   "dayTomorrow":  "Tomorrow",
+                   "dayMonday":  "Monday",
+                   "dayTuesday":  "Tuesday",
+                   "dayWednesday":  "Wednesday",
+                   "dayThursday":  "Thursday",
+                   "dayFriday":  "Friday",
+                   "daySaturday":  "Saturday",
+                   "daySunday":  "Sunday",
+                   "conditionSunny":  "Sunny",
+                   "conditionCloudy":  "Cloudy",
+                   "conditionPartlyCloudy":  "Partly Cloudy",
+                   "conditionRainy":  "Rainy",
+                   "conditionHeavyRain":  "Heavy Rain"
                },
     "landing":  {
                     "heroTitle":  "AI-Powered Farming Decisions",
@@ -99,7 +116,17 @@
                       "weatherAlertDesc":  "Potential storm activity expected. Plan field work accordingly.",
                       "viewDetails":  "View details",
                       "marketSnapshot":  "Market Snapshot",
-                      "viewAllPrices":  "View all prices"
+                      "viewAllPrices":  "View all prices",
+                      "plannerActionHighRisk":  "Avoid spray; focus on drainage checks",
+                      "plannerActionModerateRisk":  "Light irrigation only, monitor sky",
+                      "plannerActionLowRisk":  "Good day for sowing/spray operations",
+                      "demoScenariosTitle":  "Demo Mode Scenarios",
+                      "demoRainyRisk":  "Rainy Risk Demo",
+                      "demoMarketSpike":  "Market Spike Demo",
+                      "demoBalanced":  "Balanced Demo",
+                      "demoHint":  "Use these before presenting Copilot and profile insights in front of judges.",
+                      "smartAlertsTitle":  "Smart Alerts",
+                      "bestDayPlannerTitle":  "7-Day Best Day Planner"
                   },
     "weather":  {
                     "title":  "Weather Advisory",
@@ -174,7 +201,15 @@
                  "humidityBand":  "Humidity",
                  "seasonSignal":  "Season signal",
                  "locationCrops":  "Location-fit crops",
-                 "locationActions":  "Recommended actions"
+                 "locationActions":  "Recommended actions",
+                 "latitudePlaceholder":  "20.5937",
+                 "longitudePlaceholder":  "78.9629",
+                 "phBandLabel":  "pH",
+                 "whyRecommendationTitle":  "Why this recommendation",
+                 "whyPointPh":  "Soil pH: {{value}} (crop fit is pH sensitive).",
+                 "whyPointNpk":  "NPK signals: N {{n}}, P {{p}}, K {{k}}.",
+                 "whyPointLand":  "Land size input: {{value}} acres for practical planning.",
+                 "whyPointLocation":  "Location climate and soil profile were included from coordinates-based advisory."
              },
     "disease":  {
                     "title":  "Disease Detection",
@@ -206,7 +241,10 @@
                     "preventiveTitle":  "Preventive measures",
                     "organicTitle":  "Organic options",
                     "escalationLabel":  "Escalation",
-                    "sourcesLabel":  "Sources"
+                    "sourcesLabel":  "Sources",
+                    "explainabilityTitle":  "Explainability",
+                    "severityEstimate":  "Severity estimate",
+                    "advisoryNote":  "Use this as advisory output and validate with local expert before full treatment cycle."
                 },
     "schedule":  {
                      "title":  "Smart Farming Schedule",
@@ -241,6 +279,55 @@
                    "bestMandi":  "Best mandi",
                    "lowestMandi":  "Lowest mandi",
                    "spread":  "Price spread",
-                   "noComparisonData":  "No mandi comparison data available for this crop."
-               }
+                   "noComparisonData":  "No mandi comparison data available for this crop.",
+                   "transportCost":  "Transport cost (Rs/km)",
+                   "bestNetMandi":  "Best net mandi",
+                   "netPrice":  "Net price",
+                   "transportDistance":  "{{distance}} km transport distance"
+               },
+    "alerts":  {
+                   "humidityRiskTitle":  "Disease pressure risk",
+                   "humidityRiskMessage":  "Humidity is high. Increase field scouting frequency and avoid late evening irrigation.",
+                   "windRiskTitle":  "Spray caution",
+                   "windRiskMessage":  "Wind speed is elevated. Prefer morning spray windows for better coverage.",
+                   "marketOpportunityTitle":  "Market opportunity",
+                   "marketOpportunityMessage":  "{{crop}} is up by {{changePercent}}%. Compare nearby mandis before selling.",
+                   "stableWindowTitle":  "Stable advisory window",
+                   "stableWindowMessage":  "No major weather or market risk detected. Continue planned field operations."
+               },
+    "farmTools":  {
+                      "title":  "Farm Tools",
+                      "subtitle":  "My Farm profile and profitability simulator for smart planning.",
+                      "profileTitle":  "My Farm Profile",
+                      "farmerName":  "Farmer name",
+                      "village":  "Village",
+                      "primaryCrop":  "Primary crop",
+                      "landSize":  "Land size (acres)",
+                      "saveProfile":  "Save Profile",
+                      "saved":  "Profile saved locally.",
+                      "simulatorTitle":  "Profitability Simulator",
+                      "inputCrop":  "Crop",
+                      "inputArea":  "Area acres",
+                      "inputYield":  "Yield kg/acre",
+                      "inputPrice":  "Price per kg",
+                      "inputSeedCost":  "Seed cost",
+                      "inputFertilizerCost":  "Fertilizer cost",
+                      "inputLaborCost":  "Labor cost",
+                      "inputIrrigationCost":  "Irrigation cost",
+                      "estimatedOutcome":  "Estimated outcome",
+                      "revenue":  "Revenue",
+                      "totalCost":  "Total Cost",
+                      "profit":  "Profit",
+                      "profitPerAcre":  "Profit/Acre",
+                      "breakEvenPrice":  "Break-even Price"
+                  },
+    "copilot":  {
+                    "title":  "Farmer Copilot",
+                    "close":  "Close",
+                    "askPlaceholder":  "Ask advisory question...",
+                    "voice":  "Voice",
+                    "read":  "Read",
+                    "openButton":  "AI Copilot",
+                    "greeting":  "Hello. I am your Farmer Copilot. Ask about crop, disease, irrigation, or market action."
+                }
 }

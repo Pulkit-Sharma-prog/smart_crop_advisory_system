@@ -1,6 +1,7 @@
 ﻿{
     "app":  {
-                "title":  "स्मार्ट क्रॉप एडवाइजरी"
+                "title":  "स्मार्ट क्रॉप एडवाइजरी",
+                "loadingPage":  "पेज लोड हो रहा है..."
             },
     "nav":  {
                 "home":  "होम",
@@ -10,13 +11,29 @@
                 "language":  "भाषा",
                 "profile":  "प्रोफाइल",
                 "menu":  "मेन्यू",
-                "farmTools":  "फार्म टूल्स"
+                "farmTools":  "फार्म टूल्स",
+                "primaryNav":  "मुख्य नेविगेशन"
             },
     "common":  {
                    "loading":  "लोड हो रहा है...",
                    "error":  "कुछ गलत हो गया",
                    "retry":  "पुनः प्रयास करें",
-                   "notAvailable":  "उपलब्ध नहीं"
+                   "notAvailable":  "उपलब्ध नहीं",
+                   "kgUnit":  "किलो",
+                   "dayToday":  "आज",
+                   "dayTomorrow":  "कल",
+                   "dayMonday":  "सोमवार",
+                   "dayTuesday":  "मंगलवार",
+                   "dayWednesday":  "बुधवार",
+                   "dayThursday":  "गुरुवार",
+                   "dayFriday":  "शुक्रवार",
+                   "daySaturday":  "शनिवार",
+                   "daySunday":  "रविवार",
+                   "conditionSunny":  "धूप",
+                   "conditionCloudy":  "बादल",
+                   "conditionPartlyCloudy":  "आंशिक बादल",
+                   "conditionRainy":  "बारिश",
+                   "conditionHeavyRain":  "भारी बारिश"
                },
     "landing":  {
                     "heroTitle":  "एआई आधारित खेती के निर्णय",
@@ -99,7 +116,17 @@
                       "weatherAlertDesc":  "आंधी/तूफान की संभावना है। खेत का काम योजना से करें।",
                       "viewDetails":  "विवरण देखें",
                       "marketSnapshot":  "बाजार स्नैपशॉट",
-                      "viewAllPrices":  "सभी कीमतें देखें"
+                      "viewAllPrices":  "सभी कीमतें देखें",
+                      "plannerActionHighRisk":  "छिड़काव टालें; जल निकासी जांच पर ध्यान दें",
+                      "plannerActionModerateRisk":  "केवल हल्की सिंचाई करें, मौसम पर नज़र रखें",
+                      "plannerActionLowRisk":  "बुवाई/छिड़काव के लिए अच्छा दिन",
+                      "demoScenariosTitle":  "डेमो मोड परिदृश्य",
+                      "demoRainyRisk":  "बारिश जोखिम डेमो",
+                      "demoMarketSpike":  "बाजार उछाल डेमो",
+                      "demoBalanced":  "संतुलित डेमो",
+                      "demoHint":  "जजों के सामने Copilot और प्रोफाइल इनसाइट्स दिखाने से पहले इनका उपयोग करें।",
+                      "smartAlertsTitle":  "स्मार्ट अलर्ट",
+                      "bestDayPlannerTitle":  "7-दिवसीय सर्वश्रेष्ठ दिन योजनाकार"
                   },
     "weather":  {
                     "title":  "मौसम सलाह",
@@ -174,7 +201,15 @@
                  "humidityBand":  "आर्द्रता",
                  "seasonSignal":  "मौसमी संकेत",
                  "locationCrops":  "स्थान-उपयुक्त फसलें",
-                 "locationActions":  "सुझाए गए कार्य"
+                 "locationActions":  "सुझाए गए कार्य",
+                 "latitudePlaceholder":  "20.5937",
+                 "longitudePlaceholder":  "78.9629",
+                 "phBandLabel":  "pH",
+                 "whyRecommendationTitle":  "यह सिफारिश क्यों",
+                 "whyPointPh":  "मिट्टी pH: {{value}} (फसल चयन pH के प्रति संवेदनशील है)।",
+                 "whyPointNpk":  "NPK संकेत: N {{n}}, P {{p}}, K {{k}}।",
+                 "whyPointLand":  "जमीन का आकार: {{value}} एकड़ (व्यावहारिक योजना के लिए)।",
+                 "whyPointLocation":  "स्थान आधारित सलाह से जलवायु और मिट्टी प्रोफाइल शामिल किए गए।"
              },
     "disease":  {
                     "title":  "रोग पहचान",
@@ -206,7 +241,10 @@
                     "preventiveTitle":  "निवारक उपाय",
                     "organicTitle":  "जैविक विकल्प",
                     "escalationLabel":  "एस्केलेशन",
-                    "sourcesLabel":  "स्रोत"
+                    "sourcesLabel":  "स्रोत",
+                    "explainabilityTitle":  "व्याख्येयता",
+                    "severityEstimate":  "गंभीरता अनुमान",
+                    "advisoryNote":  "इसे सलाह के रूप में उपयोग करें और पूर्ण उपचार चक्र से पहले स्थानीय विशेषज्ञ से पुष्टि करें।"
                 },
     "schedule":  {
                      "title":  "स्मार्ट खेती शेड्यूल",
@@ -241,6 +279,55 @@
                    "bestMandi":  "सर्वश्रेष्ठ मंडी",
                    "lowestMandi":  "सबसे कम मंडी",
                    "spread":  "कीमत अंतर",
-                   "noComparisonData":  "इस फसल के लिए मंडी तुलना डेटा उपलब्ध नहीं है।"
-               }
+                   "noComparisonData":  "इस फसल के लिए मंडी तुलना डेटा उपलब्ध नहीं है।",
+                   "transportCost":  "परिवहन लागत (रु/किमी)",
+                   "bestNetMandi":  "सर्वश्रेष्ठ नेट मंडी",
+                   "netPrice":  "नेट कीमत",
+                   "transportDistance":  "{{distance}} किमी परिवहन दूरी"
+               },
+    "alerts":  {
+                   "humidityRiskTitle":  "रोग दबाव जोखिम",
+                   "humidityRiskMessage":  "आर्द्रता अधिक है। खेत निरीक्षण की आवृत्ति बढ़ाएं और देर शाम सिंचाई से बचें।",
+                   "windRiskTitle":  "छिड़काव सावधानी",
+                   "windRiskMessage":  "हवा की गति अधिक है। बेहतर कवरेज के लिए सुबह छिड़काव करें।",
+                   "marketOpportunityTitle":  "बाजार अवसर",
+                   "marketOpportunityMessage":  "{{crop}} में {{changePercent}}% बढ़त है। बेचने से पहले पास की मंडियों की तुलना करें।",
+                   "stableWindowTitle":  "स्थिर सलाह विंडो",
+                   "stableWindowMessage":  "कोई बड़ा मौसम या बाजार जोखिम नहीं दिखा। नियोजित खेत कार्य जारी रखें।"
+               },
+    "farmTools":  {
+                      "title":  "फार्म टूल्स",
+                      "subtitle":  "स्मार्ट योजना के लिए मेरा फार्म प्रोफाइल और लाभ सिम्युलेटर।",
+                      "profileTitle":  "मेरा फार्म प्रोफाइल",
+                      "farmerName":  "किसान का नाम",
+                      "village":  "गांव",
+                      "primaryCrop":  "मुख्य फसल",
+                      "landSize":  "जमीन का आकार (एकड़)",
+                      "saveProfile":  "प्रोफाइल सेव करें",
+                      "saved":  "प्रोफाइल स्थानीय रूप से सेव हो गया।",
+                      "simulatorTitle":  "लाभ सिम्युलेटर",
+                      "inputCrop":  "फसल",
+                      "inputArea":  "क्षेत्र (एकड़)",
+                      "inputYield":  "उपज किलो/एकड़",
+                      "inputPrice":  "प्रति किलो कीमत",
+                      "inputSeedCost":  "बीज लागत",
+                      "inputFertilizerCost":  "उर्वरक लागत",
+                      "inputLaborCost":  "श्रम लागत",
+                      "inputIrrigationCost":  "सिंचाई लागत",
+                      "estimatedOutcome":  "अनुमानित परिणाम",
+                      "revenue":  "राजस्व",
+                      "totalCost":  "कुल लागत",
+                      "profit":  "लाभ",
+                      "profitPerAcre":  "प्रति एकड़ लाभ",
+                      "breakEvenPrice":  "ब्रेक-ईवन कीमत"
+                  },
+    "copilot":  {
+                    "title":  "फार्मर कोपायलट",
+                    "close":  "बंद करें",
+                    "askPlaceholder":  "खेती से जुड़ा सवाल पूछें...",
+                    "voice":  "आवाज़",
+                    "read":  "पढ़ें",
+                    "openButton":  "AI कोपायलट",
+                    "greeting":  "नमस्ते। मैं आपका फार्मर कोपायलट हूं। फसल, रोग, सिंचाई या बाजार रणनीति के बारे में पूछें।"
+                }
 }

@@ -164,12 +164,12 @@ export default function DiseaseDetection() {
                   </div>
 
                   <div className="mt-4 p-4 bg-forest-50 rounded-xl border border-forest-100">
-                    <h4 className="font-semibold text-forest-900 mb-2">Explainability</h4>
-                    <p className="text-sm text-forest-800">Severity estimate: <strong>{severity}</strong></p>
+                    <h4 className="font-semibold text-forest-900 mb-2">{t("disease.explainabilityTitle")}</h4>
+                    <p className="text-sm text-forest-800">{t("disease.severityEstimate")}: <strong>{severity}</strong></p>
                     <p className="text-sm text-forest-800">{result?.analysisSummary}</p>
                     <p className="text-sm text-forest-800">{result?.confidenceNote}</p>
                     {result?.sources?.length ? <p className="text-sm text-forest-800">{t("disease.sourcesLabel")}: {result.sources.join(", ")}</p> : null}
-                    <p className="text-sm text-forest-800">Use this as advisory output and validate with local expert before full treatment cycle.</p>
+                    <p className="text-sm text-forest-800">{t("disease.advisoryNote")}</p>
                   </div>
                 </div>
 

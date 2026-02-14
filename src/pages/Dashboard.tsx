@@ -25,6 +25,30 @@ import { routes } from "../types/routes";
 export default function Dashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const getDayLabel = (day: string) => {
+    const map: Record<string, string> = {
+      Today: t("common.dayToday"),
+      Tomorrow: t("common.dayTomorrow"),
+      Monday: t("common.dayMonday"),
+      Tuesday: t("common.dayTuesday"),
+      Wednesday: t("common.dayWednesday"),
+      Thursday: t("common.dayThursday"),
+      Friday: t("common.dayFriday"),
+      Saturday: t("common.daySaturday"),
+      Sunday: t("common.daySunday"),
+    };
+    return map[day] ?? day;
+  };
+  const getConditionLabel = (condition: string) => {
+    const map: Record<string, string> = {
+      Sunny: t("common.conditionSunny"),
+      Cloudy: t("common.conditionCloudy"),
+      "Partly Cloudy": t("common.conditionPartlyCloudy"),
+      Rainy: t("common.conditionRainy"),
+      "Heavy Rain": t("common.conditionHeavyRain"),
+    };
+    return map[condition] ?? condition;
+  };
 
   const {
     data: weather,
@@ -53,7 +77,7 @@ export default function Dashboard() {
     return [...marketData].sort((a, b) => b.changePercent - a.changePercent)[0];
   }, [marketData]);
 
-  const alerts = useMemo(() => generateAdvisoryAlerts(weather ?? null, marketData ?? null), [weather, marketData]);
+  const alerts = useMemo(() => generateAdvisoryAlerts(weather ?? null, marketData ?? null, t), [weather, marketData, t]);
 
   const planner = useMemo(() => {
     return (forecast ?? []).slice(0, 7).map((day) => {
@@ -61,13 +85,13 @@ export default function Dashboard() {
       const moderate = day.rainChancePercent >= 40;
       const status = risky ? "red" : moderate ? "yellow" : "green";
       const action = risky
-        ? "Avoid spray; focus on drainage checks"
+        ? t("dashboard.plannerActionHighRisk")
         : moderate
-          ? "Light irrigation only, monitor sky"
-          : "Good day for sowing/spray operations";
+          ? t("dashboard.plannerActionModerateRisk")
+          : t("dashboard.plannerActionLowRisk");
       return { ...day, status, action };
     });
-  }, [forecast]);
+  }, [forecast, t]);
 
   const applyDemoScenario = (scenario: "rainy-risk" | "market-spike" | "balanced") => {
     if (scenario === "rainy-risk") {
@@ -126,13 +150,13 @@ export default function Dashboard() {
           </div>
 
           <div className="surface-card-strong p-5 mb-6 fade-up">
-            <h3 className="text-lg font-semibold text-forest-900 mb-3">Demo Mode Scenarios</h3>
-            <div className="flex flex-wrap gap-2">
-              <button className="btn-secondary !px-3 !py-2 text-sm" onClick={() => applyDemoScenario("rainy-risk")}>Rainy Risk Demo</button>
-              <button className="btn-secondary !px-3 !py-2 text-sm" onClick={() => applyDemoScenario("market-spike")}>Market Spike Demo</button>
-              <button className="btn-secondary !px-3 !py-2 text-sm" onClick={() => applyDemoScenario("balanced")}>Balanced Demo</button>
+              <h3 className="text-lg font-semibold text-forest-900 mb-3">{t("dashboard.demoScenariosTitle")}</h3>
+              <div className="flex flex-wrap gap-2">
+              <button className="btn-secondary !px-3 !py-2 text-sm" onClick={() => applyDemoScenario("rainy-risk")}>{t("dashboard.demoRainyRisk")}</button>
+              <button className="btn-secondary !px-3 !py-2 text-sm" onClick={() => applyDemoScenario("market-spike")}>{t("dashboard.demoMarketSpike")}</button>
+              <button className="btn-secondary !px-3 !py-2 text-sm" onClick={() => applyDemoScenario("balanced")}>{t("dashboard.demoBalanced")}</button>
             </div>
-            <p className="text-xs text-forest-700 mt-2">Use these before presenting Copilot and profile insights in front of judges.</p>
+            <p className="text-xs text-forest-700 mt-2">{t("dashboard.demoHint")}</p>
           </div>
 
           <div className="surface-card-strong p-5 mb-6 fade-up">
@@ -149,7 +173,7 @@ export default function Dashboard() {
           </div>
 
           <div className="surface-card-strong p-5 mb-6 fade-up">
-            <h3 className="text-lg font-semibold text-forest-900 mb-3">Smart Alerts</h3>
+            <h3 className="text-lg font-semibold text-forest-900 mb-3">{t("dashboard.smartAlertsTitle")}</h3>
             <div className="space-y-3">
               {alerts.map((alert) => (
                 <div key={alert.id} className={`rounded-xl border p-3 ${alert.severity === "high" ? "bg-red-50 border-red-200" : alert.severity === "medium" ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200"}`}>
@@ -161,12 +185,12 @@ export default function Dashboard() {
           </div>
 
           <div className="surface-card-strong p-5 mb-6 fade-up">
-            <h3 className="text-lg font-semibold text-forest-900 mb-3">7-Day Best Day Planner</h3>
+            <h3 className="text-lg font-semibold text-forest-900 mb-3">{t("dashboard.bestDayPlannerTitle")}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 stagger-in">
               {planner.map((day) => (
                 <div key={day.day} className={`rounded-xl border p-3 ${day.status === "red" ? "bg-red-50 border-red-200" : day.status === "yellow" ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200"}`}>
-                  <p className="font-semibold text-forest-900 text-sm">{day.day}</p>
-                  <p className="text-xs text-forest-800">{day.condition} | Rain {day.rainChancePercent}%</p>
+                  <p className="font-semibold text-forest-900 text-sm">{getDayLabel(day.day)}</p>
+                  <p className="text-xs text-forest-800">{getConditionLabel(day.condition)} | {t("weather.rain")} {day.rainChancePercent}%</p>
                   <p className="text-xs text-forest-800 mt-1">{day.action}</p>
                 </div>
               ))}
@@ -207,7 +231,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-4">
                 <div className="bg-leaf-100 p-4 rounded-xl"><TrendingUp className="h-10 w-10 text-leaf-600" /></div>
                 <div>
-                  <p className="text-2xl font-bold text-forest-900">{topCrop?.crop ?? "N/A"}</p>
+                  <p className="text-2xl font-bold text-forest-900">{topCrop?.crop ?? t("common.notAvailable")}</p>
                   <p className="text-sm text-forest-800/80">{topCrop?.market ?? t("dashboard.noMarketData")}</p>
                   {topCrop ? <span className="inline-block mt-2 bg-forest-100 text-forest-700 text-xs font-semibold px-3 py-1 rounded-full">+{topCrop.changePercent}%</span> : null}
                 </div>
@@ -239,7 +263,7 @@ export default function Dashboard() {
                       <p className="text-sm text-forest-800/80">{item.market}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold text-forest-900">Rs {item.pricePerKg}/kg</p>
+                      <p className="text-lg font-bold text-forest-900">Rs {item.pricePerKg}/{t("common.kgUnit")}</p>
                       <p className="text-sm text-green-600 font-semibold">{item.changePercent > 0 ? "+" : ""}{item.changePercent}%</p>
                     </div>
                   </div>

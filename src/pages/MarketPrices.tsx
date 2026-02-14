@@ -148,7 +148,7 @@ export default function MarketPrices() {
                 </select>
               </div>
               <div className="min-w-52">
-                <label htmlFor="transport-cost" className="block text-sm font-semibold text-forest-800 mb-2">Transport cost (Rs/km)</label>
+                <label htmlFor="transport-cost" className="block text-sm font-semibold text-forest-800 mb-2">{t("market.transportCost")}</label>
                 <input
                   id="transport-cost"
                   type="number"
@@ -166,19 +166,19 @@ export default function MarketPrices() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-5 stagger-in">
                 <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-                  <p className="text-xs text-green-700 font-semibold mb-1">Best net mandi</p>
+                  <p className="text-xs text-green-700 font-semibold mb-1">{t("market.bestNetMandi")}</p>
                   <p className="text-lg font-bold text-green-900">{bestNet?.market}</p>
-                  <p className="text-sm text-green-800">Net Rs {bestNet?.netPricePerKg}/kg</p>
+                  <p className="text-sm text-green-800">{t("market.netPrice")}: Rs {bestNet?.netPricePerKg}/{t("common.kgUnit")}</p>
                 </div>
                 <div className="bg-green-50 border border-green-100 rounded-xl p-4">
                   <p className="text-xs text-green-700 font-semibold mb-1">{t("market.bestMandi")}</p>
                   <p className="text-lg font-bold text-green-900">{topMarket?.market}</p>
-                  <p className="text-sm text-green-800">Rs {topMarket?.pricePerKg}/kg</p>
+                  <p className="text-sm text-green-800">Rs {topMarket?.pricePerKg}/{t("common.kgUnit")}</p>
                 </div>
                 <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
                   <p className="text-xs text-amber-700 font-semibold mb-1">{t("market.lowestMandi")}</p>
                   <p className="text-lg font-bold text-amber-900">{lowMarket?.market}</p>
-                  <p className="text-sm text-amber-800">Rs {lowMarket?.pricePerKg}/kg</p>
+                  <p className="text-sm text-amber-800">Rs {lowMarket?.pricePerKg}/{t("common.kgUnit")}</p>
                 </div>
                 <div className="bg-sky-50 border border-sky-100 rounded-xl p-4">
                   <p className="text-xs text-sky-700 font-semibold mb-1">{t("market.spread")}</p>
@@ -194,11 +194,11 @@ export default function MarketPrices() {
                         <MapPin className="h-4 w-4 text-forest-700" />
                         <span className="font-semibold">{item.market}</span>
                       </div>
-                      <p className="text-xs text-forest-700 flex items-center gap-1"><Truck className="h-3 w-3" /> {item.distance} km transport distance</p>
+                      <p className="text-xs text-forest-700 flex items-center gap-1"><Truck className="h-3 w-3" /> {t("market.transportDistance", { distance: item.distance })}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-forest-900">Rs {item.pricePerKg}/kg</p>
-                      <p className="text-xs text-forest-700">Net Rs {item.netPricePerKg}/kg</p>
+                      <p className="font-bold text-forest-900">Rs {item.pricePerKg}/{t("common.kgUnit")}</p>
+                      <p className="text-xs text-forest-700">{t("market.netPrice")}: Rs {item.netPricePerKg}/{t("common.kgUnit")}</p>
                     </div>
                   </div>
                 ))}
@@ -247,7 +247,7 @@ export default function MarketPrices() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <span className="text-lg font-bold text-forest-900">Rs {item.pricePerKg}</span>
-                      <span className="text-sm text-forest-700/70">/kg</span>
+                      <span className="text-sm text-forest-700/70">/{t("common.kgUnit")}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ${item.changePercent >= 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
