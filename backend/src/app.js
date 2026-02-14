@@ -22,7 +22,22 @@ export function createApp() {
 
   app.use(
     cors({
-      origin: backendEnv.frontendOrigin,
+      origin(origin, callback) {
+        if (!origin) {
+          callback(null, true);
+          return;
+        }
+
+        if (
+          backendEnv.frontendOrigins.length === 0
+          || backendEnv.frontendOrigins.includes(origin)
+        ) {
+          callback(null, true);
+          return;
+        }
+
+        callback(new Error("Origin not allowed by CORS"));
+      },
       credentials: false,
     }),
   );

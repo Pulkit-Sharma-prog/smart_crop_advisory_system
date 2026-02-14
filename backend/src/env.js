@@ -13,7 +13,10 @@ const toNumber = (value, fallback) => {
 
 export const backendEnv = {
   port: toNumber(process.env.PORT, 3000),
-  frontendOrigin: process.env.FRONTEND_ORIGIN ?? "http://localhost:5173",
+  frontendOrigins: (process.env.FRONTEND_ORIGIN ?? "http://localhost:5173")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean),
   mysqlUrl: process.env.MYSQL_URL ?? "",
   mysqlHost: process.env.MYSQL_HOST ?? "localhost",
   mysqlPort: toNumber(process.env.MYSQL_PORT, 3306),
