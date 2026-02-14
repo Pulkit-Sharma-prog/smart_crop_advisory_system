@@ -50,6 +50,13 @@ export function createApp() {
     });
   });
 
+  app.get("/api/health", (_req, res) => {
+    res.json({
+      status: "ok",
+      service: "smart-crop-backend-adapter",
+    });
+  });
+
   app.get("/api/weather/snapshot", async (req, res, next) => {
     try {
       const parsed = weatherQuerySchema.parse(req.query);

@@ -163,7 +163,12 @@ export default function Dashboard() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold text-forest-900 mb-1">{t("dashboard.platformStatus")}</p>
-                <p className="text-sm text-forest-800/80">{t("dashboard.backend")}: <span className="font-semibold">{t("dashboard.connectionSummary")}</span></p>
+                <p className="text-sm text-forest-800/80">
+                  {t("dashboard.backend")}:{" "}
+                  <span className="font-semibold">
+                    {backendError ? t("dashboard.disconnected") : backendHealth?.status === "ok" ? t("dashboard.operational") : t("dashboard.degraded")}
+                  </span>
+                </p>
               </div>
               <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${backendError ? "bg-red-50 text-red-700" : backendHealth?.status === "ok" ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"}`}>
                 <Server className="h-3.5 w-3.5" />

@@ -37,6 +37,14 @@ VITE_DEBUG_LOGS=false
 
 For single Vercel deployment, keep `VITE_API_BASE_URL` empty so frontend calls same-origin `/api/*`.
 
+For separate frontend/backend Vercel projects:
+- Frontend env:
+  - `VITE_API_BASE_URL=` (empty, uses frontend `/api/*` proxy)
+  - `BACKEND_BASE_URL=https://<your-backend-project>.vercel.app`
+- Backend env:
+  - `FRONTEND_ORIGIN=https://<your-frontend-project>.vercel.app`
+  - `MYSQL_URL=<hosted-mysql-connection-string>`
+
 ## Implemented Phases
 
 ### Phase 1

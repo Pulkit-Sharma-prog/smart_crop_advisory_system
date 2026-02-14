@@ -16,7 +16,7 @@ export async function getBackendHealth(): Promise<BackendHealth> {
     };
   }
 
-  const response = await apiRequest<{ status: string; service: string }>("/health", {
+  const response = await apiRequest<{ status: string; service: string }>("/api/health", {
     retryCount: 0,
     timeoutMs: 3000,
   });
