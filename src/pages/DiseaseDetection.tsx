@@ -15,6 +15,7 @@ export default function DiseaseDetection() {
 
   const hasResult = useMemo(() => Boolean(result), [result]);
   const severity = useMemo(() => {
+    if (result?.severity) return result.severity;
     const confidence = result?.primary.confidence ?? 0;
     if (confidence >= 85) return "High";
     if (confidence >= 65) return "Medium";
@@ -51,13 +52,18 @@ export default function DiseaseDetection() {
     setError(null);
     setIsAnalyzing(true);
 
-    const image = await readFile(file);
-    setSelectedImage(image);
+    try {
+      const image = await readFile(file);
+      setSelectedImage(image);
 
-    const analysis = await analyzeCropImage(file);
-    setResult(analysis);
-    saveLastDiseaseResult(analysis);
-    setIsAnalyzing(false);
+      const analysis = await analyzeCropImage(file);
+      setResult(analysis);
+      saveLastDiseaseResult(analysis);
+    } catch {
+      setError(t("common.error"));
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,7 +166,9 @@ export default function DiseaseDetection() {
                   <div className="mt-4 p-4 bg-forest-50 rounded-xl border border-forest-100">
                     <h4 className="font-semibold text-forest-900 mb-2">Explainability</h4>
                     <p className="text-sm text-forest-800">Severity estimate: <strong>{severity}</strong></p>
-                    <p className="text-sm text-forest-800">Confidence is computed from visual symptom matching in your uploaded image.</p>
+                    <p className="text-sm text-forest-800">{result?.analysisSummary}</p>
+                    <p className="text-sm text-forest-800">{result?.confidenceNote}</p>
+                    {result?.sources?.length ? <p className="text-sm text-forest-800">{t("disease.sourcesLabel")}: {result.sources.join(", ")}</p> : null}
                     <p className="text-sm text-forest-800">Use this as advisory output and validate with local expert before full treatment cycle.</p>
                   </div>
                 </div>
@@ -168,10 +176,29 @@ export default function DiseaseDetection() {
                 <div className="surface-card-strong p-6">
                   <h3 className="text-lg font-bold text-forest-900 mb-4">{t("disease.treatmentTitle")}</h3>
                   <div className="space-y-4 text-sm text-forest-800">
-                    <p className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />{t("disease.treat1")}</p>
-                    <p className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5" />{t("disease.treat2")}</p>
-                    <p className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-yellow-600 mt-0.5" />{t("disease.treat3")}</p>
+                    {(result?.guidance.curativeActions ?? [t("disease.treat1"), t("disease.treat2"), t("disease.treat3")]).map((item) => (
+                      <p key={`curative-${item}`} className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />{item}</p>
+                    ))}
                   </div>
+                  <h4 className="text-base font-semibold text-forest-900 mt-5 mb-3">{t("disease.preventiveTitle")}</h4>
+                  <div className="space-y-3 text-sm text-forest-800">
+                    {(result?.guidance.preventiveMeasures ?? []).map((item) => (
+                      <p key={`preventive-${item}`} className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5" />{item}</p>
+                    ))}
+                  </div>
+                  {result?.guidance.organicOptions?.length ? (
+                    <>
+                      <h4 className="text-base font-semibold text-forest-900 mt-5 mb-3">{t("disease.organicTitle")}</h4>
+                      <div className="space-y-3 text-sm text-forest-800">
+                        {result.guidance.organicOptions.map((item) => (
+                          <p key={`organic-${item}`} className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-yellow-600 mt-0.5" />{item}</p>
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
+                  {result?.guidance.escalationAdvice ? (
+                    <p className="text-sm text-forest-900 mt-5"><strong>{t("disease.escalationLabel")}:</strong> {result.guidance.escalationAdvice}</p>
+                  ) : null}
                 </div>
               </>
             )}

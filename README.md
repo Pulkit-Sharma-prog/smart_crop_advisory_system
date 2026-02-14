@@ -18,6 +18,10 @@ npm run backend:dev
 ```
 Backend runs on `http://localhost:3000`.
 
+Create `backend/.env` from `backend/.env.example` and set at least one AI key for plant-disease detection:
+- `PLANT_ID_API_KEY` (recommended)
+- `OPENAI_API_KEY` (optional second opinion)
+
 ### Frontend Live API Mode
 Create `.env` in project root from `.env.example`:
 ```bash

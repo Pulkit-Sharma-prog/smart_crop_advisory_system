@@ -98,9 +98,34 @@ export function mockSoilRecommendation(input: SoilRecommendationInput): SoilReco
 }
 
 export const mockDiseaseResult: DiseaseResult = {
-  primary: { name: "Late Blight", confidence: 92 },
+  diagnosisId: "mock-diagnosis-001",
+  recordedAt: "2026-02-14T00:00:00.000Z",
+  primary: {
+    name: "Late Blight",
+    confidence: 92,
+    visibleSymptoms: ["Water-soaked lesions", "Dark patches on leaves"],
+  },
   alternatives: [
     { name: "Early Blight", confidence: 6 },
     { name: "Septoria Leaf Spot", confidence: 2 },
   ],
+  analysisSummary: "Visible lesions strongly match late blight-type foliar symptoms.",
+  severity: "High",
+  confidenceNote: "Confidence is based on visual symptom matching from uploaded image.",
+  guidance: {
+    preventiveMeasures: [
+      "Improve airflow in canopy and avoid late overhead irrigation.",
+      "Remove infected debris from field edge.",
+    ],
+    curativeActions: [
+      "Remove highly infected leaves immediately.",
+      "Apply recommended fungicide according to local guidance.",
+      "Re-check spread after 3 to 5 days.",
+    ],
+    organicOptions: ["Use approved copper-based spray.", "Use Bacillus subtilis biocontrol products."],
+    escalationAdvice: "Escalate to local agronomist if spread is still increasing after first treatment cycle.",
+  },
+  symptoms: ["Water-soaked lesions", "Dark patches on leaves"],
+  sources: ["mock"],
+  providerErrors: [],
 };

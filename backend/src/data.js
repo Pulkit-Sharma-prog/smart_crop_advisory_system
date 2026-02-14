@@ -90,13 +90,3 @@ export function computeSoilRecommendation(input) {
     ],
   };
 }
-
-export function analyzeImage(_file) {
-  return {
-    primary: { name: "Late Blight", confidence: 92 },
-    alternatives: [
-      { name: "Early Blight", confidence: 6 },
-      { name: "Septoria Leaf Spot", confidence: 2 },
-    ],
-  };
-}

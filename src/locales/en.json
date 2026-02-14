@@ -202,7 +202,11 @@
                     "treat2":  "Apply recommended fungicide or treatment.",
                     "treat3":  "Monitor spread and re-check after treatment.",
                     "fileTypeError":  "Please upload a valid image file.",
-                    "fileSizeError":  "Image size must be 10MB or less."
+                    "fileSizeError":  "Image size must be 10MB or less.",
+                    "preventiveTitle":  "Preventive measures",
+                    "organicTitle":  "Organic options",
+                    "escalationLabel":  "Escalation",
+                    "sourcesLabel":  "Sources"
                 },
     "schedule":  {
                      "title":  "Smart Farming Schedule",

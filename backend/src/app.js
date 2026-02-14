@@ -2,17 +2,20 @@
 import express from "express";
 import multer from "multer";
 import {
-  analyzeImage,
   computeSoilRecommendation,
   marketPrices,
   schedule,
   weatherForecast,
   weatherSnapshot,
 } from "./data.js";
+import { diagnosePlantDisease } from "./diseaseService.js";
 import { backendEnv } from "./env.js";
 import { diseaseUploadSchema, soilInputSchema } from "./validation.js";
 
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
 
 export function createApp() {
   const app = express();
@@ -58,10 +61,12 @@ export function createApp() {
     }
   });
 
-  app.post("/api/disease/analyze", upload.single("file"), (req, res, next) => {
+  app.post("/api/disease/analyze", upload.single("file"), async (req, res, next) => {
     try {
       const parsed = diseaseUploadSchema.parse({ file: req.file });
-      const result = analyzeImage(parsed.file);
+      const result = await diagnosePlantDisease(parsed.file, {
+        cropHint: typeof req.body?.crop === "string" ? req.body.crop : undefined,
+      });
       res.json(result);
     } catch (error) {
       next(error);

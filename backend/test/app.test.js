@@ -36,4 +36,18 @@ describe("backend adapter", () => {
 
     expect(response.status).toBe(400);
   });
+
+  it("analyzes disease image and returns guidance payload", async () => {
+    const response = await request(app)
+      .post("/api/disease/analyze")
+      .attach("file", Buffer.from("fake-image-content"), {
+        filename: "tomato_leaf.jpg",
+        contentType: "image/jpeg",
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.primary.name).toBeTypeOf("string");
+    expect(response.body.guidance.preventiveMeasures.length).toBeGreaterThan(0);
+    expect(response.body.guidance.curativeActions.length).toBeGreaterThan(0);
+  });
 });

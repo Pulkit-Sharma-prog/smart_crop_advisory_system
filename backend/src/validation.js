@@ -13,5 +13,7 @@ export const diseaseUploadSchema = z.object({
     originalname: z.string(),
     mimetype: z.string().startsWith("image/"),
     size: z.number().max(10 * 1024 * 1024),
+    buffer: z.instanceof(Buffer),
   }),
+  crop: z.string().min(2).max(80).optional(),
 });

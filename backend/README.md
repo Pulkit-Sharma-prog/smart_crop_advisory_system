@@ -14,6 +14,10 @@ npm install
 copy .env.example .env
 ```
 
+Set at least one AI provider key for stronger image diagnosis:
+- `PLANT_ID_API_KEY` (recommended)
+- `OPENAI_API_KEY` (optional second-opinion model)
+
 3. Start dev server:
 ```bash
 npm run dev
@@ -39,3 +43,14 @@ npm run test
 - `GET /api/schedule`
 - `POST /api/recommendations/soil`
 - `POST /api/disease/analyze` (multipart field `file`)
+
+## Disease Detection Architecture
+
+- Embedded JSON database at `backend/storage/crop-advisory-db.json`
+  - Stores disease catalog entries
+  - Stores diagnosis history for audit and follow-up
+- AI providers:
+  - Plant.id health assessment (primary if configured)
+  - OpenAI vision model (optional secondary)
+- Fallback mode:
+  - If providers are unavailable, backend returns low-confidence fallback diagnosis so the UI remains usable.

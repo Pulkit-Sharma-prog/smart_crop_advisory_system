@@ -22,5 +22,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
+backend/storage
 test-results
 playwright-report

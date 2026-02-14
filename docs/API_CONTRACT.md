@@ -110,10 +110,28 @@ The frontend now supports live backend integration through environment-based con
 - Response:
 ```json
 {
-  "primary": { "name": "Late Blight", "confidence": 92 },
+  "diagnosisId": "a7e2f...",
+  "recordedAt": "2026-02-14T08:10:22.000Z",
+  "primary": {
+    "name": "Late Blight",
+    "confidence": 92,
+    "visibleSymptoms": ["Water-soaked lesions"]
+  },
   "alternatives": [
     { "name": "Early Blight", "confidence": 6 }
-  ]
+  ],
+  "analysisSummary": "Visible foliar symptoms align with blight-like lesions.",
+  "severity": "High",
+  "confidenceNote": "Confidence is based on cross-provider visual symptom matching.",
+  "guidance": {
+    "preventiveMeasures": ["Improve airflow around canopy"],
+    "curativeActions": ["Remove infected leaves and apply recommended fungicide"],
+    "organicOptions": ["Use approved copper spray"],
+    "escalationAdvice": "Escalate if spread increases after first treatment cycle."
+  },
+  "symptoms": ["Water-soaked lesions"],
+  "sources": ["plant_id", "openai_vision"],
+  "providerErrors": []
 }
 ```
 
