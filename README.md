@@ -19,6 +19,8 @@ npm run backend:dev
 Backend runs on `http://localhost:3000`.
 
 Create `backend/.env` from `backend/.env.example` and set at least one AI key for plant-disease detection:
+- MySQL config:
+  - `MYSQL_URL` (preferred), or `MYSQL_HOST`/`MYSQL_PORT`/`MYSQL_USER`/`MYSQL_PASSWORD`/`MYSQL_DATABASE`
 - `PLANT_ID_API_KEY` (recommended)
 - `OPENAI_API_KEY` (optional second opinion)
 

@@ -14,9 +14,12 @@ npm install
 copy .env.example .env
 ```
 
-Set at least one AI provider key for stronger image diagnosis:
-- `PLANT_ID_API_KEY` (recommended)
-- `OPENAI_API_KEY` (optional second-opinion model)
+Set database and AI values in `.env`:
+- MySQL:
+  - `MYSQL_URL` (preferred) or `MYSQL_HOST`/`MYSQL_PORT`/`MYSQL_USER`/`MYSQL_PASSWORD`/`MYSQL_DATABASE`
+- AI:
+  - `PLANT_ID_API_KEY` (recommended)
+  - `OPENAI_API_KEY` (optional second-opinion model)
 
 3. Start dev server:
 ```bash
@@ -46,11 +49,13 @@ npm run test
 
 ## Disease Detection Architecture
 
-- Embedded JSON database at `backend/storage/crop-advisory-db.json`
-  - Stores disease catalog entries
-  - Stores diagnosis history for audit and follow-up
+- MySQL-backed persistence
+  - `disease_profiles` table (seeded on startup)
+  - `diagnoses` table (saved for history/audit)
 - AI providers:
   - Plant.id health assessment (primary if configured)
   - OpenAI vision model (optional secondary)
 - Fallback mode:
-  - If providers are unavailable, backend returns low-confidence fallback diagnosis so the UI remains usable.
+  - If providers are unavailable, backend returns low-confidence fallback diagnosis.
+- Startup behavior:
+  - Backend auto-creates required MySQL tables if they do not exist.

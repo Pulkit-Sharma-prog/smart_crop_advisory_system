@@ -30,7 +30,6 @@ function defaultGuidance(name) {
 }
 
 export async function diagnosePlantDisease(file, context = {}) {
-  const db = getDatabase();
   const modelOutput = await detectDiseaseCandidates(file);
   const [primaryCandidate, ...remaining] = modelOutput.candidates;
 
@@ -40,7 +39,15 @@ export async function diagnosePlantDisease(file, context = {}) {
     visibleSymptoms: ["Visible stress pattern detected"],
   };
 
-  const profile = db.getDiseaseProfileByName(primary.name);
+  let profile = null;
+  let db = null;
+  try {
+    db = await getDatabase();
+    profile = await db.getDiseaseProfileByName(primary.name);
+  } catch {
+    profile = null;
+  }
+
   const guidance = profile
     ? {
         preventiveMeasures: profile.preventiveMeasures,
@@ -65,14 +72,18 @@ export async function diagnosePlantDisease(file, context = {}) {
     confidenceNote:
       modelOutput.providersUsed[0] === "fallback"
         ? "Confidence is lower because external AI providers were unavailable."
-        : "Confidence is based on cross-provider visual symptom matching.",
+        : db
+          ? "Confidence is based on cross-provider visual symptom matching."
+          : "Confidence is based on visual matching. Database persistence is unavailable until MySQL is configured.",
     guidance,
     sources: modelOutput.providersUsed,
     symptoms: primary.visibleSymptoms?.length ? primary.visibleSymptoms : profile?.symptoms ?? [],
     providerErrors: modelOutput.providerErrors,
   };
 
-  db.insertDiagnosis(diagnosis);
+  if (db) {
+    await db.insertDiagnosis(diagnosis);
+  }
 
   return diagnosis;
 }
