@@ -27,13 +27,15 @@ Create `backend/.env` from `backend/.env.example` and set at least one AI key fo
 ### Frontend Live API Mode
 Create `.env` in project root from `.env.example`:
 ```bash
-VITE_API_BASE_URL=http://localhost:3000
+VITE_API_BASE_URL=
 VITE_USE_MOCK_DATA=false
 VITE_ALLOW_API_FALLBACK=false
 VITE_API_TIMEOUT_MS=8000
 VITE_API_RETRY_COUNT=1
 VITE_DEBUG_LOGS=false
 ```
+
+For single Vercel deployment, keep `VITE_API_BASE_URL` empty so frontend calls same-origin `/api/*`.
 
 ## Implemented Phases
 

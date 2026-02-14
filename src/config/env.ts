@@ -19,7 +19,7 @@ const envSchema = z.object({
   VITE_API_BASE_URL: z
     .union([z.string().url(), z.literal("")])
     .optional()
-    .transform((value) => (value && value.trim() ? value : "http://localhost:3000")),
+    .transform((value) => (value && value.trim() ? value : "")),
   VITE_USE_MOCK_DATA: boolFromEnv,
   VITE_ALLOW_API_FALLBACK: boolFromEnv,
   VITE_API_TIMEOUT_MS: z.coerce.number().int().positive().default(8000),
@@ -45,7 +45,7 @@ const parsed = parsedResult.success
       VITE_ALLOW_API_FALLBACK: parsedResult.data.VITE_ALLOW_API_FALLBACK ?? isTestMode,
     }
   : {
-      VITE_API_BASE_URL: "http://localhost:3000",
+      VITE_API_BASE_URL: "",
       VITE_USE_MOCK_DATA: isTestMode,
       VITE_ALLOW_API_FALLBACK: isTestMode,
       VITE_API_TIMEOUT_MS: 8000,
