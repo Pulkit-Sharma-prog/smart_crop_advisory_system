@@ -9,6 +9,12 @@ export interface MarketItem {
   market: string;
   pricePerKg: number;
   changePercent: number;
+  distanceKm?: number;
+}
+
+export interface MarketLocationInput {
+  latitude: number;
+  longitude: number;
 }
 
 const marketItemSchema = z.object({
@@ -16,17 +22,23 @@ const marketItemSchema = z.object({
   market: z.string(),
   pricePerKg: z.number(),
   changePercent: z.number(),
+  distanceKm: z.number().optional(),
 });
 
 const marketSchema = z.array(marketItemSchema);
 
-export async function getMarketPrices(): Promise<MarketItem[]> {
+function toQuery(location?: MarketLocationInput) {
+  if (!location) return "";
+  return `?latitude=${encodeURIComponent(location.latitude)}&longitude=${encodeURIComponent(location.longitude)}`;
+}
+
+export async function getMarketPrices(location?: MarketLocationInput): Promise<MarketItem[]> {
   if (appEnv.useMockData) {
     return mockMarketData;
   }
 
   try {
-    const response = await apiRequest<unknown>("/api/market/prices");
+    const response = await apiRequest<unknown>(`/api/market/prices${toQuery(location)}`);
     return marketSchema.parse(response);
   } catch (error) {
     if (appEnv.allowApiFallback) {

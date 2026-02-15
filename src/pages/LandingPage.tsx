@@ -68,14 +68,14 @@ export default function LandingPage() {
 
   return (
     <div className="page-wrap">
-      <div className="max-w-7xl mx-auto space-y-10">
-        <motion.section variants={sectionVariant} initial="hidden" animate="visible" className="hero-panel p-6 md:p-8 float-in">
+      <div className="max-w-7xl mx-auto space-y-7">
+        <motion.section variants={sectionVariant} initial="hidden" animate="visible" className="hero-panel p-5 md:p-6 float-in">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center relative z-10">
             <div>
               <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-3">
                 {t("landing.heroTitle")}
               </h1>
-              <p className="text-forest-100 text-base md:text-lg max-w-2xl mb-8">
+              <p className="text-forest-100 text-sm md:text-base max-w-2xl mb-5">
                 {t("landing.heroSubtitle")}
               </p>
 
@@ -123,7 +123,7 @@ export default function LandingPage() {
             transition={{ delay: 0.08 }}
             className="surface-card-strong p-5 md:p-6"
           >
-            <div className="text-center mb-6">
+            <div className="text-center mb-5">
               <h2 className="section-title mb-3">{t("landing.publicIntroTitle")}</h2>
               <p className="section-subtitle max-w-2xl mx-auto">{t("landing.publicIntroSubtitle")}</p>
             </div>
@@ -145,8 +145,8 @@ export default function LandingPage() {
         ) : null}
 
         {isAuthenticated ? (
-          <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.08 }} className="surface-card-strong p-5 md:p-6">
-            <div className="text-center mb-10">
+          <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.08 }} className="surface-card-strong p-4 md:p-5">
+            <div className="text-center mb-6">
               <h2 className="section-title mb-3">{t("landing.featuresHeading")}</h2>
               <p className="section-subtitle max-w-2xl mx-auto">{t("landing.featuresSub")}</p>
             </div>
@@ -170,8 +170,8 @@ export default function LandingPage() {
         ) : null}
 
         {isAuthenticated ? (
-        <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.14 }} className="surface-card-strong p-5 md:p-6">
-          <div className="text-center mb-10">
+          <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.14 }} className="surface-card-strong p-4 md:p-5">
+          <div className="text-center mb-6">
             <h2 className="section-title mb-3">{t("landing.howItWorks")}</h2>
             <p className="section-subtitle">{t("landing.howItWorksSub")}</p>
           </div>
@@ -186,7 +186,7 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <div className="text-center mt-8">
+          <div className="text-center mt-6">
             <button onClick={() => navigate(routes.dashboard)} className="btn-primary">
               {t("landing.goDashboard")}
             </button>

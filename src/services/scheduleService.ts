@@ -32,13 +32,27 @@ const schedulePhaseSchema = z.object({
 
 const scheduleSchema = z.array(schedulePhaseSchema);
 
-export async function getSchedulePhases(): Promise<SchedulePhase[]> {
+export interface ScheduleQueryInput {
+  crop?: string;
+  language?: string;
+}
+
+function toQuery(input?: ScheduleQueryInput) {
+  if (!input) return "";
+  const params = new URLSearchParams();
+  if (input.crop) params.set("crop", input.crop);
+  if (input.language) params.set("language", input.language);
+  const query = params.toString();
+  return query ? `?${query}` : "";
+}
+
+export async function getSchedulePhases(input?: ScheduleQueryInput): Promise<SchedulePhase[]> {
   if (appEnv.useMockData) {
     return mockSchedule;
   }
 
   try {
-    const response = await apiRequest<unknown>("/api/schedule");
+    const response = await apiRequest<unknown>(`/api/schedule${toQuery(input)}`);
     return scheduleSchema.parse(response);
   } catch (error) {
     if (appEnv.allowApiFallback) {

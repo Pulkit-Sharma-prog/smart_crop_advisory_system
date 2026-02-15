@@ -30,7 +30,49 @@ export default function SoilCropRecommendation() {
   const [locationError, setLocationError] = useState<string | null>(null);
   const [latInput, setLatInput] = useState("20.5937");
   const [lonInput, setLonInput] = useState("78.9629");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const getHealthLabel = (value: string) => {
+    if (value.toLowerCase() === "good") return t("soil.healthLabelGood");
+    if (value.toLowerCase() === "needs improvement") return t("soil.healthLabelNeedsImprovement");
+    return value;
+  };
+
+  const getProfitLabel = (value: string) => {
+    const normalized = value.toLowerCase();
+    if (normalized === "high") return t("soil.profitHigh");
+    if (normalized === "medium") return t("soil.profitMedium");
+    if (normalized === "low") return t("soil.profitLow");
+    return value;
+  };
+
+  const getLocationValue = (value: string) => {
+    const map: Record<string, string> = {
+      "Subtropical continental": t("soil.zoneSubtropicalContinental"),
+      "Tropical wet-dry": t("soil.zoneTropicalWetDry"),
+      "Tropical humid": t("soil.zoneTropicalHumid"),
+      "Alluvial loam": t("soil.soilAlluvialLoam"),
+      "Black cotton / clay loam": t("soil.soilBlackCotton"),
+      "Red loam / lateritic mix": t("soil.soilRedLoam"),
+      "Heat stress risk in late spring": t("soil.seasonHeatStress"),
+      "Monsoon-driven sowing window": t("soil.seasonMonsoonWindow"),
+      "High disease pressure in humid periods": t("soil.seasonDiseasePressure"),
+      "Use weather-linked irrigation scheduling.": t("soil.actionWeatherIrrigation"),
+      "Split nutrient doses across growth stages.": t("soil.actionSplitNutrients"),
+      "Plan preventive pest and disease scouting weekly.": t("soil.actionScouting"),
+      "High humidity can trigger fungal outbreaks; avoid dense canopy moisture buildup.": t("soil.cautionHumidity"),
+      "Heat spikes may reduce yield; protect crop during extreme afternoon temperatures.": t("soil.cautionHeat"),
+      Wheat: t("soil.cropWheat"),
+      Mustard: t("soil.cropMustard"),
+      Potato: t("soil.cropPotato"),
+      Soybean: t("soil.cropSoybean"),
+      Cotton: t("soil.cropCotton"),
+      "Pigeon pea": t("soil.cropPigeonPea"),
+      Paddy: t("soil.cropPaddy"),
+      Groundnut: t("soil.cropGroundnut"),
+      Millets: t("soil.cropMillets"),
+    };
+    return map[value] ?? value;
+  };
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormInput, unknown, FormOutput>({
     resolver: zodResolver(formSchema),
@@ -39,7 +81,7 @@ export default function SoilCropRecommendation() {
 
   const onSubmit = async (values: FormOutput) => {
     setSubmitting(true);
-    const response = await getSoilRecommendation(values);
+    const response = await getSoilRecommendation(values, i18n.language);
     setResult(response);
     setLastSoilInput(values);
     saveLastSoilResult(response);
@@ -58,7 +100,7 @@ export default function SoilCropRecommendation() {
     setLocationError(null);
     setLocationLoading(true);
     try {
-      const advisory = await getLocationAdvisory({ latitude: lat, longitude: lon });
+      const advisory = await getLocationAdvisory({ latitude: lat, longitude: lon }, i18n.language);
       setLocationAdvisory(advisory);
       saveLastLocationAdvisory(advisory);
     } catch {
@@ -189,12 +231,12 @@ export default function SoilCropRecommendation() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                   <div className="surface-card p-4">
                     <p className="text-xs text-forest-700 mb-1">{t("soil.zone")}</p>
-                    <p className="font-semibold text-forest-900">{locationAdvisory.climate.zone}</p>
+                    <p className="font-semibold text-forest-900">{getLocationValue(locationAdvisory.climate.zone)}</p>
                     <p className="text-xs text-forest-700 mt-2">{locationAdvisory.locationLabel}</p>
                   </div>
                   <div className="surface-card p-4">
                     <p className="text-xs text-forest-700 mb-1">{t("soil.soilType")}</p>
-                    <p className="font-semibold text-forest-900">{locationAdvisory.soil.soilType}</p>
+                    <p className="font-semibold text-forest-900">{getLocationValue(locationAdvisory.soil.soilType)}</p>
                     <p className="text-xs text-forest-700 mt-2">{t("soil.phBandLabel")} {locationAdvisory.soil.phBand}</p>
                   </div>
                 </div>
@@ -205,7 +247,7 @@ export default function SoilCropRecommendation() {
                     <p>{t("soil.tempBand")}: {locationAdvisory.climate.tempBandC}</p>
                     <p>{t("soil.rainfallBand")}: {locationAdvisory.climate.rainfallBandMm}</p>
                     <p>{t("soil.humidityBand")}: {locationAdvisory.climate.humidityBand}</p>
-                    <p>{t("soil.seasonSignal")}: {locationAdvisory.climate.seasonSignal}</p>
+                    <p>{t("soil.seasonSignal")}: {getLocationValue(locationAdvisory.climate.seasonSignal)}</p>
                   </div>
                 </div>
 
@@ -213,7 +255,7 @@ export default function SoilCropRecommendation() {
                   <h3 className="font-semibold text-forest-900 mb-2">{t("soil.locationCrops")}</h3>
                   <div className="flex flex-wrap gap-2">
                     {locationAdvisory.recommendedCrops.map((crop) => (
-                      <span key={crop} className="px-3 py-1 rounded-full bg-leaf-100 text-leaf-700 text-xs font-semibold">{crop}</span>
+                      <span key={crop} className="px-3 py-1 rounded-full bg-leaf-100 text-leaf-700 text-xs font-semibold">{getLocationValue(crop)}</span>
                     ))}
                   </div>
                 </div>
@@ -222,13 +264,13 @@ export default function SoilCropRecommendation() {
                   <h3 className="font-semibold text-forest-900 mb-2">{t("soil.locationActions")}</h3>
                   <ul className="text-sm text-forest-800 list-disc list-inside space-y-1">
                     {locationAdvisory.actions.map((action) => (
-                      <li key={action}>{action}</li>
+                      <li key={action}>{getLocationValue(action)}</li>
                     ))}
                   </ul>
                 </div>
 
                 <div className="surface-card border border-yellow-200 bg-yellow-50 p-4 rounded-xl">
-                  <p className="text-sm text-yellow-900">{locationAdvisory.caution}</p>
+                  <p className="text-sm text-yellow-900">{getLocationValue(locationAdvisory.caution)}</p>
                 </div>
               </div>
             ) : null}
@@ -238,7 +280,7 @@ export default function SoilCropRecommendation() {
                 <div className="surface-card-strong p-5">
                   <h2 className="text-xl font-bold text-forest-900 mb-4">{t("soil.healthTitle")}</h2>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3"><div className="bg-green-100 p-3 rounded-full"><CheckCircle className="h-8 w-8 text-green-600" /></div><div><p className="text-2xl font-bold text-green-600">{result.healthLabel}</p><p className="text-sm text-forest-800/90">{t("soil.healthSummary")}</p></div></div>
+                    <div className="flex items-center gap-3"><div className="bg-green-100 p-3 rounded-full"><CheckCircle className="h-8 w-8 text-green-600" /></div><div><p className="text-2xl font-bold text-green-600">{getHealthLabel(result.healthLabel)}</p><p className="text-sm text-forest-800/90">{t("soil.healthSummary")}</p></div></div>
                     <div className="text-right"><p className="text-2xl font-bold text-forest-900">{result.healthScore}/100</p><p className="text-sm text-forest-800/90">{t("soil.healthScore")}</p></div>
                   </div>
                 </div>
@@ -254,7 +296,7 @@ export default function SoilCropRecommendation() {
                         </div>
                         <div className="flex gap-2 flex-wrap">
                           <span className="bg-gray-100 text-gray-700 text-xs font-semibold px-3 py-1 rounded-full">NPK: {crop.npk}</span>
-                          <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">{t("soil.profit")}: {crop.profit}</span>
+                          <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">{t("soil.profit")}: {getProfitLabel(crop.profit)}</span>
                         </div>
                       </div>
                     ))}

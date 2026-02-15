@@ -4,10 +4,10 @@ import multer from "multer";
 import {
   computeLocationAdvisory,
   computeSoilRecommendation,
+  getMarketPricesForLocation,
+  getScheduleForCrop,
   getWeatherForecastForLocation,
   getWeatherSnapshotForLocation,
-  marketPrices,
-  schedule,
 } from "./data.js";
 import { diagnosePlantDisease } from "./diseaseService.js";
 import { backendEnv } from "./env.js";
@@ -16,6 +16,8 @@ import {
   diseaseUploadSchema,
   googleTokenSchema,
   locationInputSchema,
+  marketQuerySchema,
+  scheduleQuerySchema,
   soilInputSchema,
   weatherQuerySchema,
 } from "./validation.js";
@@ -85,12 +87,24 @@ export function createApp() {
     }
   });
 
-  app.get("/api/market/prices", (_req, res) => {
-    res.json(marketPrices);
+  app.get("/api/market/prices", (req, res, next) => {
+    try {
+      const parsed = marketQuerySchema.parse(req.query);
+      const response = getMarketPricesForLocation(parsed.latitude, parsed.longitude);
+      res.json(response);
+    } catch (error) {
+      next(error);
+    }
   });
 
-  app.get("/api/schedule", (_req, res) => {
-    res.json(schedule);
+  app.get("/api/schedule", (req, res, next) => {
+    try {
+      const parsed = scheduleQuerySchema.parse(req.query);
+      const response = getScheduleForCrop(parsed.crop, parsed.language);
+      res.json(response);
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.post("/api/recommendations/soil", (req, res, next) => {

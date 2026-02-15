@@ -133,9 +133,59 @@ function mockLocationAdvisory({ latitude, longitude }: LocationAdvisoryInput): L
   };
 }
 
-export async function getLocationAdvisory(input: LocationAdvisoryInput): Promise<LocationAdvisoryResult> {
+function localizeMockAdvisory(result: LocationAdvisoryResult, language: string): LocationAdvisoryResult {
+  if (language !== "hi") return result;
+
+  const toHindi = (value: string) =>
+    ({
+      "Subtropical continental": "उपोष्णकटिबंधीय महाद्वीपीय",
+      "Tropical wet-dry": "उष्णकटिबंधीय आर्द्र-शुष्क",
+      "Tropical humid": "उष्णकटिबंधीय आर्द्र",
+      "Alluvial loam": "जलोढ़ दोमट",
+      "Black cotton / clay loam": "काली कपासी / चिकनी दोमट",
+      "Red loam / lateritic mix": "लाल दोमट / लेटराइट मिश्रण",
+      "Heat stress risk in late spring": "देर वसंत में गर्मी तनाव का जोखिम",
+      "Monsoon-driven sowing window": "मानसून आधारित बुवाई विंडो",
+      "High disease pressure in humid periods": "आर्द्र अवधि में रोग दबाव अधिक",
+      Wheat: "गेहूं",
+      Mustard: "सरसों",
+      Potato: "आलू",
+      Soybean: "सोयाबीन",
+      Cotton: "कपास",
+      "Pigeon pea": "अरहर",
+      Paddy: "धान",
+      Groundnut: "मूंगफली",
+      Millets: "मोटे अनाज",
+      "Use weather-linked irrigation scheduling.": "मौसम आधारित सिंचाई शेड्यूल अपनाएं।",
+      "Split nutrient doses across growth stages.": "विकास चरणों में पोषक तत्वों की खुराक विभाजित करें।",
+      "Plan preventive pest and disease scouting weekly.": "कीट और रोग की साप्ताहिक निगरानी की योजना बनाएं।",
+      "High humidity can trigger fungal outbreaks; avoid dense canopy moisture buildup.":
+        "उच्च आर्द्रता फफूंद संक्रमण बढ़ा सकती है; घनी पत्तियों में नमी जमने से बचाएं।",
+      "Heat spikes may reduce yield; protect crop during extreme afternoon temperatures.":
+        "अत्यधिक गर्मी से उपज घट सकती है; दोपहर की तेज गर्मी में फसल की सुरक्षा करें।",
+    }[value] ?? value);
+
+  return {
+    ...result,
+    locationLabel: `अक्षांश ${result.coordinates.latitude.toFixed(3)}, देशांतर ${result.coordinates.longitude.toFixed(3)}`,
+    climate: {
+      ...result.climate,
+      zone: toHindi(result.climate.zone),
+      seasonSignal: toHindi(result.climate.seasonSignal),
+    },
+    soil: {
+      ...result.soil,
+      soilType: toHindi(result.soil.soilType),
+    },
+    recommendedCrops: result.recommendedCrops.map(toHindi),
+    actions: result.actions.map(toHindi),
+    caution: toHindi(result.caution),
+  };
+}
+
+export async function getLocationAdvisory(input: LocationAdvisoryInput, language = "en"): Promise<LocationAdvisoryResult> {
   if (appEnv.useMockData) {
-    return mockLocationAdvisory(input);
+    return localizeMockAdvisory(mockLocationAdvisory(input), language);
   }
 
   try {
@@ -144,14 +194,14 @@ export async function getLocationAdvisory(input: LocationAdvisoryInput): Promise
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify({ ...input, language }),
     });
 
     return locationAdvisorySchema.parse(response);
   } catch (error) {
     if (appEnv.allowApiFallback) {
       logger.warn("Location advisory API failed. Falling back to local advisory engine.", error);
-      return mockLocationAdvisory(input);
+      return localizeMockAdvisory(mockLocationAdvisory(input), language);
     }
 
     throw error;

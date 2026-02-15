@@ -21,6 +21,13 @@ export default function DiseaseDetection() {
     if (confidence >= 65) return "Medium";
     return "Low";
   }, [result]);
+  const severityLabel = useMemo(() => {
+    const normalized = severity.toLowerCase();
+    if (normalized === "high") return t("disease.severityHigh");
+    if (normalized === "medium") return t("disease.severityMedium");
+    if (normalized === "low") return t("disease.severityLow");
+    return severity;
+  }, [severity, t]);
 
   const readFile = (file: File) =>
     new Promise<string>((resolve, reject) => {
@@ -165,7 +172,7 @@ export default function DiseaseDetection() {
 
                   <div className="mt-4 p-4 bg-forest-50 rounded-xl border border-forest-100">
                     <h4 className="font-semibold text-forest-900 mb-2">{t("disease.explainabilityTitle")}</h4>
-                    <p className="text-sm text-forest-800">{t("disease.severityEstimate")}: <strong>{severity}</strong></p>
+                    <p className="text-sm text-forest-800">{t("disease.severityEstimate")}: <strong>{severityLabel}</strong></p>
                     <p className="text-sm text-forest-800">{result?.analysisSummary}</p>
                     <p className="text-sm text-forest-800">{result?.confidenceNote}</p>
                     {result?.sources?.length ? <p className="text-sm text-forest-800">{t("disease.sourcesLabel")}: {result.sources.join(", ")}</p> : null}

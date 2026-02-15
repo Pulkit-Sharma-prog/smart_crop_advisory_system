@@ -50,7 +50,7 @@ export default function Navbar() {
   return (
     <nav className="glass-nav sticky top-0 z-50" aria-label={t("nav.primaryNav")}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-14">
           <NavLink to={routes.home} className="flex items-center space-x-3">
             <div className="bg-gradient-to-br from-forest-600 to-forest-800 p-2 rounded-xl shadow-md">
               <Sprout className="h-6 w-6 text-white" aria-hidden="true" />
@@ -58,7 +58,7 @@ export default function Navbar() {
             <span className="text-xl font-bold text-forest-900">{t("app.title")}</span>
           </NavLink>
 
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}

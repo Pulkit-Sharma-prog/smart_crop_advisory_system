@@ -176,16 +176,16 @@ export default function LoginPage() {
 
   return (
     <div className="page-wrap">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-5 md:gap-6 items-stretch">
-        <section className="hero-panel text-white p-6 md:p-8 float-in">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-4 md:gap-5 items-stretch">
+        <section className="hero-panel text-white p-4 md:p-6 float-in order-2 lg:order-1">
           <div className="inline-flex items-center gap-2 bg-white/10 rounded-full border border-white/15 px-3 py-1 text-xs font-semibold">
             <Leaf className="h-4 w-4" />
             {t("auth.brandTag")}
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold leading-tight mt-4">{t("auth.pageTitle")}</h1>
-          <p className="text-white/85 mt-3 text-sm md:text-base">{t("auth.pageSubtitle")}</p>
+          <h1 className="text-2xl md:text-3xl font-extrabold leading-tight mt-3">{t("auth.pageTitle")}</h1>
+          <p className="text-white/85 mt-2 text-sm">{t("auth.pageSubtitle")}</p>
 
-          <div className="mt-6 space-y-3 stagger-in">
+          <div className="mt-4 space-y-2.5 stagger-in">
             <div className="flex items-start gap-3 rounded-xl bg-white/10 border border-white/15 p-3">
               <ShieldCheck className="h-5 w-5 mt-0.5 text-emerald-200" />
               <div>
@@ -210,7 +210,7 @@ export default function LoginPage() {
           </div>
         </section>
 
-        <section className="surface-card-strong p-5 md:p-7 fade-up">
+        <section className="surface-card-strong p-4 md:p-6 fade-up order-1 lg:order-2">
           <div className="inline-flex rounded-xl border border-forest-100 p-1 bg-forest-50/80 w-full">
             <button
               type="button"
@@ -238,8 +238,8 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <div className="mt-5">
-            <h2 className="text-2xl font-bold text-forest-900">
+          <div className="mt-4">
+            <h2 className="text-xl font-bold text-forest-900">
               {mode === "signin" ? t("auth.signInTitle") : t("auth.signUpTitle")}
             </h2>
             <p className="text-sm text-forest-800/90 mt-1">
@@ -247,7 +247,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="w-full mt-5">
+          <div className="w-full mt-4">
             <div ref={googleButtonRef} className={googleLoading ? "opacity-70 pointer-events-none" : ""} />
             {googleUnavailable ? (
               <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">

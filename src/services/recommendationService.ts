@@ -42,6 +42,7 @@ const recommendationSchema = z.object({
 
 export async function getSoilRecommendation(
   input: SoilRecommendationInput,
+  language = "en",
 ): Promise<SoilRecommendationResult> {
   if (appEnv.useMockData) {
     return mockSoilRecommendation(input);
@@ -53,7 +54,7 @@ export async function getSoilRecommendation(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify({ ...input, language }),
     });
 
     return recommendationSchema.parse(response);

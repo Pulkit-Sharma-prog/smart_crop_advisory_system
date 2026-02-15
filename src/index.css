@@ -45,6 +45,14 @@
     letter-spacing: -0.02em;
   }
 
+  h2 {
+    @apply text-lg md:text-xl font-bold;
+  }
+
+  h3 {
+    @apply text-base md:text-lg font-semibold;
+  }
+
   *:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
@@ -53,7 +61,7 @@
   input,
   select,
   textarea {
-    @apply w-full rounded-xl border border-forest-200 bg-white px-4 py-2.5 text-forest-900 shadow-sm transition;
+    @apply w-full rounded-lg border border-forest-200 bg-white px-3.5 py-2 text-sm text-forest-900 shadow-sm transition;
   }
 
   input::placeholder,
@@ -111,19 +119,35 @@
   }
 
   .page-wrap {
-    @apply min-h-screen px-4 sm:px-6 lg:px-8 py-7 md:py-8;
+    @apply px-4 sm:px-6 lg:px-8 py-4 md:py-5;
   }
 
   .section-title {
-    @apply text-2xl md:text-3xl font-bold text-forest-900;
+    @apply text-xl md:text-2xl font-bold text-forest-900;
   }
 
   .section-subtitle {
-    @apply text-sm md:text-[0.95rem] text-forest-800/85;
+    @apply text-xs md:text-sm text-forest-800/85;
+  }
+
+  .h2-title {
+    @apply text-lg md:text-xl font-bold text-forest-900;
+  }
+
+  .h3-title {
+    @apply text-base md:text-lg font-semibold text-forest-900;
+  }
+
+  .helper-text {
+    @apply text-xs md:text-sm text-forest-800/90;
+  }
+
+  .helper-muted {
+    @apply text-xs md:text-sm text-forest-700/90;
   }
 
   .surface-card {
-    @apply bg-white/85 backdrop-blur border border-white rounded-2xl shadow-[0_14px_30px_-22px_rgba(13,50,34,0.45)];
+    @apply bg-white/85 backdrop-blur border border-white rounded-xl shadow-[0_12px_24px_-20px_rgba(13,50,34,0.4)];
     transition:
       transform var(--motion-base) var(--ease-standard),
       box-shadow var(--motion-base) var(--ease-standard),
@@ -131,7 +155,7 @@
   }
 
   .surface-card-strong {
-    @apply bg-white border border-forest-100 rounded-2xl shadow-[0_18px_34px_-24px_rgba(13,50,34,0.46)];
+    @apply bg-white border border-forest-100 rounded-xl shadow-[0_14px_28px_-22px_rgba(13,50,34,0.44)];
     transition:
       transform var(--motion-base) var(--ease-standard),
       box-shadow var(--motion-base) var(--ease-standard),
@@ -146,7 +170,7 @@
   }
 
   .hero-panel {
-    @apply relative overflow-hidden rounded-3xl border border-white/20 shadow-xl;
+    @apply relative overflow-hidden rounded-2xl border border-white/20 shadow-lg;
     background: linear-gradient(130deg, #0f5136 0%, #12472f 45%, #0b3423 100%);
     background-size: 165% 165%;
     animation: heroPulse 9s ease-in-out infinite;
@@ -164,7 +188,7 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-semibold text-white transition-all;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold text-white transition-all;
     background: linear-gradient(135deg, #1d6b47 0%, #145339 100%);
     box-shadow: 0 16px 28px -18px rgba(20, 85, 58, 0.82);
     position: relative;
@@ -195,7 +219,7 @@
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-semibold transition-all bg-white text-forest-800 border border-forest-200;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold transition-all bg-white text-forest-800 border border-forest-200;
   }
 
   .btn-secondary:hover {
@@ -204,11 +228,11 @@
   }
 
   .metric-card {
-    @apply surface-card-strong p-4;
+    @apply surface-card-strong p-3.5;
   }
 
   .badge-soft {
-    @apply inline-flex items-center rounded-full border border-forest-200 bg-forest-50 px-3 py-1 text-xs font-semibold text-forest-700;
+    @apply inline-flex items-center rounded-full border border-forest-200 bg-forest-50 px-2.5 py-1 text-xs font-semibold text-forest-700;
   }
 
   .glass-nav {

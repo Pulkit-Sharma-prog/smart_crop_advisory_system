@@ -1,14 +1,34 @@
-﻿import { Calendar, CheckCircle, Droplets, Sparkles, Sprout, Wheat } from "lucide-react";
+﻿import { Calendar, CheckCircle, ChevronRight, Droplets, Sparkles, Sprout, Wheat } from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAsyncData } from "../hooks/useAsyncData";
 import { getSchedulePhases } from "../services/scheduleService";
 
 export default function FarmingSchedule() {
-  const { t } = useTranslation();
-  const { data: schedule, loading, error } = useAsyncData(getSchedulePhases, {
-    cacheKey: "farming-schedule",
+  const { t, i18n } = useTranslation();
+  const [selectedCrop, setSelectedCrop] = useState("wheat");
+
+  const loadSchedule = useCallback(
+    () => getSchedulePhases({ crop: selectedCrop, language: i18n.language }),
+    [i18n.language, selectedCrop],
+  );
+
+  const { data: schedule, loading, error } = useAsyncData(loadSchedule, {
+    cacheKey: `farming-schedule-${selectedCrop}-${i18n.language}`,
     ttlMs: 90000,
   });
+
+  const cropOptions = [
+    { value: "wheat", label: t("schedule.cropWheat") },
+    { value: "rice", label: t("schedule.cropRice") },
+    { value: "cotton", label: t("schedule.cropCotton") },
+    { value: "maize", label: t("schedule.cropMaize") },
+    { value: "soybean", label: t("schedule.cropSoybean") },
+    { value: "sugarcane", label: t("schedule.cropSugarcane") },
+    { value: "potato", label: t("schedule.cropPotato") },
+    { value: "tomato", label: t("schedule.cropTomato") },
+    { value: "onion", label: t("schedule.cropOnion") },
+  ];
 
   const getColorClasses = (color: "leaf" | "sky" | "earth" | "forest") => {
     const colors = {
@@ -21,12 +41,22 @@ export default function FarmingSchedule() {
     return colors[color];
   };
 
-  const getIcon = (phase: string) => {
-    if (phase.includes("Sowing")) return Sprout;
-    if (phase.includes("Irrigation")) return Droplets;
-    if (phase.includes("Spray")) return Sparkles;
+  const getIcon = (color: "leaf" | "sky" | "earth" | "forest") => {
+    if (color === "leaf") return Sprout;
+    if (color === "sky") return Droplets;
+    if (color === "earth") return Sparkles;
     return Wheat;
   };
+
+  const totalTasks = useMemo(
+    () => (schedule ?? []).reduce((sum, phase) => sum + phase.tasks.length, 0),
+    [schedule],
+  );
+
+  const nextFocus = useMemo(
+    () => (schedule ?? []).find((item) => item.status === "upcoming") ?? (schedule ?? [])[0] ?? null,
+    [schedule],
+  );
 
   return (
     <div className="page-wrap">
@@ -36,13 +66,50 @@ export default function FarmingSchedule() {
           <p className="section-subtitle">{t("schedule.subtitle")}</p>
         </div>
 
+        <div className="surface-card-strong p-4 mb-5">
+          <div className="grid grid-cols-1 gap-3 items-end">
+            <div>
+              <label htmlFor="schedule-crop" className="block text-sm font-semibold text-forest-900 mb-2">
+                {t("schedule.selectCrop")}
+              </label>
+              <select
+                id="schedule-crop"
+                className="bg-white"
+                value={selectedCrop}
+                onChange={(event) => setSelectedCrop(event.target.value)}
+              >
+                {cropOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-forest-700 mt-2">{t("schedule.cropHint")}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+          <div className="surface-card-strong p-4">
+            <p className="text-xs text-forest-700 font-semibold mb-1">{t("schedule.totalTasks")}</p>
+            <p className="text-2xl font-bold text-forest-900">{totalTasks}</p>
+          </div>
+          <div className="surface-card-strong p-4">
+            <p className="text-xs text-forest-700 font-semibold mb-1">{t("schedule.nextFocus")}</p>
+            <p className="text-base font-bold text-forest-900 inline-flex items-center gap-1">
+              {nextFocus?.phase ?? t("common.notAvailable")}
+              <ChevronRight className="h-4 w-4 text-forest-700" />
+            </p>
+          </div>
+        </div>
+
         {loading ? <p className="text-forest-800/90">{t("schedule.loading")}</p> : null}
         {error ? <p className="text-red-600">{t("schedule.loadError")}</p> : null}
 
         <div className="space-y-5">
           {(schedule ?? []).map((item) => {
             const colors = getColorClasses(item.color);
-            const Icon = getIcon(item.phase);
+            const Icon = getIcon(item.color);
 
             return (
               <div key={item.phase} className="surface-card-strong overflow-hidden">
@@ -66,7 +133,9 @@ export default function FarmingSchedule() {
                         {t("schedule.completed")}
                       </div>
                     ) : (
-                      <div className="bg-yellow-100 text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full">{t("schedule.upcoming")}</div>
+                      <div className="bg-yellow-100 text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full">
+                        {t("schedule.upcoming")}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -92,5 +161,3 @@ export default function FarmingSchedule() {
     </div>
   );
 }
-
-
