@@ -450,7 +450,11 @@
                       "profitStatusGood":  "Current plan is profitable",
                       "profitStatusRisk":  "Current plan may cause loss",
                       "breakEvenHintProfit":  "If market stays above Rs {{value}}/kg, this plan remains profitable.",
-                      "breakEvenHintLoss":  "You need at least Rs {{value}}/kg to avoid loss with this cost structure."
+                      "breakEvenHintLoss":  "You need at least Rs {{value}}/kg to avoid loss with this cost structure.",
+                      "profileTipsTitle":  "How to use profile better",
+                      "profileTip1":  "Keep land size and main crop updated before every season.",
+                      "profileTip2":  "Use \u0027Use profile in calculator\u0027 to autofill planning inputs quickly.",
+                      "profileTip3":  "After changing market rates, re-check profit and break-even price."
                   },
     "copilot":  {
                     "title":  "Farmer Copilot",

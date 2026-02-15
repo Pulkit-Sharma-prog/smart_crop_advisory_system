@@ -23,5 +23,13 @@ void i18n.use(initReactI18next).init({
   interpolation: { escapeValue: false },
 });
 
+const setDocumentLanguage = (lang: string) => {
+  document.documentElement.lang = lang;
+  document.documentElement.dir = "ltr";
+};
+
+setDocumentLanguage(i18n.language);
+i18n.on("languageChanged", setDocumentLanguage);
+
 export { LANGUAGE_KEY };
 export default i18n;

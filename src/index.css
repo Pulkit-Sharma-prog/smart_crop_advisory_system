@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -34,6 +34,10 @@
       linear-gradient(180deg, #f8fcf8 0%, #eff5f0 46%, #ebf2ec 100%);
     background-attachment: fixed;
     text-rendering: optimizeLegibility;
+  }
+
+  html:lang(hi) body {
+    font-family: "Noto Sans Devanagari", "Sora", "Space Grotesk", sans-serif;
   }
 
   h1,

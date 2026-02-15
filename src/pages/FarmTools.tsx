@@ -96,7 +96,7 @@ export default function FarmTools() {
 
   return (
     <div className="page-wrap">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-4 md:space-y-5">
         <div>
           <h1 className="section-title">{t("farmTools.title")}</h1>
           <p className="section-subtitle">{t("farmTools.subtitle")}</p>
@@ -112,7 +112,7 @@ export default function FarmTools() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-5 items-start">
           <div className="surface-card-strong p-5 md:p-6 space-y-4">
             <h2 className="text-xl font-bold text-forest-900">{t("farmTools.profileTitle")}</h2>
             <p className="text-sm text-forest-800/90">{t("farmTools.profileHelp")}</p>
@@ -152,6 +152,15 @@ export default function FarmTools() {
             </div>
 
             {saved ? <p className="text-sm text-green-700">{t("farmTools.saved")}</p> : null}
+
+            <div className="surface-card p-3.5 bg-forest-50 border-forest-100">
+              <p className="text-sm font-semibold text-forest-900 mb-2">{t("farmTools.profileTipsTitle")}</p>
+              <ul className="space-y-1.5 text-sm text-forest-800/90">
+                <li>{t("farmTools.profileTip1")}</li>
+                <li>{t("farmTools.profileTip2")}</li>
+                <li>{t("farmTools.profileTip3")}</li>
+              </ul>
+            </div>
           </div>
 
           <div className="surface-card-strong p-5 md:p-6 space-y-4">
