@@ -11,7 +11,14 @@ import {
 } from "./data.js";
 import { diagnosePlantDisease } from "./diseaseService.js";
 import { backendEnv } from "./env.js";
-import { diseaseUploadSchema, locationInputSchema, soilInputSchema, weatherQuerySchema } from "./validation.js";
+import { GoogleAuthError, verifyGoogleIdToken } from "./googleAuth.js";
+import {
+  diseaseUploadSchema,
+  googleTokenSchema,
+  locationInputSchema,
+  soilInputSchema,
+  weatherQuerySchema,
+} from "./validation.js";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -123,7 +130,23 @@ export function createApp() {
     }
   });
 
+  app.post("/api/auth/google/verify", async (req, res, next) => {
+    try {
+      const payload = googleTokenSchema.parse(req.body);
+      const user = await verifyGoogleIdToken(payload.idToken);
+      res.json({ user });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.use((error, _req, res, _next) => {
+    if (error instanceof GoogleAuthError) {
+      return res.status(error.statusCode).json({
+        message: error.message,
+      });
+    }
+
     if (error?.name === "ZodError") {
       return res.status(400).json({
         message: "Validation failed",

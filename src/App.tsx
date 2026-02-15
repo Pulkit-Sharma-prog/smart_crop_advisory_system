@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { useAuth } from "./auth/AuthContext";
+import { useAuth } from "./auth/useAuth";
 import CopilotWidget from "./components/CopilotWidget";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
@@ -39,10 +39,10 @@ function App() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
-                initial={{ opacity: 0, y: 14, filter: "blur(4px)" }}
+                initial={{ opacity: 0, y: 12, filter: "blur(3px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -10, filter: "blur(3px)" }}
-                transition={{ duration: 0.28, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -8, filter: "blur(2px)" }}
+                transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
               >
                 <Routes location={location}>
                   <Route path={routes.home} element={<LandingPage />} />

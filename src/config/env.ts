@@ -25,6 +25,7 @@ const envSchema = z.object({
   VITE_API_TIMEOUT_MS: z.coerce.number().int().positive().default(8000),
   VITE_API_RETRY_COUNT: z.coerce.number().int().min(0).max(3).default(1),
   VITE_DEBUG_LOGS: boolFromEnv.default(false),
+  VITE_GOOGLE_CLIENT_ID: z.string().optional().transform((value) => (value?.trim() ? value.trim() : "")),
 });
 
 const parsedResult = envSchema.safeParse({
@@ -34,6 +35,7 @@ const parsedResult = envSchema.safeParse({
   VITE_API_TIMEOUT_MS: import.meta.env.VITE_API_TIMEOUT_MS,
   VITE_API_RETRY_COUNT: import.meta.env.VITE_API_RETRY_COUNT,
   VITE_DEBUG_LOGS: import.meta.env.VITE_DEBUG_LOGS,
+  VITE_GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID,
 });
 
 const isTestMode = import.meta.env.MODE === "test";
@@ -51,6 +53,7 @@ const parsed = parsedResult.success
       VITE_API_TIMEOUT_MS: 8000,
       VITE_API_RETRY_COUNT: 1,
       VITE_DEBUG_LOGS: false,
+      VITE_GOOGLE_CLIENT_ID: "",
     };
 
 export const appEnv = {
@@ -60,4 +63,5 @@ export const appEnv = {
   apiTimeoutMs: parsed.VITE_API_TIMEOUT_MS,
   apiRetryCount: parsed.VITE_API_RETRY_COUNT,
   debugLogs: parsed.VITE_DEBUG_LOGS,
+  googleClientId: parsed.VITE_GOOGLE_CLIENT_ID,
 } as const;

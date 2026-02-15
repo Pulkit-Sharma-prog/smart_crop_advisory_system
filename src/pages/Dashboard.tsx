@@ -121,7 +121,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6">
+    <div className="page-wrap">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-6">
         <aside className="surface-card-strong p-3 h-fit lg:sticky lg:top-24" aria-label={t("dashboard.menu") || "Dashboard menu"}>
           <div className="space-y-2">
@@ -163,7 +163,7 @@ export default function Dashboard() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold text-forest-900 mb-1">{t("dashboard.platformStatus")}</p>
-                <p className="text-sm text-forest-800/80">
+                <p className="text-sm text-forest-800/90">
                   {t("dashboard.backend")}:{" "}
                   <span className="font-semibold">
                     {backendError ? t("dashboard.disconnected") : backendHealth?.status === "ok" ? t("dashboard.operational") : t("dashboard.degraded")}
@@ -222,11 +222,11 @@ export default function Dashboard() {
               <div className="space-y-3 text-sm">
                 <div className="flex items-start gap-3">
                   <div className="bg-forest-100 p-2 rounded-lg"><Sprout className="h-5 w-5 text-forest-600" /></div>
-                  <div><p className="font-semibold text-forest-900">{t("dashboard.idealSowing")}</p><p className="text-forest-800/80">{t("dashboard.soilMoisture")}</p></div>
+                  <div><p className="font-semibold text-forest-900">{t("dashboard.idealSowing")}</p><p className="text-forest-800/90">{t("dashboard.soilMoisture")}</p></div>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="bg-sky-100 p-2 rounded-lg"><Droplets className="h-5 w-5 text-sky-600" /></div>
-                  <div><p className="font-semibold text-forest-900">{t("dashboard.irrigationNeeded")}</p><p className="text-forest-800/80">{t("dashboard.irrigationLine")}</p></div>
+                  <div><p className="font-semibold text-forest-900">{t("dashboard.irrigationNeeded")}</p><p className="text-forest-800/90">{t("dashboard.irrigationLine")}</p></div>
                 </div>
               </div>
             </div>
@@ -237,7 +237,7 @@ export default function Dashboard() {
                 <div className="bg-leaf-100 p-4 rounded-xl"><TrendingUp className="h-10 w-10 text-leaf-600" /></div>
                 <div>
                   <p className="text-2xl font-bold text-forest-900">{topCrop?.crop ?? t("common.notAvailable")}</p>
-                  <p className="text-sm text-forest-800/80">{topCrop?.market ?? t("dashboard.noMarketData")}</p>
+                  <p className="text-sm text-forest-800/90">{topCrop?.market ?? t("dashboard.noMarketData")}</p>
                   {topCrop ? <span className="inline-block mt-2 bg-forest-100 text-forest-700 text-xs font-semibold px-3 py-1 rounded-full">+{topCrop.changePercent}%</span> : null}
                 </div>
               </div>
@@ -265,7 +265,7 @@ export default function Dashboard() {
                   <div key={`${item.crop}-${item.market}`} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
                     <div>
                       <p className="font-semibold text-forest-900">{item.crop}</p>
-                      <p className="text-sm text-forest-800/80">{item.market}</p>
+                      <p className="text-sm text-forest-800/90">{item.market}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-lg font-bold text-forest-900">Rs {item.pricePerKg}/{t("common.kgUnit")}</p>
@@ -282,3 +282,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

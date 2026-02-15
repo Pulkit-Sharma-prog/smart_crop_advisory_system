@@ -9,6 +9,7 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/useAuth";
 import { routes } from "../types/routes";
 
 const sectionVariant = {
@@ -23,6 +24,7 @@ const sectionVariant = {
 export default function LandingPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const features = [
     {
@@ -65,7 +67,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <div className="page-wrap">
       <div className="max-w-7xl mx-auto space-y-10">
         <motion.section variants={sectionVariant} initial="hidden" animate="visible" className="hero-panel p-6 md:p-8 float-in">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center relative z-10">
@@ -78,13 +80,27 @@ export default function LandingPage() {
               </p>
 
               <div className="flex gap-3 flex-wrap">
-                <button onClick={() => navigate(routes.advisory)} className="btn-secondary pulse-glow">
-                  {t("landing.startAdvisory")}
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-                <button onClick={() => navigate(routes.diseaseDetection)} className="btn-primary">
-                  {t("landing.uploadImage")}
-                </button>
+                {isAuthenticated ? (
+                  <>
+                    <button onClick={() => navigate(routes.advisory)} className="btn-secondary pulse-glow">
+                      {t("landing.startAdvisory")}
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                    <button onClick={() => navigate(routes.diseaseDetection)} className="btn-primary">
+                      {t("landing.uploadImage")}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => navigate(routes.login)} className="btn-secondary pulse-glow">
+                      {t("landing.signInNow")}
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                    <button onClick={() => navigate(`${routes.login}?mode=signup`)} className="btn-primary">
+                      {t("landing.createAccount")}
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -99,29 +115,61 @@ export default function LandingPage() {
           </div>
         </motion.section>
 
-        <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.08 }} className="surface-card-strong p-5 md:p-6">
-          <div className="text-center mb-10">
-            <h2 className="section-title mb-3">{t("landing.featuresHeading")}</h2>
-            <p className="section-subtitle max-w-2xl mx-auto">{t("landing.featuresSub")}</p>
-          </div>
+        {!isAuthenticated ? (
+          <motion.section
+            variants={sectionVariant}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.08 }}
+            className="surface-card-strong p-5 md:p-6"
+          >
+            <div className="text-center mb-6">
+              <h2 className="section-title mb-3">{t("landing.publicIntroTitle")}</h2>
+              <p className="section-subtitle max-w-2xl mx-auto">{t("landing.publicIntroSubtitle")}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="surface-card p-4 text-center">
+                <h3 className="text-base font-bold text-forest-900">{t("landing.publicCard1Title")}</h3>
+                <p className="text-sm text-forest-800/90 mt-2">{t("landing.publicCard1Desc")}</p>
+              </div>
+              <div className="surface-card p-4 text-center">
+                <h3 className="text-base font-bold text-forest-900">{t("landing.publicCard2Title")}</h3>
+                <p className="text-sm text-forest-800/90 mt-2">{t("landing.publicCard2Desc")}</p>
+              </div>
+              <div className="surface-card p-4 text-center">
+                <h3 className="text-base font-bold text-forest-900">{t("landing.publicCard3Title")}</h3>
+                <p className="text-sm text-forest-800/90 mt-2">{t("landing.publicCard3Desc")}</p>
+              </div>
+            </div>
+          </motion.section>
+        ) : null}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger-in">
-            {features.map((feature) => (
-              <motion.div
-                key={feature.title}
-                whileHover={{ y: -4 }}
-                className="surface-card p-5 transition-all duration-200 hover:shadow-xl"
-              >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4`}>
-                  <feature.icon className="h-6 w-6" />
-                </div>
-                <h3 className="text-lg font-bold text-forest-900 mb-2">{feature.title}</h3>
-                <p className="text-sm text-forest-800/80 leading-relaxed">{feature.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
+        {isAuthenticated ? (
+          <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.08 }} className="surface-card-strong p-5 md:p-6">
+            <div className="text-center mb-10">
+              <h2 className="section-title mb-3">{t("landing.featuresHeading")}</h2>
+              <p className="section-subtitle max-w-2xl mx-auto">{t("landing.featuresSub")}</p>
+            </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger-in">
+              {features.map((feature) => (
+                <motion.div
+                  key={feature.title}
+                  whileHover={{ y: -4 }}
+                  className="surface-card p-5 transition-all duration-200 hover:shadow-xl"
+                >
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4`}>
+                    <feature.icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-lg font-bold text-forest-900 mb-2">{feature.title}</h3>
+                  <p className="text-sm text-forest-800/90 leading-relaxed">{feature.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.section>
+        ) : null}
+
+        {isAuthenticated ? (
         <motion.section variants={sectionVariant} initial="hidden" animate="visible" transition={{ delay: 0.14 }} className="surface-card-strong p-5 md:p-6">
           <div className="text-center mb-10">
             <h2 className="section-title mb-3">{t("landing.howItWorks")}</h2>
@@ -133,7 +181,7 @@ export default function LandingPage() {
               <motion.div key={step.number} whileHover={{ y: -3, scale: 1.01 }} className="surface-card p-5 text-center">
                 <div className="text-3xl font-extrabold text-forest-300 mb-2">{step.number}</div>
                 <h3 className="text-lg font-semibold text-forest-900 mb-2">{step.title}</h3>
-                <p className="text-sm text-forest-800/80">{step.description}</p>
+                <p className="text-sm text-forest-800/90">{step.description}</p>
               </motion.div>
             ))}
           </div>
@@ -144,7 +192,10 @@ export default function LandingPage() {
             </button>
           </div>
         </motion.section>
+        ) : null}
       </div>
     </div>
   );
 }
+
+

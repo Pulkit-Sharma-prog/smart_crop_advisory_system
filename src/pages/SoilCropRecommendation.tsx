@@ -92,7 +92,7 @@ export default function SoilCropRecommendation() {
   };
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6">
+    <div className="page-wrap">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="section-title">{t("soil.title")}</h1>
@@ -142,7 +142,7 @@ export default function SoilCropRecommendation() {
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>
                   <h2 className="text-xl font-bold text-forest-900">{t("soil.locationTitle")}</h2>
-                  <p className="text-sm text-forest-800/75 mt-1">{t("soil.locationSubtitle")}</p>
+                  <p className="text-sm text-forest-800/90 mt-1">{t("soil.locationSubtitle")}</p>
                 </div>
                 <button type="button" onClick={useCurrentLocation} disabled={detectingLocation} className="btn-secondary !px-3 !py-2">
                   <LocateFixed className="h-4 w-4" />
@@ -162,7 +162,7 @@ export default function SoilCropRecommendation() {
               </div>
 
               <div className="mb-4">
-                <div className="text-xs text-forest-800/80 bg-forest-50 rounded px-2 py-1 inline-block mb-2">{t("soil.mapHint")}</div>
+                <div className="text-xs text-forest-800/90 bg-forest-50 rounded px-2 py-1 inline-block mb-2">{t("soil.mapHint")}</div>
                 <LocationPickerMap
                   value={{ latitude: Number(latInput) || 20.5937, longitude: Number(lonInput) || 78.9629 }}
                   onChange={(next) => {
@@ -238,8 +238,8 @@ export default function SoilCropRecommendation() {
                 <div className="surface-card-strong p-5">
                   <h2 className="text-xl font-bold text-forest-900 mb-4">{t("soil.healthTitle")}</h2>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3"><div className="bg-green-100 p-3 rounded-full"><CheckCircle className="h-8 w-8 text-green-600" /></div><div><p className="text-2xl font-bold text-green-600">{result.healthLabel}</p><p className="text-sm text-forest-800/70">{t("soil.healthSummary")}</p></div></div>
-                    <div className="text-right"><p className="text-2xl font-bold text-forest-900">{result.healthScore}/100</p><p className="text-sm text-forest-800/70">{t("soil.healthScore")}</p></div>
+                    <div className="flex items-center gap-3"><div className="bg-green-100 p-3 rounded-full"><CheckCircle className="h-8 w-8 text-green-600" /></div><div><p className="text-2xl font-bold text-green-600">{result.healthLabel}</p><p className="text-sm text-forest-800/90">{t("soil.healthSummary")}</p></div></div>
+                    <div className="text-right"><p className="text-2xl font-bold text-forest-900">{result.healthScore}/100</p><p className="text-sm text-forest-800/90">{t("soil.healthScore")}</p></div>
                   </div>
                 </div>
 
@@ -249,8 +249,8 @@ export default function SoilCropRecommendation() {
                     {result.crops.map((crop) => (
                       <div key={crop.name} className="surface-card p-4 hover:border-forest-300 transition-all">
                         <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-3"><div className="bg-leaf-100 p-2 rounded-lg"><Sprout className="h-6 w-6 text-leaf-600" /></div><div><h3 className="font-bold text-forest-900">{crop.name}</h3><p className="text-sm text-forest-800/70">{crop.season}</p></div></div>
-                          <div className="text-right"><p className="text-2xl font-bold text-forest-600">{crop.suitability}%</p><p className="text-xs text-forest-700/70">{t("soil.suitability")}</p></div>
+                          <div className="flex items-center gap-3"><div className="bg-leaf-100 p-2 rounded-lg"><Sprout className="h-6 w-6 text-leaf-600" /></div><div><h3 className="font-bold text-forest-900">{crop.name}</h3><p className="text-sm text-forest-800/90">{crop.season}</p></div></div>
+                          <div className="text-right"><p className="text-2xl font-bold text-forest-600">{crop.suitability}%</p><p className="text-xs text-forest-700/90">{t("soil.suitability")}</p></div>
                         </div>
                         <div className="flex gap-2 flex-wrap">
                           <span className="bg-gray-100 text-gray-700 text-xs font-semibold px-3 py-1 rounded-full">NPK: {crop.npk}</span>
@@ -278,7 +278,7 @@ export default function SoilCropRecommendation() {
               </>
             ) : (
               <div className="surface-card-strong bg-gradient-to-br from-forest-50 to-leaf-50 p-6 flex items-center justify-center">
-                <div className="text-center"><Sprout className="h-16 w-16 text-forest-600 mx-auto mb-4" /><h3 className="text-xl font-bold text-forest-900 mb-2">{t("soil.awaitingTitle")}</h3><p className="text-forest-800/70 max-w-md">{t("soil.awaitingDesc")}</p></div>
+                <div className="text-center"><Sprout className="h-16 w-16 text-forest-600 mx-auto mb-4" /><h3 className="text-xl font-bold text-forest-900 mb-2">{t("soil.awaitingTitle")}</h3><p className="text-forest-800/90 max-w-md">{t("soil.awaitingDesc")}</p></div>
               </div>
             )}
           </div>
@@ -287,4 +287,6 @@ export default function SoilCropRecommendation() {
     </div>
   );
 }
+
+
 

@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly VITE_API_TIMEOUT_MS?: string;
   readonly VITE_API_RETRY_COUNT?: string;
   readonly VITE_DEBUG_LOGS?: string;
+  readonly VITE_GOOGLE_CLIENT_ID?: string;
 }
 
 interface ImportMeta {

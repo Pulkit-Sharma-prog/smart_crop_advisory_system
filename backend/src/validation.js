@@ -28,3 +28,7 @@ export const diseaseUploadSchema = z.object({
   crop: z.string().min(2).max(80).optional(),
   language: z.enum(["en", "hi"]).optional(),
 });
+
+export const googleTokenSchema = z.object({
+  idToken: z.string().min(50),
+});

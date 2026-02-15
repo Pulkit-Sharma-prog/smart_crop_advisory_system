@@ -29,4 +29,5 @@ export const backendEnv = {
   openaiApiKey: process.env.OPENAI_API_KEY ?? "",
   openAiVisionEndpoint: process.env.OPENAI_VISION_ENDPOINT ?? "https://api.openai.com/v1/responses",
   openaiVisionModel: process.env.OPENAI_VISION_MODEL ?? "gpt-4.1-mini",
+  googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
 };

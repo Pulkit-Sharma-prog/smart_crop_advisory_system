@@ -50,4 +50,9 @@ describe("backend adapter", () => {
     expect(response.body.guidance.preventiveMeasures.length).toBeGreaterThan(0);
     expect(response.body.guidance.curativeActions.length).toBeGreaterThan(0);
   });
+
+  it("rejects empty google auth payload", async () => {
+    const response = await request(app).post("/api/auth/google/verify").send({});
+    expect(response.status).toBe(400);
+  });
 });

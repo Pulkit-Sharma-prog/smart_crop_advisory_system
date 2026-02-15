@@ -20,6 +20,8 @@ Set database and AI values in `.env`:
 - AI:
   - `PLANT_ID_API_KEY` (recommended)
   - `OPENAI_API_KEY` (optional second-opinion model)
+- Auth:
+  - `GOOGLE_CLIENT_ID` (required for Google Sign-In verification endpoint)
 
 3. Start dev server:
 ```bash
@@ -46,6 +48,7 @@ npm run test
 - `GET /api/schedule`
 - `POST /api/recommendations/soil`
 - `POST /api/disease/analyze` (multipart field `file`)
+- `POST /api/auth/google/verify`
 
 ## Disease Detection Architecture
 

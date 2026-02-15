@@ -78,26 +78,26 @@ export default function DiseaseDetection() {
   };
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6">
+    <div className="page-wrap">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6"><h1 className="section-title">{t("disease.title")}</h1><p className="section-subtitle">{t("disease.subtitle")}</p></div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <div className="space-y-6">
-            <div className="surface-card-strong p-5">
+            <div className="surface-card-strong p-5 md:p-6">
               <h2 className="text-xl font-bold text-forest-900 mb-6">{t("disease.uploadTitle")}</h2>
 
-              <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => void handleDrop(e)} className="border-2 border-dashed border-forest-200 rounded-2xl p-6 text-center hover:border-forest-500 transition-colors cursor-pointer bg-forest-50/40">
+              <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => void handleDrop(e)} className="border-2 border-dashed border-forest-200 rounded-2xl p-6 text-center hover:border-forest-500 hover:bg-forest-50/70 transition-colors cursor-pointer bg-forest-50/40">
                 {!selectedImage ? (
                   <label className="cursor-pointer block">
                     <input type="file" accept="image/*" onChange={(e) => void handleImageUpload(e)} className="hidden" />
                     <Upload className="h-16 w-16 text-forest-400 mx-auto mb-4" />
                     <p className="text-lg font-semibold text-forest-900 mb-2">{t("disease.dropText")}</p>
-                    <p className="text-sm text-forest-700/70">{t("disease.supported")}</p>
+                    <p className="text-sm text-forest-700/90">{t("disease.supported")}</p>
                   </label>
                 ) : (
                   <div className="space-y-4">
-                    <img src={selectedImage} alt={t("disease.imageAlt")} className="max-h-64 mx-auto rounded-xl shadow-md" />
+                    <img src={selectedImage} alt={t("disease.imageAlt")} className="max-h-64 mx-auto rounded-xl shadow-md border border-white" />
                     <button onClick={() => { setSelectedImage(null); setResult(null); setError(null); }} className="text-sm text-forest-700 hover:text-forest-900 font-semibold">{t("disease.uploadDifferent")}</button>
                   </div>
                 )}
@@ -135,13 +135,13 @@ export default function DiseaseDetection() {
                 <div className="text-center">
                   <Shield className="h-16 w-16 text-forest-600 mx-auto mb-4" />
                   <h3 className="text-xl font-bold text-forest-900 mb-2">{t("disease.readyTitle")}</h3>
-                  <p className="text-forest-800/70 max-w-md">{t("disease.readyDesc")}</p>
+                  <p className="text-forest-800/90 max-w-md">{t("disease.readyDesc")}</p>
                   {isAnalyzing ? <p className="text-sm text-forest-700 mt-4 font-semibold">{t("disease.analyzing")}</p> : null}
                 </div>
               </div>
             ) : (
               <>
-                <div className="surface-card-strong p-5">
+                <div className="surface-card-strong p-5 md:p-6">
                   <h2 className="text-xl font-bold text-forest-900 mb-4">{t("disease.resultsTitle")}</h2>
                   <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
                     <div className="flex items-start gap-3">
@@ -158,7 +158,7 @@ export default function DiseaseDetection() {
                     <h4 className="font-semibold text-forest-900 mb-2">{t("disease.altMatches")}</h4>
                     <div className="space-y-2 text-sm">
                       {result?.alternatives.map((item) => (
-                        <div key={item.name} className="flex justify-between"><span className="text-forest-800">{item.name}</span><span className="font-semibold text-forest-900">{item.confidence}%</span></div>
+                        <div key={item.name} className="flex justify-between rounded-lg bg-white px-3 py-2 border border-gray-100"><span className="text-forest-800">{item.name}</span><span className="font-semibold text-forest-900">{item.confidence}%</span></div>
                       ))}
                     </div>
                   </div>
@@ -173,7 +173,7 @@ export default function DiseaseDetection() {
                   </div>
                 </div>
 
-                <div className="surface-card-strong p-5">
+                <div className="surface-card-strong p-5 md:p-6">
                   <h3 className="text-lg font-bold text-forest-900 mb-4">{t("disease.treatmentTitle")}</h3>
                   <div className="space-y-4 text-sm text-forest-800">
                     {(result?.guidance.curativeActions ?? [t("disease.treat1"), t("disease.treat2"), t("disease.treat3")]).map((item) => (
@@ -208,3 +208,5 @@ export default function DiseaseDetection() {
     </div>
   );
 }
+
+

@@ -18,17 +18,18 @@ export default function WeatherAdvisory() {
   });
   const [detectingLocation, setDetectingLocation] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const { latitude, longitude } = activeLocation;
 
-  const cacheSuffix = `${activeLocation.latitude.toFixed(4)}:${activeLocation.longitude.toFixed(4)}`;
+  const cacheSuffix = `${latitude.toFixed(4)}:${longitude.toFixed(4)}`;
 
   const loadSnapshot = useCallback(
-    () => getWeatherSnapshot(activeLocation),
-    [activeLocation.latitude, activeLocation.longitude],
+    () => getWeatherSnapshot({ latitude, longitude }),
+    [latitude, longitude],
   );
 
   const loadForecast = useCallback(
-    () => getForecast(activeLocation),
-    [activeLocation.latitude, activeLocation.longitude],
+    () => getForecast({ latitude, longitude }),
+    [latitude, longitude],
   );
 
   const {
@@ -115,7 +116,7 @@ export default function WeatherAdvisory() {
   };
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6">
+    <div className="page-wrap">
       <div className="max-w-6xl mx-auto space-y-4">
         <div>
           <h1 className="section-title">{t("weather.title")}</h1>
@@ -126,7 +127,7 @@ export default function WeatherAdvisory() {
           <div className="flex items-start justify-between gap-3 mb-4">
             <div>
               <h2 className="text-lg font-bold text-forest-900">{t("weather.locationTitle")}</h2>
-              <p className="text-sm text-forest-800/75 mt-1">{t("weather.locationSubtitle")}</p>
+              <p className="text-sm text-forest-800/90 mt-1">{t("weather.locationSubtitle")}</p>
             </div>
             <button type="button" onClick={detectCurrentLocation} disabled={detectingLocation} className="btn-secondary !px-3 !py-2">
               <LocateFixed className="h-4 w-4" />
@@ -158,7 +159,7 @@ export default function WeatherAdvisory() {
           </div>
 
           <div className="mb-3">
-            <div className="text-xs text-forest-800/80 bg-forest-50 rounded px-2 py-1 inline-block mb-2">{t("weather.mapHint")}</div>
+            <div className="text-xs text-forest-800/90 bg-forest-50 rounded px-2 py-1 inline-block mb-2">{t("weather.mapHint")}</div>
             <LocationPickerMap
               value={{ latitude: Number(draftLat) || DEFAULT_LAT, longitude: Number(draftLon) || DEFAULT_LON }}
               className="h-48 md:h-56"
@@ -176,7 +177,7 @@ export default function WeatherAdvisory() {
 
           {locationError ? <p className="mt-3 text-sm text-red-600">{locationError}</p> : null}
 
-          <p className="mt-2 text-xs text-forest-700/80">
+          <p className="mt-2 text-xs text-forest-700/90">
             {t("weather.currentLocationLabel")}: {activeLocation.latitude.toFixed(4)}, {activeLocation.longitude.toFixed(4)}
           </p>
         </div>
@@ -235,7 +236,7 @@ export default function WeatherAdvisory() {
                 <p className="font-semibold text-forest-900 mb-2 text-sm">{getDayLabel(day.day)}</p>
                 {day.condition.toLowerCase().includes("rain") ? <CloudRain className="h-8 w-8 mx-auto mb-2 text-sky-600" /> : <Cloud className="h-8 w-8 mx-auto mb-2 text-sky-600" />}
                 <p className="text-xl font-bold text-forest-900 mb-1">{day.temperatureC} C</p>
-                <p className="text-xs text-forest-700/80 mb-1">{getConditionLabel(day.condition)}</p>
+                <p className="text-xs text-forest-700/90 mb-1">{getConditionLabel(day.condition)}</p>
                 <div className="flex items-center justify-center gap-1 text-sm text-blue-600"><CloudRain className="h-4 w-4" /><span>{day.rainChancePercent}%</span></div>
               </div>
             ))}
@@ -266,3 +267,5 @@ export default function WeatherAdvisory() {
     </div>
   );
 }
+
+

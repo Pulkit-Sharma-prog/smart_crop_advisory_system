@@ -29,14 +29,14 @@ export default function FarmingSchedule() {
   };
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+    <div className="page-wrap">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
           <h1 className="section-title">{t("schedule.title")}</h1>
           <p className="section-subtitle">{t("schedule.subtitle")}</p>
         </div>
 
-        {loading ? <p className="text-forest-800/80">{t("schedule.loading")}</p> : null}
+        {loading ? <p className="text-forest-800/90">{t("schedule.loading")}</p> : null}
         {error ? <p className="text-red-600">{t("schedule.loadError")}</p> : null}
 
         <div className="space-y-5">
@@ -46,7 +46,7 @@ export default function FarmingSchedule() {
 
             return (
               <div key={item.phase} className="surface-card-strong overflow-hidden">
-                <div className={`${colors.bg} px-6 py-4 border-b border-gray-200`}>
+                <div className={`${colors.bg} px-5 md:px-6 py-4 border-b border-gray-200`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-11 h-11 rounded-xl bg-white/80 flex items-center justify-center">
@@ -54,7 +54,7 @@ export default function FarmingSchedule() {
                       </div>
                       <div>
                         <h3 className={`text-xl font-bold ${colors.text}`}>{item.phase}</h3>
-                        <p className="text-sm text-forest-800/80 mt-0.5 flex items-center gap-1">
+                        <p className="text-sm text-forest-800/90 mt-0.5 flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
                           {item.date}
                         </p>
@@ -78,7 +78,7 @@ export default function FarmingSchedule() {
                         <div className={`${colors.dot} w-2.5 h-2.5 rounded-full mt-2 flex-shrink-0`} />
                         <div>
                           <p className="font-semibold text-forest-900">{taskItem.task}</p>
-                          <p className="text-sm text-forest-800/75 mt-1">{taskItem.reason}</p>
+                          <p className="text-sm text-forest-800/90 mt-1">{taskItem.reason}</p>
                         </div>
                       </div>
                     </div>
@@ -92,3 +92,5 @@ export default function FarmingSchedule() {
     </div>
   );
 }
+
+

@@ -33,6 +33,7 @@ VITE_ALLOW_API_FALLBACK=false
 VITE_API_TIMEOUT_MS=8000
 VITE_API_RETRY_COUNT=1
 VITE_DEBUG_LOGS=false
+VITE_GOOGLE_CLIENT_ID=<google-oauth-web-client-id>
 ```
 
 For single Vercel deployment, keep `VITE_API_BASE_URL` empty so frontend calls same-origin `/api/*`.
@@ -44,6 +45,17 @@ For separate frontend/backend Vercel projects:
 - Backend env:
   - `FRONTEND_ORIGIN=https://<your-frontend-project>.vercel.app`
   - `MYSQL_URL=<hosted-mysql-connection-string>`
+  - `GOOGLE_CLIENT_ID=<google-oauth-web-client-id>`
+
+## Google Sign-In Setup (GIS + Backend Verify)
+1. Create OAuth Web Client in Google Cloud Console.
+2. Add authorized JavaScript origins for your frontend domain.
+3. Set frontend `.env`:
+   - `VITE_GOOGLE_CLIENT_ID=<google-oauth-web-client-id>`
+4. Set backend `.env`:
+   - `GOOGLE_CLIENT_ID=<google-oauth-web-client-id>`
+
+Frontend renders Google Identity Services button and sends the ID token to backend `POST /api/auth/google/verify` for signature + audience verification.
 
 ## Implemented Phases
 

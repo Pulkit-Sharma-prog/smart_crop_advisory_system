@@ -135,6 +135,28 @@ The frontend now supports live backend integration through environment-based con
 }
 ```
 
+### 7. Google Token Verify
+- Method: `POST`
+- Path: `/api/auth/google/verify`
+- Body:
+```json
+{
+  "idToken": "<google-id-token>"
+}
+```
+- Response:
+```json
+{
+  "user": {
+    "id": "110000000000000000000",
+    "email": "farmer@example.com",
+    "name": "Farmer Name",
+    "picture": "https://lh3.googleusercontent.com/...",
+    "provider": "google"
+  }
+}
+```
+
 ## Error Handling Expectations
 
 - Service should return standard HTTP status codes.
