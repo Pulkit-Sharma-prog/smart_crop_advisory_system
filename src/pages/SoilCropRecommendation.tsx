@@ -148,31 +148,31 @@ export default function SoilCropRecommendation() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 stagger-in" noValidate>
                 <div>
                   <label htmlFor="nitrogen" className="flex items-center gap-2 text-sm font-semibold text-forest-800 mb-2"><FlaskConical className="h-4 w-4 text-forest-600" /> {t("soil.nitrogen")}</label>
-                  <input id="nitrogen" type="number" className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white/80 focus:border-forest-400" {...register("nitrogen")} />
+                  <input id="nitrogen" type="number" className="w-full px-4 py-3 border border-forest-200 rounded-xl bg-white/80 focus:border-forest-400" {...register("nitrogen")} />
                   {errors.nitrogen ? <p className="mt-1 text-sm text-red-600">{t("soil.error")}</p> : null}
                 </div>
 
                 <div>
                   <label htmlFor="phosphorus" className="flex items-center gap-2 text-sm font-semibold text-forest-800 mb-2"><FlaskConical className="h-4 w-4 text-forest-600" /> {t("soil.phosphorus")}</label>
-                  <input id="phosphorus" type="number" className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white/80 focus:border-forest-400" {...register("phosphorus")} />
+                  <input id="phosphorus" type="number" className="w-full px-4 py-3 border border-forest-200 rounded-xl bg-white/80 focus:border-forest-400" {...register("phosphorus")} />
                   {errors.phosphorus ? <p className="mt-1 text-sm text-red-600">{t("soil.error")}</p> : null}
                 </div>
 
                 <div>
                   <label htmlFor="potassium" className="flex items-center gap-2 text-sm font-semibold text-forest-800 mb-2"><FlaskConical className="h-4 w-4 text-forest-600" /> {t("soil.potassium")}</label>
-                  <input id="potassium" type="number" className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white/80 focus:border-forest-400" {...register("potassium")} />
+                  <input id="potassium" type="number" className="w-full px-4 py-3 border border-forest-200 rounded-xl bg-white/80 focus:border-forest-400" {...register("potassium")} />
                   {errors.potassium ? <p className="mt-1 text-sm text-red-600">{t("soil.error")}</p> : null}
                 </div>
 
                 <div>
                   <label htmlFor="ph" className="flex items-center gap-2 text-sm font-semibold text-forest-800 mb-2">{t("soil.ph")}</label>
-                  <input id="ph" type="number" step="0.1" className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white/80 focus:border-forest-400" {...register("ph")} />
+                  <input id="ph" type="number" step="0.1" className="w-full px-4 py-3 border border-forest-200 rounded-xl bg-white/80 focus:border-forest-400" {...register("ph")} />
                   {errors.ph ? <p className="mt-1 text-sm text-red-600">{t("soil.error")}</p> : null}
                 </div>
 
                 <div>
                   <label htmlFor="landSize" className="flex items-center gap-2 text-sm font-semibold text-forest-800 mb-2"><Ruler className="h-4 w-4 text-forest-600" /> {t("soil.landSize")}</label>
-                  <input id="landSize" type="number" step="0.1" className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white/80 focus:border-forest-400" {...register("landSize")} />
+                  <input id="landSize" type="number" step="0.1" className="w-full px-4 py-3 border border-forest-200 rounded-xl bg-white/80 focus:border-forest-400" {...register("landSize")} />
                   {errors.landSize ? <p className="mt-1 text-sm text-red-600">{t("soil.error")}</p> : null}
                 </div>
 
@@ -195,11 +195,11 @@ export default function SoilCropRecommendation() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                 <div>
                   <label htmlFor="lat" className="block text-xs font-semibold text-forest-800 mb-1">{t("soil.latitude")}</label>
-                  <input id="lat" value={latInput} onChange={(e) => setLatInput(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl" placeholder={t("soil.latitudePlaceholder")} />
+                  <input id="lat" value={latInput} onChange={(e) => setLatInput(e.target.value)} className="w-full px-3 py-2 border border-forest-200 rounded-xl" placeholder={t("soil.latitudePlaceholder")} />
                 </div>
                 <div>
                   <label htmlFor="lon" className="block text-xs font-semibold text-forest-800 mb-1">{t("soil.longitude")}</label>
-                  <input id="lon" value={lonInput} onChange={(e) => setLonInput(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl" placeholder={t("soil.longitudePlaceholder")} />
+                  <input id="lon" value={lonInput} onChange={(e) => setLonInput(e.target.value)} className="w-full px-3 py-2 border border-forest-200 rounded-xl" placeholder={t("soil.longitudePlaceholder")} />
                 </div>
               </div>
 
@@ -269,8 +269,8 @@ export default function SoilCropRecommendation() {
                   </ul>
                 </div>
 
-                <div className="surface-card border border-yellow-200 bg-yellow-50 p-4 rounded-xl">
-                  <p className="text-sm text-yellow-900">{getLocationValue(locationAdvisory.caution)}</p>
+                <div className="surface-card tone-warning p-4 rounded-xl">
+                  <p className="text-sm">{getLocationValue(locationAdvisory.caution)}</p>
                 </div>
               </div>
             ) : null}
@@ -280,7 +280,7 @@ export default function SoilCropRecommendation() {
                 <div className="surface-card-strong p-5">
                   <h2 className="text-xl font-bold text-forest-900 mb-4">{t("soil.healthTitle")}</h2>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3"><div className="bg-green-100 p-3 rounded-full"><CheckCircle className="h-8 w-8 text-green-600" /></div><div><p className="text-2xl font-bold text-green-600">{getHealthLabel(result.healthLabel)}</p><p className="text-sm text-forest-800/90">{t("soil.healthSummary")}</p></div></div>
+                    <div className="flex items-center gap-3"><div className="bg-leaf-100 p-3 rounded-full"><CheckCircle className="h-8 w-8 text-leaf-600" /></div><div><p className="text-2xl font-bold text-leaf-700">{getHealthLabel(result.healthLabel)}</p><p className="text-sm text-forest-800/90">{t("soil.healthSummary")}</p></div></div>
                     <div className="text-right"><p className="text-2xl font-bold text-forest-900">{result.healthScore}/100</p><p className="text-sm text-forest-800/90">{t("soil.healthScore")}</p></div>
                   </div>
                 </div>
@@ -295,8 +295,8 @@ export default function SoilCropRecommendation() {
                           <div className="text-right"><p className="text-2xl font-bold text-forest-600">{crop.suitability}%</p><p className="text-xs text-forest-700/90">{t("soil.suitability")}</p></div>
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                          <span className="bg-gray-100 text-gray-700 text-xs font-semibold px-3 py-1 rounded-full">NPK: {crop.npk}</span>
-                          <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">{t("soil.profit")}: {getProfitLabel(crop.profit)}</span>
+                          <span className="bg-forest-100 text-forest-700 text-xs font-semibold px-3 py-1 rounded-full">NPK: {crop.npk}</span>
+                          <span className="bg-leaf-100 text-leaf-700 text-xs font-semibold px-3 py-1 rounded-full">{t("soil.profit")}: {getProfitLabel(crop.profit)}</span>
                         </div>
                       </div>
                     ))}
@@ -313,9 +313,9 @@ export default function SoilCropRecommendation() {
                   </ul>
                 </div>
 
-                <div className="surface-card-strong border border-yellow-200 bg-yellow-50 rounded-xl flex items-start gap-3 p-4">
-                  <AlertCircle className="h-5 w-5 text-yellow-700 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-yellow-900">{t("soil.warning")}</p>
+                <div className="surface-card-strong tone-warning rounded-xl flex items-start gap-3 p-4">
+                  <AlertCircle className="h-5 w-5 text-amber-700 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm">{t("soil.warning")}</p>
                 </div>
               </>
             ) : (

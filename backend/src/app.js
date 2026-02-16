@@ -10,9 +10,11 @@ import {
   getWeatherSnapshotForLocation,
 } from "./data.js";
 import { diagnosePlantDisease } from "./diseaseService.js";
+import { getCopilotReply } from "./copilotService.js";
 import { backendEnv } from "./env.js";
 import { GoogleAuthError, verifyGoogleIdToken } from "./googleAuth.js";
 import {
+  copilotChatSchema,
   diseaseUploadSchema,
   googleTokenSchema,
   locationInputSchema,
@@ -64,6 +66,31 @@ export function createApp() {
     res.json({
       status: "ok",
       service: "smart-crop-backend-adapter",
+    });
+  });
+
+  app.get("/api/system/config-status", (_req, res) => {
+    const hasOpenAi = Boolean(backendEnv.openaiApiKey?.trim());
+    const hasPlantId = Boolean(backendEnv.plantIdApiKey?.trim());
+    const hasMysqlUrl = Boolean(backendEnv.mysqlUrl?.trim());
+    const hasMysqlParts = Boolean(
+      backendEnv.mysqlHost?.trim()
+      && backendEnv.mysqlUser?.trim()
+      && backendEnv.mysqlDatabase?.trim(),
+    );
+
+    res.json({
+      copilot: {
+        llmReady: hasOpenAi,
+        mode: hasOpenAi ? "llm" : "fallback",
+      },
+      diseaseAi: {
+        plantIdReady: hasPlantId,
+        openAiVisionReady: hasOpenAi,
+      },
+      database: {
+        mysqlReady: hasMysqlUrl || hasMysqlParts,
+      },
     });
   });
 
@@ -149,6 +176,16 @@ export function createApp() {
       const payload = googleTokenSchema.parse(req.body);
       const user = await verifyGoogleIdToken(payload.idToken);
       res.json({ user });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/copilot/chat", async (req, res, next) => {
+    try {
+      const payload = copilotChatSchema.parse(req.body);
+      const reply = await getCopilotReply(payload);
+      res.json({ reply });
     } catch (error) {
       next(error);
     }

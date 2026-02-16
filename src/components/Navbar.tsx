@@ -96,7 +96,7 @@ export default function Navbar() {
                   aria-expanded={profileOpen}
                   aria-label={t("nav.profile")}
                 >
-                  <span className="h-8 w-8 rounded-full bg-gradient-to-br from-forest-500 to-emerald-700 text-white text-xs font-bold flex items-center justify-center">
+                  <span className="h-8 w-8 rounded-full bg-gradient-to-br from-forest-500 to-sky-700 text-white text-xs font-bold flex items-center justify-center">
                     {avatarInitial}
                   </span>
                   <span className="text-sm font-semibold text-forest-800 max-w-28 truncate">{currentUser?.name}</span>
@@ -167,7 +167,7 @@ export default function Navbar() {
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   `block rounded-lg px-3 py-2 text-sm font-semibold ${
-                    isActive ? "bg-forest-50 text-forest-700" : "text-forest-800 hover:bg-gray-100"
+                    isActive ? "bg-forest-50 text-forest-700" : "text-forest-800 hover:bg-forest-50"
                   }`
                 }
               >
@@ -179,7 +179,7 @@ export default function Navbar() {
                 setMobileOpen(false);
                 handleAuthAction();
               }}
-              className="w-full text-left rounded-lg px-3 py-2 text-sm font-semibold text-forest-800 hover:bg-gray-100"
+              className="w-full text-left rounded-lg px-3 py-2 text-sm font-semibold text-forest-800 hover:bg-forest-50"
             >
               {authLabel}
             </button>

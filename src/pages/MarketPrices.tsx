@@ -111,9 +111,9 @@ export default function MarketPrices() {
         </div>
 
         {error ? (
-          <div className="surface-card-strong border border-red-200 bg-red-50 p-3.5">
-            <p className="text-red-800">{t("market.loadError")}</p>
-            <button onClick={() => void reload()} className="mt-2 text-sm text-red-900 underline font-semibold">{t("common.retry")}</button>
+          <div className="surface-card-strong tone-danger p-3.5">
+            <p>{t("market.loadError")}</p>
+            <button onClick={() => void reload()} className="mt-2 text-sm underline font-semibold">{t("common.retry")}</button>
           </div>
         ) : null}
 
@@ -168,16 +168,16 @@ export default function MarketPrices() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5 stagger-in">
           <div className="surface-card-strong p-3.5">
-            <div className="flex items-center justify-between mb-4"><h3 className="font-semibold text-forest-900">{t("market.topGainer")}</h3><TrendingUp className="h-5 w-5 text-green-600" /></div>
+            <div className="flex items-center justify-between mb-4"><h3 className="font-semibold text-forest-900">{t("market.topGainer")}</h3><TrendingUp className="h-5 w-5 text-leaf-600" /></div>
             <p className="text-2xl font-bold text-forest-900 mb-1">{ranked.top?.crop ?? t("common.notAvailable")}</p>
-            <p className="text-green-600 font-semibold text-lg">{ranked.top?.changePercent ?? "--"}%</p>
+            <p className="text-leaf-700 font-semibold text-lg">{ranked.top?.changePercent ?? "--"}%</p>
             <p className="text-sm text-forest-800/90 mt-2">{ranked.top?.market ?? ""}</p>
           </div>
 
           <div className="surface-card-strong p-3.5">
-            <div className="flex items-center justify-between mb-4"><h3 className="font-semibold text-forest-900">{t("market.stablePrice")}</h3><Info className="h-5 w-5 text-blue-600" /></div>
+            <div className="flex items-center justify-between mb-4"><h3 className="font-semibold text-forest-900">{t("market.stablePrice")}</h3><Info className="h-5 w-5 text-sky-600" /></div>
             <p className="text-2xl font-bold text-forest-900 mb-1">{ranked.stable?.crop ?? t("common.notAvailable")}</p>
-            <p className="text-blue-600 font-semibold text-lg">{ranked.stable?.changePercent ?? "--"}%</p>
+            <p className="text-sky-700 font-semibold text-lg">{ranked.stable?.changePercent ?? "--"}%</p>
             <p className="text-sm text-forest-800/90 mt-2">{ranked.stable?.market ?? ""}</p>
           </div>
 
@@ -227,35 +227,35 @@ export default function MarketPrices() {
           {comparisonRows.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4 stagger-in">
-                <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-                  <p className="text-xs text-green-700 font-semibold mb-1">{t("market.bestNetMandi")}</p>
-                  <p className="text-lg font-bold text-green-900">{bestNet?.market}</p>
-                  <p className="text-sm text-green-800">{t("market.netPrice")}: Rs {bestNet?.netPricePerKg}/{t("common.kgUnit")}</p>
+                <div className="tone-success rounded-xl p-4">
+                  <p className="text-xs font-semibold mb-1">{t("market.bestNetMandi")}</p>
+                  <p className="text-lg font-bold">{bestNet?.market}</p>
+                  <p className="text-sm">{t("market.netPrice")}: Rs {bestNet?.netPricePerKg}/{t("common.kgUnit")}</p>
                 </div>
-                <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-                  <p className="text-xs text-green-700 font-semibold mb-1">{t("market.bestMandi")}</p>
-                  <p className="text-lg font-bold text-green-900">{topMarket?.market}</p>
-                  <p className="text-sm text-green-800">Rs {topMarket?.pricePerKg}/{t("common.kgUnit")}</p>
+                <div className="tone-success rounded-xl p-4">
+                  <p className="text-xs font-semibold mb-1">{t("market.bestMandi")}</p>
+                  <p className="text-lg font-bold">{topMarket?.market}</p>
+                  <p className="text-sm">Rs {topMarket?.pricePerKg}/{t("common.kgUnit")}</p>
                 </div>
-                <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
-                  <p className="text-xs text-amber-700 font-semibold mb-1">{t("market.lowestMandi")}</p>
-                  <p className="text-lg font-bold text-amber-900">{lowMarket?.market}</p>
-                  <p className="text-sm text-amber-800">Rs {lowMarket?.pricePerKg}/{t("common.kgUnit")}</p>
+                <div className="tone-warning rounded-xl p-4">
+                  <p className="text-xs font-semibold mb-1">{t("market.lowestMandi")}</p>
+                  <p className="text-lg font-bold">{lowMarket?.market}</p>
+                  <p className="text-sm">Rs {lowMarket?.pricePerKg}/{t("common.kgUnit")}</p>
                 </div>
                 <div className="bg-sky-50 border border-sky-100 rounded-xl p-4">
                   <p className="text-xs text-sky-700 font-semibold mb-1">{t("market.spread")}</p>
                   <p className="text-lg font-bold text-sky-900">Rs {spread}/kg</p>
                 </div>
-                <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
-                  <p className="text-xs text-indigo-700 font-semibold mb-1">{t("market.nearestMandi")}</p>
-                  <p className="text-lg font-bold text-indigo-900">{nearestMarket?.market ?? t("common.notAvailable")}</p>
-                  <p className="text-sm text-indigo-800">{t("market.nearestDistance", { distance: nearestMarket?.distance ?? "--" })}</p>
+                <div className="bg-forest-50 border border-forest-100 rounded-xl p-4">
+                  <p className="text-xs text-forest-700 font-semibold mb-1">{t("market.nearestMandi")}</p>
+                  <p className="text-lg font-bold text-forest-900">{nearestMarket?.market ?? t("common.notAvailable")}</p>
+                  <p className="text-sm text-forest-800">{t("market.nearestDistance", { distance: nearestMarket?.distance ?? "--" })}</p>
                 </div>
               </div>
 
               <div className="space-y-3">
                 {comparisonRows.map((item) => (
-                  <div key={`${item.crop}-${item.market}`} className="flex items-center justify-between rounded-lg border border-gray-100 bg-gradient-to-r from-white to-forest-50/55 px-3.5 py-2.5">
+                  <div key={`${item.crop}-${item.market}`} className="flex items-center justify-between rounded-lg border border-forest-100 bg-gradient-to-r from-white to-forest-50/55 px-3.5 py-2.5">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 text-forest-900">
                         <MapPin className="h-4 w-4 text-forest-700" />
@@ -281,8 +281,8 @@ export default function MarketPrices() {
           )}
         </div>
 
-        <div className="surface-card-strong overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+        <div className="table-shell">
+          <div className="px-4 py-3 border-b border-forest-100 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-forest-900">{t("market.currentRates")}</h2>
               <p className="text-sm text-forest-700/90 mt-1">{t("market.updatedToday")}</p>
@@ -292,7 +292,7 @@ export default function MarketPrices() {
 
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-forest-50/70 border-b border-gray-200">
+              <thead className="table-head">
                 <tr>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-forest-900">{t("market.cropName")}</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-forest-900">{t("market.market")}</th>
@@ -301,9 +301,9 @@ export default function MarketPrices() {
                   <th className="px-4 py-3 text-right text-sm font-semibold text-forest-900">{t("market.trend")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-forest-100">
                 {sortedDataByDistance.map((item, index) => (
-                  <tr key={`${item.crop}-${item.market}-${index}`} className={`${index % 2 ? "bg-gray-50/35" : "bg-white"} hover:bg-forest-50/60 transition-colors`}>
+                  <tr key={`${item.crop}-${item.market}-${index}`} className={`${index % 2 ? "table-row-alt" : "bg-white"} hover:bg-forest-50/60 transition-colors`}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="bg-forest-100 w-10 h-10 rounded-lg flex items-center justify-center">
@@ -326,7 +326,7 @@ export default function MarketPrices() {
                       <span className="text-sm text-forest-700/90">/{t("common.kgUnit")}</span>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ${item.changePercent >= 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                      <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ${item.changePercent >= 0 ? "bg-leaf-100 text-leaf-700" : "bg-rose-100 text-rose-700"}`}>
                         {item.changePercent >= 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                         {item.changePercent >= 0 ? "+" : ""}
                         {item.changePercent}%

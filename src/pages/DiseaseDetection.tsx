@@ -120,12 +120,12 @@ export default function DiseaseDetection() {
               </div>
             </div>
 
-            <div className="surface-card-strong bg-blue-50 border-blue-100 p-5">
+            <div className="surface-card-strong tone-info p-5">
               <div className="flex items-start gap-3">
-                <ImageIcon className="h-5 w-5 text-blue-700 flex-shrink-0 mt-1" />
+                <ImageIcon className="h-5 w-5 text-sky-700 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-blue-900 mb-2">{t("disease.tipsTitle")}</h3>
-                  <ul className="text-sm text-blue-800 space-y-1">
+                  <h3 className="font-semibold text-sky-900 mb-2">{t("disease.tipsTitle")}</h3>
+                  <ul className="text-sm text-sky-800 space-y-1">
                     <li>{t("disease.tip1")}</li>
                     <li>{t("disease.tip2")}</li>
                     <li>{t("disease.tip3")}</li>
@@ -150,7 +150,7 @@ export default function DiseaseDetection() {
               <>
                 <div className="surface-card-strong p-5 md:p-6">
                   <h2 className="text-xl font-bold text-forest-900 mb-4">{t("disease.resultsTitle")}</h2>
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+                  <div className="p-4 tone-danger rounded-xl">
                     <div className="flex items-start gap-3">
                       <AlertCircle className="h-6 w-6 text-red-600 flex-shrink-0 mt-1" />
                       <div>
@@ -161,11 +161,11 @@ export default function DiseaseDetection() {
                     </div>
                   </div>
 
-                  <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                  <div className="mt-4 p-4 bg-forest-50/70 rounded-xl border border-forest-100">
                     <h4 className="font-semibold text-forest-900 mb-2">{t("disease.altMatches")}</h4>
                     <div className="space-y-2 text-sm">
                       {result?.alternatives.map((item) => (
-                        <div key={item.name} className="flex justify-between rounded-lg bg-white px-3 py-2 border border-gray-100"><span className="text-forest-800">{item.name}</span><span className="font-semibold text-forest-900">{item.confidence}%</span></div>
+                        <div key={item.name} className="flex justify-between rounded-lg bg-white px-3 py-2 border border-forest-100"><span className="text-forest-800">{item.name}</span><span className="font-semibold text-forest-900">{item.confidence}%</span></div>
                       ))}
                     </div>
                   </div>
@@ -184,13 +184,13 @@ export default function DiseaseDetection() {
                   <h3 className="text-lg font-bold text-forest-900 mb-4">{t("disease.treatmentTitle")}</h3>
                   <div className="space-y-4 text-sm text-forest-800">
                     {(result?.guidance.curativeActions ?? [t("disease.treat1"), t("disease.treat2"), t("disease.treat3")]).map((item) => (
-                      <p key={`curative-${item}`} className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />{item}</p>
+                      <p key={`curative-${item}`} className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-leaf-600 mt-0.5" />{item}</p>
                     ))}
                   </div>
                   <h4 className="text-base font-semibold text-forest-900 mt-5 mb-3">{t("disease.preventiveTitle")}</h4>
                   <div className="space-y-3 text-sm text-forest-800">
                     {(result?.guidance.preventiveMeasures ?? []).map((item) => (
-                      <p key={`preventive-${item}`} className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5" />{item}</p>
+                      <p key={`preventive-${item}`} className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-sky-600 mt-0.5" />{item}</p>
                     ))}
                   </div>
                   {result?.guidance.organicOptions?.length ? (
@@ -198,7 +198,7 @@ export default function DiseaseDetection() {
                       <h4 className="text-base font-semibold text-forest-900 mt-5 mb-3">{t("disease.organicTitle")}</h4>
                       <div className="space-y-3 text-sm text-forest-800">
                         {result.guidance.organicOptions.map((item) => (
-                          <p key={`organic-${item}`} className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-yellow-600 mt-0.5" />{item}</p>
+                          <p key={`organic-${item}`} className="flex items-start gap-3"><CheckCircle2 className="h-5 w-5 text-earth-500 mt-0.5" />{item}</p>
                         ))}
                       </div>
                     </>

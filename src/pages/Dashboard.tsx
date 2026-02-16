@@ -322,35 +322,35 @@ export default function Dashboard() {
             </button>
             <button
               onClick={() => navigate(routes.weather)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg font-semibold text-sm transition-colors"
+              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-700 hover:bg-forest-50 rounded-lg font-semibold text-sm transition-colors"
             >
               <Cloud className="h-5 w-5" />
               <span>{t("weather.title")}</span>
             </button>
             <button
               onClick={() => navigate(routes.advisory)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg font-semibold text-sm transition-colors"
+              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-700 hover:bg-forest-50 rounded-lg font-semibold text-sm transition-colors"
             >
               <Sprout className="h-5 w-5" />
               <span>{t("soil.title")}</span>
             </button>
             <button
               onClick={() => navigate(routes.diseaseDetection)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg font-semibold text-sm transition-colors"
+              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-700 hover:bg-forest-50 rounded-lg font-semibold text-sm transition-colors"
             >
               <AlertTriangle className="h-5 w-5" />
               <span>{t("disease.title")}</span>
             </button>
             <button
               onClick={() => navigate(routes.farmingSchedule)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg font-semibold text-sm transition-colors"
+              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-700 hover:bg-forest-50 rounded-lg font-semibold text-sm transition-colors"
             >
               <Calendar className="h-5 w-5" />
               <span>{t("schedule.title")}</span>
             </button>
             <button
               onClick={() => navigate(routes.marketPrices)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg font-semibold text-sm transition-colors"
+              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-700 hover:bg-forest-50 rounded-lg font-semibold text-sm transition-colors"
             >
               <TrendingUp className="h-5 w-5" />
               <span>{t("market.title")}</span>
@@ -375,7 +375,7 @@ export default function Dashboard() {
               <h3 className="text-lg font-semibold text-forest-900">{t("dashboard.demoScenariosTitle")}</h3>
               <div
                 className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                  hasDemoScenario ? "bg-forest-100 text-forest-800" : "bg-gray-100 text-gray-700"
+                  hasDemoScenario ? "bg-forest-100 text-forest-800" : "bg-forest-50 text-forest-700"
                 }`}
               >
                 {hasDemoScenario
@@ -432,10 +432,10 @@ export default function Dashboard() {
               <div
                 className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${
                   backendError
-                    ? "bg-red-50 text-red-700"
+                    ? "tone-danger"
                     : backendHealth?.status === "ok"
-                      ? "bg-green-50 text-green-700"
-                      : "bg-amber-50 text-amber-700"
+                      ? "tone-success"
+                      : "tone-warning"
                 }`}
               >
                 <Server className="h-3.5 w-3.5" />
@@ -456,10 +456,10 @@ export default function Dashboard() {
                   key={alert.id}
                   className={`rounded-xl border p-3 ${
                     alert.severity === "high"
-                      ? "bg-red-50 border-red-200"
+                      ? "tone-danger"
                       : alert.severity === "medium"
-                        ? "bg-yellow-50 border-yellow-200"
-                        : "bg-green-50 border-green-200"
+                        ? "tone-warning"
+                        : "tone-success"
                   }`}
                 >
                   <p className="font-semibold text-forest-900 text-sm">{alert.title}</p>
@@ -477,10 +477,10 @@ export default function Dashboard() {
                   key={day.day}
                   className={`rounded-xl border p-3 ${
                     day.status === "red"
-                      ? "bg-red-50 border-red-200"
+                      ? "tone-danger"
                       : day.status === "yellow"
-                        ? "bg-yellow-50 border-yellow-200"
-                        : "bg-green-50 border-green-200"
+                        ? "tone-warning"
+                        : "tone-success"
                   }`}
                 >
                   <p className="font-semibold text-forest-900 text-sm">{getDayLabel(day.day)}</p>
@@ -552,9 +552,9 @@ export default function Dashboard() {
             <div className="metric-card">
               <h3 className="text-lg font-semibold text-forest-900 mb-4">{t("dashboard.bestCropSell")}</h3>
               <div className="flex items-center gap-4">
-                <div className="bg-leaf-100 p-4 rounded-xl">
-                  <TrendingUp className="h-10 w-10 text-leaf-600" />
-                </div>
+                  <div className="bg-leaf-100 p-4 rounded-xl">
+                    <TrendingUp className="h-10 w-10 text-leaf-600" />
+                  </div>
                 <div>
                   <p className="text-2xl font-bold text-forest-900">{topCrop?.crop ?? t("common.notAvailable")}</p>
                   <p className="text-sm text-forest-800/90">{topCrop?.market ?? t("dashboard.noMarketData")}</p>
@@ -591,7 +591,7 @@ export default function Dashboard() {
                 {(displayMarketData ?? []).slice(0, 2).map((item) => (
                   <div
                     key={`${item.crop}-${item.market}`}
-                    className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100"
+                    className="flex items-center justify-between p-3 rounded-xl bg-forest-50/70 border border-forest-100"
                   >
                     <div>
                       <p className="font-semibold text-forest-900">{item.crop}</p>
@@ -601,7 +601,7 @@ export default function Dashboard() {
                       <p className="text-lg font-bold text-forest-900">
                         Rs {item.pricePerKg}/{t("common.kgUnit")}
                       </p>
-                      <p className="text-sm text-green-600 font-semibold">
+                      <p className="text-sm text-leaf-700 font-semibold">
                         {item.changePercent > 0 ? "+" : ""}
                         {item.changePercent}%
                       </p>

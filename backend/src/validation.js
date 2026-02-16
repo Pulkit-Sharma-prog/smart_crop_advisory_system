@@ -46,3 +46,35 @@ export const diseaseUploadSchema = z.object({
 export const googleTokenSchema = z.object({
   idToken: z.string().min(50),
 });
+
+export const copilotChatSchema = z.object({
+  language: languageSchema.optional(),
+  context: z
+    .object({
+      profile: z
+        .object({
+          farmerName: z.string().optional(),
+          village: z.string().optional(),
+          primaryCrop: z.string().optional(),
+          landSizeAcres: z.number().optional(),
+        })
+        .optional(),
+      insights: z
+        .object({
+          soil: z.record(z.any()).nullable().optional(),
+          disease: z.record(z.any()).nullable().optional(),
+          location: z.record(z.any()).nullable().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        content: z.string().min(1).max(1200),
+      }),
+    )
+    .min(1)
+    .max(20),
+});

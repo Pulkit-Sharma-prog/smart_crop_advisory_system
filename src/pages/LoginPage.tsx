@@ -187,21 +187,21 @@ export default function LoginPage() {
 
           <div className="mt-4 space-y-2.5 stagger-in">
             <div className="flex items-start gap-3 rounded-xl bg-white/10 border border-white/15 p-3">
-              <ShieldCheck className="h-5 w-5 mt-0.5 text-emerald-200" />
+              <ShieldCheck className="h-5 w-5 mt-0.5 text-leaf-200" />
               <div>
                 <p className="font-semibold">{t("auth.benefitSecureTitle")}</p>
                 <p className="text-xs text-white/80">{t("auth.benefitSecureDesc")}</p>
               </div>
             </div>
             <div className="flex items-start gap-3 rounded-xl bg-white/10 border border-white/15 p-3">
-              <CheckCircle2 className="h-5 w-5 mt-0.5 text-emerald-200" />
+              <CheckCircle2 className="h-5 w-5 mt-0.5 text-leaf-200" />
               <div>
                 <p className="font-semibold">{t("auth.benefitFastTitle")}</p>
                 <p className="text-xs text-white/80">{t("auth.benefitFastDesc")}</p>
               </div>
             </div>
             <div className="flex items-start gap-3 rounded-xl bg-white/10 border border-white/15 p-3">
-              <KeyRound className="h-5 w-5 mt-0.5 text-emerald-200" />
+              <KeyRound className="h-5 w-5 mt-0.5 text-leaf-200" />
               <div>
                 <p className="font-semibold">{t("auth.benefitAccessTitle")}</p>
                 <p className="text-xs text-white/80">{t("auth.benefitAccessDesc")}</p>

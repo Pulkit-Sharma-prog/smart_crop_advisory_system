@@ -7,6 +7,20 @@ export interface BackendHealth {
   mode: "mock" | "live";
 }
 
+export interface RuntimeConfigStatus {
+  copilot: {
+    llmReady: boolean;
+    mode: "llm" | "fallback";
+  };
+  diseaseAi: {
+    plantIdReady: boolean;
+    openAiVisionReady: boolean;
+  };
+  database: {
+    mysqlReady: boolean;
+  };
+}
+
 export async function getBackendHealth(): Promise<BackendHealth> {
   if (appEnv.useMockData) {
     return {
@@ -26,4 +40,19 @@ export async function getBackendHealth(): Promise<BackendHealth> {
     service: response.service,
     mode: "live",
   };
+}
+
+export async function getRuntimeConfigStatus(): Promise<RuntimeConfigStatus> {
+  if (appEnv.useMockData) {
+    return {
+      copilot: { llmReady: false, mode: "fallback" },
+      diseaseAi: { plantIdReady: false, openAiVisionReady: false },
+      database: { mysqlReady: false },
+    };
+  }
+
+  return apiRequest<RuntimeConfigStatus>("/api/system/config-status", {
+    retryCount: 0,
+    timeoutMs: 3000,
+  });
 }

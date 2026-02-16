@@ -113,7 +113,7 @@ export default function FarmingSchedule() {
 
             return (
               <div key={item.phase} className="surface-card-strong overflow-hidden">
-                <div className={`${colors.bg} px-5 md:px-6 py-4 border-b border-gray-200`}>
+                <div className={`${colors.bg} px-5 md:px-6 py-4 border-b border-forest-100`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-11 h-11 rounded-xl bg-white/80 flex items-center justify-center">
@@ -128,12 +128,12 @@ export default function FarmingSchedule() {
                       </div>
                     </div>
                     {item.status === "completed" ? (
-                      <div className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
+                      <div className="tone-success text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
                         <CheckCircle className="h-4 w-4" />
                         {t("schedule.completed")}
                       </div>
                     ) : (
-                      <div className="bg-yellow-100 text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full">
+                      <div className="tone-warning text-xs font-semibold px-3 py-1 rounded-full">
                         {t("schedule.upcoming")}
                       </div>
                     )}

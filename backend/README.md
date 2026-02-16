@@ -46,9 +46,11 @@ npm run test
 - `GET /api/weather/forecast`
 - `GET /api/market/prices`
 - `GET /api/schedule`
+- `GET /api/system/config-status`
 - `POST /api/recommendations/soil`
 - `POST /api/disease/analyze` (multipart field `file`)
 - `POST /api/auth/google/verify`
+- `POST /api/copilot/chat`
 
 ## Disease Detection Architecture
 

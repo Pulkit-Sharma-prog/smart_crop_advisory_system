@@ -151,7 +151,7 @@ export default function FarmTools() {
               </button>
             </div>
 
-            {saved ? <p className="text-sm text-green-700">{t("farmTools.saved")}</p> : null}
+            {saved ? <p className="text-sm text-leaf-700">{t("farmTools.saved")}</p> : null}
 
             <div className="surface-card p-3.5 bg-forest-50 border-forest-100">
               <p className="text-sm font-semibold text-forest-900 mb-2">{t("farmTools.profileTipsTitle")}</p>
@@ -207,11 +207,11 @@ export default function FarmTools() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                 <div className="rounded-xl bg-white/75 border border-white px-3 py-2">{t("farmTools.revenue")}: <strong>{currencyFormatter.format(result.revenue)}</strong></div>
                 <div className="rounded-xl bg-white/75 border border-white px-3 py-2">{t("farmTools.totalCost")}: <strong>{currencyFormatter.format(result.cost)}</strong></div>
-                <div className="rounded-xl bg-white/75 border border-white px-3 py-2">{t("farmTools.profit")}: <strong className={result.profit >= 0 ? "text-green-700" : "text-red-700"}>{currencyFormatter.format(result.profit)}</strong></div>
+                <div className="rounded-xl bg-white/75 border border-white px-3 py-2">{t("farmTools.profit")}: <strong className={result.profit >= 0 ? "text-leaf-700" : "text-rose-700"}>{currencyFormatter.format(result.profit)}</strong></div>
                 <div className="rounded-xl bg-white/75 border border-white px-3 py-2">{t("farmTools.profitPerAcre")}: <strong>{currencyFormatter.format(result.profitPerAcre)}</strong></div>
                 <div className="rounded-xl bg-white/75 border border-white px-3 py-2 sm:col-span-2">{t("farmTools.breakEvenPrice")}: <strong>{currencyFormatter.format(result.breakEvenPrice)}/{t("common.kgUnit")}</strong></div>
               </div>
-              <div className={`mt-3 rounded-xl px-3 py-2 text-sm font-semibold inline-flex items-center gap-2 ${result.profit >= 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+              <div className={`mt-3 rounded-xl px-3 py-2 text-sm font-semibold inline-flex items-center gap-2 ${result.profit >= 0 ? "bg-leaf-100 text-leaf-800" : "bg-rose-100 text-rose-800"}`}>
                 {result.profit >= 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                 {t(statusKey)}
               </div>

@@ -41,7 +41,7 @@ export default function LocationPickerMap({ value, onChange, className }: Locati
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <CircleMarker center={[value.latitude, value.longitude]} radius={8} pathOptions={{ color: "#dc2626", fillColor: "#ef4444", fillOpacity: 0.75 }} />
+        <CircleMarker center={[value.latitude, value.longitude]} radius={8} pathOptions={{ color: "#14532d", fillColor: "#16a34a", fillOpacity: 0.78 }} />
         <ClickHandler onChange={onChange} />
         <Recenter value={value} />
       </MapContainer>

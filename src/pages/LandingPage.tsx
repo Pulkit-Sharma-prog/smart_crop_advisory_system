@@ -43,19 +43,19 @@ export default function LandingPage() {
       icon: Bug,
       title: t("landing.diseaseTitle"),
       description: t("landing.diseaseDesc"),
-      color: "from-amber-500/20 to-amber-500/0 text-amber-700",
+      color: "from-earth-400/25 to-earth-400/0 text-earth-700",
     },
     {
       icon: Calendar,
       title: t("landing.scheduleTitle"),
       description: t("landing.scheduleDesc"),
-      color: "from-emerald-500/20 to-emerald-500/0 text-emerald-700",
+      color: "from-leaf-500/20 to-leaf-500/0 text-leaf-700",
     },
     {
       icon: TrendingUp,
       title: t("landing.marketTitle"),
       description: t("landing.marketDesc"),
-      color: "from-indigo-500/20 to-indigo-500/0 text-indigo-700",
+      color: "from-sky-600/20 to-sky-600/0 text-sky-700",
     },
   ];
 
