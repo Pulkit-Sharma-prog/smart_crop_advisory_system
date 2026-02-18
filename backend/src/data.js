@@ -399,10 +399,88 @@ function normalizeCrop(crop = "") {
   return aliases[normalized] ?? normalized;
 }
 
+const SCHEDULE_PHASE_KEYS = ["sowing", "irrigation", "spray", "harvest"];
+const MONTH_INDEX = {
+  jan: 1,
+  feb: 2,
+  mar: 3,
+  apr: 4,
+  may: 5,
+  jun: 6,
+  jul: 7,
+  aug: 8,
+  sep: 9,
+  oct: 10,
+  nov: 11,
+  dec: 12,
+};
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+function parseWindow(windowLabel) {
+  const [startLabel, endLabel] = String(windowLabel).split("-").map((item) => item.trim());
+  const [startMonthName, startDayRaw] = startLabel.split(" ");
+  const [endMonthName, endDayRaw] = endLabel.split(" ");
+
+  const startMonth = MONTH_INDEX[startMonthName.toLowerCase().slice(0, 3)];
+  const endMonth = MONTH_INDEX[endMonthName.toLowerCase().slice(0, 3)];
+  const startDay = Number(startDayRaw);
+  const endDay = Number(endDayRaw);
+
+  if (!startMonth || !endMonth || !Number.isFinite(startDay) || !Number.isFinite(endDay)) {
+    throw new Error(`Invalid schedule window: ${windowLabel}`);
+  }
+
+  return { startMonth, startDay, endMonth, endDay };
+}
+
+function startOfUtcDay(date) {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+}
+
+function utcDateFor(year, month, day, endOfDay = false) {
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (endOfDay) {
+    date.setUTCHours(23, 59, 59, 999);
+  }
+  return date;
+}
+
+function buildWindowRange(windowLabel, cycleYear) {
+  const parsed = parseWindow(windowLabel);
+  const start = utcDateFor(cycleYear, parsed.startMonth, parsed.startDay);
+  const rollsToNextYear =
+    parsed.endMonth < parsed.startMonth
+    || (parsed.endMonth === parsed.startMonth && parsed.endDay < parsed.startDay);
+  const endYear = rollsToNextYear ? cycleYear + 1 : cycleYear;
+  const end = utcDateFor(endYear, parsed.endMonth, parsed.endDay, true);
+  return { start, end };
+}
+
+function resolveCycleYear(profile, referenceDate) {
+  const sowingWindow = profile.windows.sowing.en;
+  const sowing = parseWindow(sowingWindow);
+  const currentYear = referenceDate.getUTCFullYear();
+
+  const thisCycleStart = utcDateFor(currentYear, sowing.startMonth, sowing.startDay);
+  const nextCycleStart = utcDateFor(currentYear + 1, sowing.startMonth, sowing.startDay);
+  if (referenceDate >= thisCycleStart && referenceDate < nextCycleStart) {
+    return currentYear;
+  }
+
+  const previousCycleStart = utcDateFor(currentYear - 1, sowing.startMonth, sowing.startDay);
+  if (referenceDate >= previousCycleStart && referenceDate < thisCycleStart) {
+    return currentYear - 1;
+  }
+
+  return currentYear;
+}
+
 export function getScheduleForCrop(crop = "wheat", language = "en") {
   const lang = toLanguage(language);
   const key = normalizeCrop(crop);
   const profile = scheduleProfiles[key] ?? scheduleProfiles.wheat;
+  const now = startOfUtcDay(new Date());
+  const cycleYear = resolveCycleYear(profile, now);
 
   const phaseName = {
     sowing: lang === "hi" ? "बुवाई चरण" : "Sowing Window",
@@ -411,36 +489,40 @@ export function getScheduleForCrop(crop = "wheat", language = "en") {
     harvest: lang === "hi" ? "कटाई अवधि" : "Harvest Period",
   };
 
-  return [
-    {
-      phase: `${phaseName.sowing} - ${profile.label[lang]}`,
-      date: profile.windows.sowing[lang],
-      status: "completed",
-      color: "leaf",
-      tasks: scheduleTasks.sowing[lang],
-    },
-    {
-      phase: `${phaseName.irrigation} - ${profile.label[lang]}`,
-      date: profile.windows.irrigation[lang],
-      status: "upcoming",
-      color: "sky",
-      tasks: scheduleTasks.irrigation[lang],
-    },
-    {
-      phase: `${phaseName.spray} - ${profile.label[lang]}`,
-      date: profile.windows.spray[lang],
-      status: "pending",
-      color: "earth",
-      tasks: scheduleTasks.spray[lang],
-    },
-    {
-      phase: `${phaseName.harvest} - ${profile.label[lang]}`,
-      date: profile.windows.harvest[lang],
-      status: "pending",
-      color: "forest",
-      tasks: scheduleTasks.harvest[lang],
-    },
-  ];
+  return SCHEDULE_PHASE_KEYS.map((phaseKey) => {
+    const windowLabel = profile.windows[phaseKey];
+    const range = buildWindowRange(windowLabel.en, cycleYear);
+    const isCurrent = now >= range.start && now <= range.end;
+    const isCompleted = now > range.end;
+    const phaseState = isCurrent ? "current" : isCompleted ? "completed" : "upcoming";
+    const status = phaseState === "completed" ? "completed" : phaseState === "current" ? "upcoming" : "pending";
+    const daysUntilStart = phaseState === "upcoming"
+      ? Math.max(0, Math.ceil((range.start.getTime() - now.getTime()) / ONE_DAY_MS))
+      : undefined;
+    const daysRemaining = phaseState === "current"
+      ? Math.max(0, Math.ceil((range.end.getTime() - now.getTime()) / ONE_DAY_MS))
+      : undefined;
+    const color = phaseKey === "sowing"
+      ? "leaf"
+      : phaseKey === "irrigation"
+        ? "sky"
+        : phaseKey === "spray"
+          ? "earth"
+          : "forest";
+
+    return {
+      phase: `${phaseName[phaseKey]} - ${profile.label[lang]}`,
+      date: windowLabel[lang],
+      status,
+      phaseState,
+      windowStart: range.start.toISOString(),
+      windowEnd: range.end.toISOString(),
+      daysUntilStart,
+      daysRemaining,
+      color,
+      tasks: scheduleTasks[phaseKey][lang],
+    };
+  });
 }
 
 export const schedule = getScheduleForCrop();

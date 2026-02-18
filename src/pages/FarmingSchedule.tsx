@@ -1,4 +1,4 @@
-﻿import { Calendar, CheckCircle, ChevronRight, Droplets, Sparkles, Sprout, Wheat } from "lucide-react";
+﻿import { Calendar, CheckCircle, ChevronRight, Clock3, Droplets, Sparkles, Sprout, Wheat } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import FeatureSidebar from "../components/FeatureSidebar";
@@ -54,112 +54,163 @@ export default function FarmingSchedule() {
     [schedule],
   );
 
-  const nextFocus = useMemo(
-    () => (schedule ?? []).find((item) => item.status === "upcoming") ?? (schedule ?? [])[0] ?? null,
+  const currentPhase = useMemo(
+    () => (schedule ?? []).find((item) => item.phaseState === "current" || item.status === "upcoming") ?? null,
     [schedule],
   );
+
+  const nextFocus = useMemo(
+    () => currentPhase
+      ?? (schedule ?? []).find((item) => item.phaseState === "upcoming" || item.status === "pending")
+      ?? (schedule ?? [])[0]
+      ?? null,
+    [currentPhase, schedule],
+  );
+
+  const currentPhaseProgress = useMemo(() => {
+    if (!currentPhase?.windowStart || !currentPhase.windowEnd) return null;
+    const startMs = new Date(currentPhase.windowStart).getTime();
+    const endMs = new Date(currentPhase.windowEnd).getTime();
+    const nowMs = Date.now();
+    if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || endMs <= startMs) return null;
+    const progress = ((nowMs - startMs) / (endMs - startMs)) * 100;
+    return Math.max(0, Math.min(100, Math.round(progress)));
+  }, [currentPhase]);
 
   return (
     <div className="page-wrap">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 md:gap-5">
         <FeatureSidebar />
         <main className="min-w-0">
-        <div className="mb-4">
-          <h1 className="section-title">{t("schedule.title")}</h1>
-          <p className="section-subtitle">{t("schedule.subtitle")}</p>
-        </div>
+          <div className="mb-4">
+            <h1 className="section-title">{t("schedule.title")}</h1>
+            <p className="section-subtitle">{t("schedule.subtitle")}</p>
+          </div>
 
-        <div className="surface-card-strong p-4 mb-5">
-          <div className="grid grid-cols-1 gap-3 items-end">
-            <div>
-              <label htmlFor="schedule-crop" className="block text-sm font-semibold text-forest-900 mb-2">
-                {t("schedule.selectCrop")}
-              </label>
-              <select
-                id="schedule-crop"
-                className="bg-white"
-                value={selectedCrop}
-                onChange={(event) => setSelectedCrop(event.target.value)}
-              >
-                {cropOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-forest-700 mt-2">{t("schedule.cropHint")}</p>
+          <div className="surface-card-strong p-4 mb-5">
+            <div className="grid grid-cols-1 gap-3 items-end">
+              <div>
+                <label htmlFor="schedule-crop" className="block text-sm font-semibold text-forest-900 mb-2">
+                  {t("schedule.selectCrop")}
+                </label>
+                <select
+                  id="schedule-crop"
+                  className="bg-white"
+                  value={selectedCrop}
+                  onChange={(event) => setSelectedCrop(event.target.value)}
+                >
+                  {cropOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-forest-700 mt-2">{t("schedule.cropHint")}</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-          <div className="surface-card-strong p-4">
-            <p className="text-xs text-forest-700 font-semibold mb-1">{t("schedule.totalTasks")}</p>
-            <p className="text-2xl font-bold text-forest-900">{totalTasks}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+            <div className="surface-card-strong p-4">
+              <p className="text-xs text-forest-700 font-semibold mb-1">{t("schedule.totalTasks")}</p>
+              <p className="text-2xl font-bold text-forest-900">{totalTasks}</p>
+            </div>
+            <div className="surface-card-strong p-4">
+              <p className="text-xs text-forest-700 font-semibold mb-1">{t("schedule.currentPhase", { defaultValue: "Current phase" })}</p>
+              <p className="text-base font-bold text-forest-900">
+                {currentPhase?.phase ?? t("schedule.noCurrentPhase", { defaultValue: "No active phase right now" })}
+              </p>
+              {currentPhase?.daysRemaining !== undefined ? (
+                <p className="text-sm text-forest-700 mt-1 inline-flex items-center gap-1">
+                  <Clock3 className="h-4 w-4" />
+                  {t("schedule.daysLeft", { count: currentPhase.daysRemaining, defaultValue: `${currentPhase.daysRemaining} days left` })}
+                </p>
+              ) : null}
+            </div>
           </div>
-          <div className="surface-card-strong p-4">
+
+          <div className="surface-card-strong p-4 mb-5">
             <p className="text-xs text-forest-700 font-semibold mb-1">{t("schedule.nextFocus")}</p>
             <p className="text-base font-bold text-forest-900 inline-flex items-center gap-1">
               {nextFocus?.phase ?? t("common.notAvailable")}
               <ChevronRight className="h-4 w-4 text-forest-700" />
             </p>
-          </div>
-        </div>
-
-        {loading ? <p className="text-forest-800/90">{t("schedule.loading")}</p> : null}
-        {error ? <p className="text-red-600">{t("schedule.loadError")}</p> : null}
-
-        <div className="space-y-5">
-          {(schedule ?? []).map((item) => {
-            const colors = getColorClasses(item.color);
-            const Icon = getIcon(item.color);
-
-            return (
-              <div key={item.phase} className="surface-card-strong overflow-hidden">
-                <div className={`${colors.bg} px-5 md:px-6 py-4 border-b border-forest-100`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl bg-white/80 flex items-center justify-center">
-                        <Icon className={`h-6 w-6 ${colors.text}`} />
-                      </div>
-                      <div>
-                        <h3 className={`text-xl font-bold ${colors.text}`}>{item.phase}</h3>
-                        <p className="text-sm text-forest-800/90 mt-0.5 flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          {item.date}
-                        </p>
-                      </div>
-                    </div>
-                    {item.status === "completed" ? (
-                      <div className="tone-success text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
-                        <CheckCircle className="h-4 w-4" />
-                        {t("schedule.completed")}
-                      </div>
-                    ) : (
-                      <div className="tone-warning text-xs font-semibold px-3 py-1 rounded-full">
-                        {t("schedule.upcoming")}
-                      </div>
-                    )}
-                  </div>
+            {currentPhaseProgress !== null ? (
+              <div className="mt-3">
+                <div className="h-2 rounded-full bg-forest-100 overflow-hidden">
+                  <div
+                    className="h-full bg-forest-600 transition-all duration-500"
+                    style={{ width: `${currentPhaseProgress}%` }}
+                  />
                 </div>
+                <p className="text-xs text-forest-700 mt-1">
+                  {t("schedule.phaseProgress", { defaultValue: "Current phase progress" })}: {currentPhaseProgress}%
+                </p>
+              </div>
+            ) : null}
+          </div>
 
-                <div className="p-5 space-y-3">
-                  {item.tasks.map((taskItem) => (
-                    <div key={taskItem.task} className="surface-card p-4">
-                      <div className="flex items-start gap-3">
-                        <div className={`${colors.dot} w-2.5 h-2.5 rounded-full mt-2 flex-shrink-0`} />
+          {loading ? <p className="text-forest-800/90">{t("schedule.loading")}</p> : null}
+          {error ? <p className="text-red-600">{t("schedule.loadError")}</p> : null}
+
+          <div className="space-y-5">
+            {(schedule ?? []).map((item) => {
+              const colors = getColorClasses(item.color);
+              const Icon = getIcon(item.color);
+
+              return (
+                <div key={item.phase} className="surface-card-strong overflow-hidden">
+                  <div className={`${colors.bg} px-5 md:px-6 py-4 border-b border-forest-100`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-xl bg-white/80 flex items-center justify-center">
+                          <Icon className={`h-6 w-6 ${colors.text}`} />
+                        </div>
                         <div>
-                          <p className="font-semibold text-forest-900">{taskItem.task}</p>
-                          <p className="text-sm text-forest-800/90 mt-1">{taskItem.reason}</p>
+                          <h3 className={`text-xl font-bold ${colors.text}`}>{item.phase}</h3>
+                          <p className="text-sm text-forest-800/90 mt-0.5 flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            {item.date}
+                          </p>
                         </div>
                       </div>
+                      {item.phaseState === "current" || item.status === "upcoming" ? (
+                        <div className="tone-info text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
+                          <Clock3 className="h-4 w-4" />
+                          {t("schedule.current", { defaultValue: "Current" })}
+                        </div>
+                      ) : item.status === "completed" ? (
+                        <div className="tone-success text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
+                          <CheckCircle className="h-4 w-4" />
+                          {t("schedule.completed")}
+                        </div>
+                      ) : (
+                        <div className="tone-warning text-xs font-semibold px-3 py-1 rounded-full">
+                          {item.daysUntilStart !== undefined
+                            ? t("schedule.startsIn", { count: item.daysUntilStart, defaultValue: `Starts in ${item.daysUntilStart} days` })
+                            : t("schedule.upcoming")}
+                        </div>
+                      )}
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="p-5 space-y-3">
+                    {item.tasks.map((taskItem) => (
+                      <div key={taskItem.task} className="surface-card p-4">
+                        <div className="flex items-start gap-3">
+                          <div className={`${colors.dot} w-2.5 h-2.5 rounded-full mt-2 flex-shrink-0`} />
+                          <div>
+                            <p className="font-semibold text-forest-900">{taskItem.task}</p>
+                            <p className="text-sm text-forest-800/90 mt-1">{taskItem.reason}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
         </main>
       </div>
     </div>

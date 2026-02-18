@@ -13,6 +13,11 @@ export interface SchedulePhase {
   phase: string;
   date: string;
   status: "upcoming" | "pending" | "completed";
+  phaseState?: "current" | "upcoming" | "completed";
+  windowStart?: string;
+  windowEnd?: string;
+  daysUntilStart?: number;
+  daysRemaining?: number;
   color: "leaf" | "sky" | "earth" | "forest";
   tasks: ScheduleTask[];
 }
@@ -26,6 +31,11 @@ const schedulePhaseSchema = z.object({
   phase: z.string(),
   date: z.string(),
   status: z.enum(["upcoming", "pending", "completed"]),
+  phaseState: z.enum(["current", "upcoming", "completed"]).optional(),
+  windowStart: z.string().optional(),
+  windowEnd: z.string().optional(),
+  daysUntilStart: z.number().int().nonnegative().optional(),
+  daysRemaining: z.number().int().nonnegative().optional(),
   color: z.enum(["leaf", "sky", "earth", "forest"]),
   tasks: z.array(scheduleTaskSchema),
 });
