@@ -54,13 +54,15 @@ export function createApp() {
 
         if (
           backendEnv.frontendOrigins.length === 0
+          || backendEnv.frontendOrigins.includes("*")
           || backendEnv.frontendOrigins.includes(origin)
         ) {
           callback(null, true);
           return;
         }
-
-        callback(new Error("Origin not allowed by CORS"));
+        // Do not throw 500 for unknown origins. Browsers will block when CORS
+        // headers are absent, while server-to-server proxy calls continue to work.
+        callback(null, false);
       },
       credentials: false,
     }),

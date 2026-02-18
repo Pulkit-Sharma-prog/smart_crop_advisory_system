@@ -14,7 +14,7 @@ const toNumber = (value, fallback) => {
 export const backendEnv = {
   backendRoot,
   port: toNumber(process.env.PORT, 3000),
-  frontendOrigins: (process.env.FRONTEND_ORIGIN ?? "http://localhost:5173")
+  frontendOrigins: (process.env.FRONTEND_ORIGIN ?? "")
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean),

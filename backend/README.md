@@ -22,6 +22,8 @@ Set database and AI values in `.env`:
   - `OPENAI_API_KEY` (optional second-opinion model)
 - Auth:
   - `GOOGLE_CLIENT_ID` (required for Google Sign-In verification endpoint)
+- CORS:
+  - `FRONTEND_ORIGIN` (comma-separated, e.g. `http://localhost:5173,https://your-frontend.vercel.app`; use `*` to allow all)
 
 3. Start dev server:
 ```bash
