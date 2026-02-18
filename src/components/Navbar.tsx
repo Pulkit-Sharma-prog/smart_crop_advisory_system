@@ -22,7 +22,7 @@ export default function Navbar() {
   const handleAuthAction = () => {
     if (isAuthenticated) {
       logout();
-      navigate(routes.home);
+      navigate(routes.logout);
       return;
     }
 

@@ -136,6 +136,15 @@
                  "signupFailed":  "Unable to create account. Please check your details.",
                  "googleFailed":  "Google sign-in failed. Please try again.",
                  "logoutButton":  "Logout",
+                 "logoutTitle":  "You have been logged out",
+                 "logoutSubtitle":  "Your session is closed safely. You can sign in again anytime.",
+                 "logoutTipsTitle":  "Before your next session",
+                 "logoutTip1":  "Keep your phone nearby for quick login.",
+                 "logoutTip2":  "Review market and weather updates after sign-in.",
+                 "logoutTip3":  "Use your saved farm profile to resume planning faster.",
+                 "logoutRedirecting":  "Redirecting to home page...",
+                 "goHome":  "Go to Home",
+                 "signInAgain":  "Sign in again",
                  "googleUnavailable":  "Google sign-in is not configured right now. Add VITE_GOOGLE_CLIENT_ID and GOOGLE_CLIENT_ID to enable it."
              },
     "dashboard":  {

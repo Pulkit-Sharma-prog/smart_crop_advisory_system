@@ -11,6 +11,7 @@ import { routes } from "./types/routes";
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
+const LogoutPage = lazy(() => import("./pages/LogoutPage"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const WeatherAdvisory = lazy(() => import("./pages/WeatherAdvisory"));
 const SoilCropRecommendation = lazy(() => import("./pages/SoilCropRecommendation"));
@@ -47,6 +48,7 @@ function App() {
                 <Routes location={location}>
                   <Route path={routes.home} element={<LandingPage />} />
                   <Route path={routes.login} element={<LoginPage />} />
+                  <Route path={routes.logout} element={<LogoutPage />} />
 
                   <Route path={routes.dashboard} element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                   <Route path={routes.weather} element={<ProtectedRoute><WeatherAdvisory /></ProtectedRoute>} />
