@@ -3,6 +3,6 @@
 test("home page smoke", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: /AI-Powered Farming Decisions/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Dashboard/i })).toBeVisible();
+  await expect(page.getByTestId("landing-hero-title")).toBeVisible();
+  await expect(page.getByTestId("landing-primary-cta")).toBeVisible();
 });

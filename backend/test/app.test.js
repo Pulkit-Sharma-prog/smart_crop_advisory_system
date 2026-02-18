@@ -1,8 +1,20 @@
-﻿import request from "supertest";
-import { describe, expect, it } from "vitest";
-import { createApp } from "../src/app.js";
+﻿import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import request from "supertest";
+import { afterAll, describe, expect, it } from "vitest";
 
+const testStorageDir = fs.mkdtempSync(path.join(os.tmpdir(), "smart-crop-backend-test-"));
+process.env.DISEASE_FEEDBACK_PATH = path.join(testStorageDir, "feedback.jsonl");
+process.env.DISEASE_RETRAINING_QUEUE_PATH = path.join(testStorageDir, "retraining_queue.jsonl");
+process.env.DISEASE_TRAINING_JOBS_PATH = path.join(testStorageDir, "jobs.json");
+
+const { createApp } = await import("../src/app.js");
 const app = createApp();
+
+afterAll(() => {
+  fs.rmSync(testStorageDir, { recursive: true, force: true });
+});
 
 describe("backend adapter", () => {
   it("serves health endpoint", async () => {
@@ -161,3 +173,4 @@ describe("backend adapter", () => {
     expect(tick2.body.completedJobIds.length).toBeGreaterThanOrEqual(1);
   });
 });
+

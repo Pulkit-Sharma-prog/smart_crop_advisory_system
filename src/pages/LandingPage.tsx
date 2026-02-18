@@ -72,7 +72,7 @@ export default function LandingPage() {
         <motion.section variants={sectionVariant} initial="hidden" animate="visible" className="hero-panel p-5 md:p-6 float-in">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center relative z-10">
             <div>
-              <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-3">
+              <h1 data-testid="landing-hero-title" className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-3">
                 {t("landing.heroTitle")}
               </h1>
               <p className="text-forest-100 text-sm md:text-base max-w-2xl mb-5">
@@ -82,7 +82,7 @@ export default function LandingPage() {
               <div className="flex gap-3 flex-wrap">
                 {isAuthenticated ? (
                   <>
-                    <button onClick={() => navigate(routes.advisory)} className="btn-secondary pulse-glow">
+                    <button data-testid="landing-primary-cta" onClick={() => navigate(routes.advisory)} className="btn-secondary pulse-glow">
                       {t("landing.startAdvisory")}
                       <ArrowRight className="h-4 w-4" />
                     </button>
@@ -92,7 +92,7 @@ export default function LandingPage() {
                   </>
                 ) : (
                   <>
-                    <button onClick={() => navigate(routes.login)} className="btn-secondary pulse-glow">
+                    <button data-testid="landing-primary-cta" onClick={() => navigate(routes.login)} className="btn-secondary pulse-glow">
                       {t("landing.signInNow")}
                       <ArrowRight className="h-4 w-4" />
                     </button>
