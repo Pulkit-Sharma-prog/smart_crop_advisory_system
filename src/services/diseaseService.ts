@@ -22,13 +22,32 @@ export interface DiseaseResult {
   recordedAt: string;
   primary: DiseaseMatch;
   alternatives: DiseaseMatch[];
+  topCandidates?: DiseaseMatch[];
   analysisSummary: string;
   severity: "Low" | "Medium" | "High";
+  severityLabel?: string;
   confidenceNote: string;
   guidance: DiseaseGuidance;
   symptoms: string[];
   sources: string[];
   providerErrors: string[];
+  quality?: {
+    score: number;
+    issues: string[];
+  };
+  uncertainty?: {
+    isUnknown: boolean;
+    score: number;
+    reason: string;
+    reasonLabel?: string;
+  };
+  model?: {
+    pipelineVersion: string;
+    mode: string;
+    providersTried: string[];
+    providersUsed: string[];
+    supportsOpenSet: boolean;
+  };
 }
 
 const diseaseMatchSchema = z.object({
@@ -49,13 +68,32 @@ const diseaseResultSchema = z.object({
   recordedAt: z.string(),
   primary: diseaseMatchSchema,
   alternatives: z.array(diseaseMatchSchema),
+  topCandidates: z.array(diseaseMatchSchema).optional(),
   analysisSummary: z.string(),
   severity: z.enum(["Low", "Medium", "High"]),
+  severityLabel: z.string().optional(),
   confidenceNote: z.string(),
   guidance: diseaseGuidanceSchema,
   symptoms: z.array(z.string()),
   sources: z.array(z.string()),
   providerErrors: z.array(z.string()).default([]),
+  quality: z.object({
+    score: z.number(),
+    issues: z.array(z.string()),
+  }).optional(),
+  uncertainty: z.object({
+    isUnknown: z.boolean(),
+    score: z.number(),
+    reason: z.string(),
+    reasonLabel: z.string().optional(),
+  }).optional(),
+  model: z.object({
+    pipelineVersion: z.string(),
+    mode: z.string(),
+    providersTried: z.array(z.string()),
+    providersUsed: z.array(z.string()),
+    supportsOpenSet: z.boolean(),
+  }).optional(),
 });
 
 export async function analyzeCropImage(file: File, language = "en"): Promise<DiseaseResult> {

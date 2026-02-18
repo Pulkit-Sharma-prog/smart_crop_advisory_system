@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-02-18T00:00:00.000Z",
+  "routing": {
+    "stableVersionId": "baseline-v1",
+    "canaryVersionId": "canary-v1",
+    "canaryPercent": 0.2
+  },
+  "versions": [
+    {
+      "id": "baseline-v1",
+      "stage": "stable",
+      "enabled": true,
+      "openAiVisionModel": "gpt-4.1-mini",
+      "providers": [
+        "plant_id",
+        "openai_vision"
+      ],
+      "notes": "Default baseline ensemble.",
+      "metrics": {
+        "top1": 0,
+        "macroF1": 0
+      },
+      "createdAt": "2026-02-18T00:00:00.000Z"
+    },
+    {
+      "id": "canary-v1",
+      "stage": "canary",
+      "enabled": true,
+      "openAiVisionModel": "gpt-4.1-mini",
+      "providers": [
+        "plant_id",
+        "openai_vision"
+      ],
+      "notes": "Canary track for future model rollout.",
+      "metrics": {
+        "top1": 0,
+        "macroF1": 0
+      },
+      "createdAt": "2026-02-18T00:00:00.000Z"
+    }
+  ]
+}

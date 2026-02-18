@@ -178,7 +178,18 @@
                       "demoMarketSpikeStatus":  "Market opportunity is simulated. Crop selling and alert cards now emphasize profit timing.",
                       "demoBalancedStatus":  "Balanced weather and market conditions are simulated for a stable day walkthrough.",
                       "smartAlertsTitle":  "Smart Alerts",
-                      "bestDayPlannerTitle":  "7-Day Best Day Planner"
+                      "bestDayPlannerTitle":  "7-Day Best Day Planner",
+                      "sidebarToday":  "Today",
+                      "sidebarTodayHint":  "Use quick actions and checklist to stay on track.",
+                      "sidebarQuickActions":  "Quick Actions",
+                      "sidebarActionWeather":  "Open weather advisory",
+                      "sidebarActionMarket":  "Check nearest mandi",
+                      "sidebarActionPlan":  "Open farming schedule",
+                      "sidebarChecklistTitle":  "Daily Checklist",
+                      "sidebarChecklistDone":  "done",
+                      "sidebarChecklistIrrigation":  "Review irrigation for current weather",
+                      "sidebarChecklistScouting":  "Scout crop for disease/pest signs",
+                      "sidebarChecklistMarket":  "Check price movement before selling"
                   },
     "weather":  {
                     "title":  "Weather Advisory",
@@ -341,7 +352,20 @@
                     "advisoryNote":  "Use this as advisory output and validate with local expert before full treatment cycle.",
                     "severityHigh":  "High",
                     "severityMedium":  "Medium",
-                    "severityLow":  "Low"
+                    "severityLow":  "Low",
+                    "uncertaintyScore":  "Uncertainty",
+                    "uncertainWarning":  "Result is uncertain. Please upload a clearer image or consult a local expert.",
+                    "imageQuality":  "Image quality",
+                    "imageQualityIssues":  "Quality flags",
+                    "modelInfo":  "Model pipeline",
+                    "uncertaintyReason_no_candidates":  "No clear candidate found",
+                    "uncertaintyReason_low_image_quality":  "Low image quality",
+                    "uncertaintyReason_weak_signal":  "Weak disease signal",
+                    "uncertaintyReason_low_margin":  "Close competing matches",
+                    "qualityIssue_small_file":  "Image too small",
+                    "qualityIssue_very_large_file":  "Very large file",
+                    "qualityIssue_invalid_mime":  "Invalid image format",
+                    "qualityIssue_uncommon_format":  "Uncommon image type"
                 },
     "schedule":  {
                      "title":  "Smart Farming Schedule",

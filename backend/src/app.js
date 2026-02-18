@@ -13,9 +13,21 @@ import { diagnosePlantDisease } from "./diseaseService.js";
 import { getCopilotReply } from "./copilotService.js";
 import { backendEnv } from "./env.js";
 import { GoogleAuthError, verifyGoogleIdToken } from "./googleAuth.js";
+import { ingestDatasetManifest, getDatasetManifestInfo } from "./ml/datasetIngestion.js";
+import { readCheckpointRegistry, updateRoutingConfig, upsertCheckpointVersion } from "./ml/checkpointRegistry.js";
+import { storeDiseaseFeedback } from "./ml/feedbackStore.js";
+import { createTrainingJob, getTrainingJobById, listTrainingJobs, patchTrainingJob, tickTrainingWorker } from "./ml/trainingJobs.js";
 import {
   copilotChatSchema,
   diseaseUploadSchema,
+  diseaseFeedbackSchema,
+  diseaseIngestionSchema,
+  diseaseModelRoutingSchema,
+  diseaseModelVersionSchema,
+  diseaseTrainJobSchema,
+  diseaseTrainJobPatchSchema,
+  diseaseTrainWorkerTickSchema,
+  diseaseTrainJobStatusParamsSchema,
   googleTokenSchema,
   locationInputSchema,
   marketQuerySchema,
@@ -87,11 +99,79 @@ export function createApp() {
       diseaseAi: {
         plantIdReady: hasPlantId,
         openAiVisionReady: hasOpenAi,
+        openSetEnabled: true,
+        unknownThreshold: backendEnv.diseaseUnknownThreshold,
       },
       database: {
         mysqlReady: hasMysqlUrl || hasMysqlParts,
       },
     });
+  });
+
+  app.get("/api/disease/model/status", (_req, res) => {
+    const hasOpenAi = Boolean(backendEnv.openaiApiKey?.trim());
+    const hasPlantId = Boolean(backendEnv.plantIdApiKey?.trim());
+    const providers = [
+      { id: "plant_id", ready: hasPlantId },
+      { id: "openai_vision", ready: hasOpenAi },
+    ];
+    res.json({
+      pipelineVersion: "disease-pipeline-v1",
+      contractVersion: "2026-02-18",
+      mode: providers.filter((item) => item.ready).length > 1 ? "ensemble" : "single_or_fallback",
+      supportsOpenSet: true,
+      unknownThreshold: backendEnv.diseaseUnknownThreshold,
+      lowQualityThreshold: backendEnv.diseaseLowQualityThreshold,
+      providers,
+    });
+  });
+
+  app.get("/api/disease/ml/checkpoints", async (_req, res, next) => {
+    try {
+      const registry = await readCheckpointRegistry();
+      res.json(registry);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/disease/ml/checkpoints", async (req, res, next) => {
+    try {
+      const payload = diseaseModelVersionSchema.parse(req.body);
+      const registry = await upsertCheckpointVersion(payload);
+      res.status(201).json(registry);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/disease/ml/routing", async (req, res, next) => {
+    try {
+      const payload = diseaseModelRoutingSchema.parse(req.body);
+      const registry = await updateRoutingConfig(payload);
+      res.json(registry);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/disease/ml/datasets/manifest", async (_req, res, next) => {
+    try {
+      const info = await getDatasetManifestInfo();
+      res.json(info);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/disease/ml/datasets/ingest", async (req, res, next) => {
+    try {
+      const payload = diseaseIngestionSchema.parse(req.body ?? {});
+      const report = await ingestDatasetManifest(payload);
+      res.status(202).json(report);
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.get("/api/weather/snapshot", async (req, res, next) => {
@@ -188,6 +268,83 @@ export function createApp() {
       res.json({ reply });
     } catch (error) {
       next(error);
+    }
+  });
+
+  app.post("/api/disease/feedback", async (req, res, next) => {
+    try {
+      const payload = diseaseFeedbackSchema.parse(req.body);
+      const stored = await storeDiseaseFeedback(payload);
+      res.status(202).json(stored);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/disease/train/jobs", async (req, res, next) => {
+    try {
+      const payload = diseaseTrainJobSchema.parse(req.body ?? {});
+      const job = await createTrainingJob(payload);
+      res.status(202).json(job);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/disease/train/jobs", async (req, res, next) => {
+    try {
+      const limitRaw = Number(req.query?.limit);
+      const limit = Number.isFinite(limitRaw) ? limitRaw : 50;
+      const jobs = await listTrainingJobs(limit);
+      res.json({ jobs });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/disease/train/jobs/:jobId", async (req, res, next) => {
+    try {
+      const { jobId } = diseaseTrainJobStatusParamsSchema.parse(req.params);
+      const job = await getTrainingJobById(jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Training job not found" });
+      }
+      return res.json(job);
+    } catch (error) {
+      next(error);
+      return undefined;
+    }
+  });
+
+  app.patch("/api/disease/train/jobs/:jobId", async (req, res, next) => {
+    try {
+      const { jobId } = diseaseTrainJobStatusParamsSchema.parse(req.params);
+      const payload = diseaseTrainJobPatchSchema.parse(req.body ?? {});
+      const job = await patchTrainingJob(jobId, payload);
+      if (!job) {
+        return res.status(404).json({ message: "Training job not found" });
+      }
+      return res.json(job);
+    } catch (error) {
+      if (error?.name === "Error" && typeof error.message === "string" && error.message.startsWith("Invalid status transition")) {
+        return res.status(400).json({ message: error.message });
+      }
+      if (error?.name === "Error" && typeof error.message === "string" && error.message.startsWith("Cannot heartbeat terminal job")) {
+        return res.status(409).json({ message: error.message });
+      }
+      next(error);
+      return undefined;
+    }
+  });
+
+  app.post("/api/disease/train/workers/tick", async (req, res, next) => {
+    try {
+      const payload = diseaseTrainWorkerTickSchema.parse(req.body ?? {});
+      const tickResult = await tickTrainingWorker(payload);
+      return res.json(tickResult);
+    } catch (error) {
+      next(error);
+      return undefined;
     }
   });
 

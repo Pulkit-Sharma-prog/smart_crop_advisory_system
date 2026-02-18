@@ -1,6 +1,7 @@
 ﻿import { AlertCircle, Camera, CheckCircle2, Image as ImageIcon, Shield, Upload } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import FeatureSidebar from "../components/FeatureSidebar";
 import { saveLastDiseaseResult } from "../services/farmProfileService";
 import { analyzeCropImage, type DiseaseResult } from "../services/diseaseService";
 
@@ -28,6 +29,12 @@ export default function DiseaseDetection() {
     if (normalized === "low") return t("disease.severityLow");
     return severity;
   }, [severity, t]);
+  const uncertaintyLabel = result?.uncertainty?.reasonLabel ?? (result?.uncertainty ? t(`disease.uncertaintyReason_${result.uncertainty.reason}`) : "");
+  const qualityIssueLabel = (issue: string) => {
+    const key = `disease.qualityIssue_${issue}`;
+    const translated = t(key);
+    return translated === key ? issue : translated;
+  };
 
   const readFile = (file: File) =>
     new Promise<string>((resolve, reject) => {
@@ -86,13 +93,15 @@ export default function DiseaseDetection() {
 
   return (
     <div className="page-wrap">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6"><h1 className="section-title">{t("disease.title")}</h1><p className="section-subtitle">{t("disease.subtitle")}</p></div>
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 md:gap-5">
+        <FeatureSidebar />
+        <main className="min-w-0">
+        <div className="mb-4"><h1 className="section-title">{t("disease.title")}</h1><p className="section-subtitle">{t("disease.subtitle")}</p></div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div className="surface-card-strong p-5 md:p-6">
-              <h2 className="text-xl font-bold text-forest-900 mb-6">{t("disease.uploadTitle")}</h2>
+              <h2 className="text-xl font-bold text-forest-900 mb-4">{t("disease.uploadTitle")}</h2>
 
               <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => void handleDrop(e)} className="border-2 border-dashed border-forest-200 rounded-2xl p-6 text-center hover:border-forest-500 hover:bg-forest-50/70 transition-colors cursor-pointer bg-forest-50/40">
                 {!selectedImage ? (
@@ -136,7 +145,7 @@ export default function DiseaseDetection() {
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             {!hasResult ? (
               <div className="surface-card-strong bg-gradient-to-br from-leaf-50 to-forest-50 p-6 flex items-center justify-center h-full">
                 <div className="text-center">
@@ -173,8 +182,33 @@ export default function DiseaseDetection() {
                   <div className="mt-4 p-4 bg-forest-50 rounded-xl border border-forest-100">
                     <h4 className="font-semibold text-forest-900 mb-2">{t("disease.explainabilityTitle")}</h4>
                     <p className="text-sm text-forest-800">{t("disease.severityEstimate")}: <strong>{severityLabel}</strong></p>
+                    {result?.uncertainty ? (
+                      <p className="text-sm text-forest-800">
+                        {t("disease.uncertaintyScore")}: <strong>{Math.round(result.uncertainty.score * 100)}%</strong> ({uncertaintyLabel || result.uncertainty.reason})
+                      </p>
+                    ) : null}
+                    {result?.uncertainty?.isUnknown ? (
+                      <p className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-2 mt-2">
+                        {t("disease.uncertainWarning")}
+                      </p>
+                    ) : null}
+                    {result?.quality ? (
+                      <p className="text-sm text-forest-800">
+                        {t("disease.imageQuality")}: <strong>{result.quality.score}%</strong>
+                      </p>
+                    ) : null}
+                    {result?.quality?.issues?.length ? (
+                      <p className="text-sm text-forest-800">
+                        {t("disease.imageQualityIssues")}: {result.quality.issues.map((issue) => qualityIssueLabel(issue)).join(", ")}
+                      </p>
+                    ) : null}
                     <p className="text-sm text-forest-800">{result?.analysisSummary}</p>
                     <p className="text-sm text-forest-800">{result?.confidenceNote}</p>
+                    {result?.model ? (
+                      <p className="text-sm text-forest-800">
+                        {t("disease.modelInfo")}: {result.model.pipelineVersion} ({result.model.mode})
+                      </p>
+                    ) : null}
                     {result?.sources?.length ? <p className="text-sm text-forest-800">{t("disease.sourcesLabel")}: {result.sources.join(", ")}</p> : null}
                     <p className="text-sm text-forest-800">{t("disease.advisoryNote")}</p>
                   </div>
@@ -211,9 +245,8 @@ export default function DiseaseDetection() {
             )}
           </div>
         </div>
+        </main>
       </div>
     </div>
   );
 }
-
-

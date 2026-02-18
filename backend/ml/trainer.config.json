@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0",
+  "project": "smart-crop-disease-classifier",
+  "experiment": "baseline-vision-v1",
+  "seed": 42,
+  "inputSize": 384,
+  "batchSize": 16,
+  "epochs": 25,
+  "optimizer": {
+    "name": "adamw",
+    "learningRate": 0.0002,
+    "weightDecay": 0.01
+  },
+  "scheduler": {
+    "name": "cosine",
+    "warmupEpochs": 2
+  },
+  "augmentations": {
+    "horizontalFlip": 0.5,
+    "rotationDegrees": 12,
+    "colorJitter": 0.2,
+    "randomErasing": 0.1
+  },
+  "openSet": {
+    "enabled": true,
+    "unknownClassName": "unknown_disease",
+    "temperatureScaling": true
+  },
+  "evaluation": {
+    "metrics": [
+      "top1",
+      "top3",
+      "macro_f1",
+      "ece"
+    ],
+    "saveConfusionMatrix": true
+  },
+  "checkpointing": {
+    "saveBestBy": "macro_f1",
+    "keepLastN": 5
+  }
+}

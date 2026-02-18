@@ -1,5 +1,8 @@
 import crypto from "node:crypto";
 import { backendEnv } from "./env.js";
+import { selectDiseaseModelVersion } from "./ml/modelRouter.js";
+
+const PIPELINE_VERSION = "disease-pipeline-v1";
 
 function sanitizeConfidence(value, fallback = 50) {
   const numeric = Number(value);
@@ -25,7 +28,7 @@ function normalizeCandidates(items, provider) {
     .map((entry) => ({
       name: String(entry.name ?? entry.disease ?? "").trim(),
       confidence: sanitizeConfidence(entry.confidence ?? entry.probability ?? entry.score * 100),
-      visibleSymptoms: Array.isArray(entry.visibleSymptoms) ? entry.visibleSymptoms.map(String).slice(0, 5) : [],
+      visibleSymptoms: Array.isArray(entry.visibleSymptoms) ? entry.visibleSymptoms.map(String).slice(0, 6) : [],
       provider,
     }))
     .filter((entry) => entry.name.length > 1);
@@ -76,14 +79,14 @@ async function runPlantId(buffer, mimeType) {
   };
 }
 
-async function runOpenAiVision(buffer, mimeType) {
+async function runOpenAiVision(buffer, mimeType, modelName) {
   if (!backendEnv.openaiApiKey) return null;
 
   const base64 = buffer.toString("base64");
   const prompt =
-    "You are a plant pathologist. Return ONLY valid JSON with shape: " +
-    '{"candidates":[{"name":"disease name","confidence":0-100,"visibleSymptoms":["symptom"]}],"analysisSummary":"short summary","severity":"Low|Medium|High"}. ' +
-    "Focus on diseases visible to the naked eye.";
+    "You are a plant pathologist. Return ONLY valid JSON with shape: "
+    + '{"candidates":[{"name":"disease name","confidence":0-100,"visibleSymptoms":["symptom"]}],"analysisSummary":"short summary","severity":"Low|Medium|High"}. '
+    + "Focus only on visible disease evidence, avoid overclaiming when image is unclear.";
 
   const response = await fetch(backendEnv.openAiVisionEndpoint, {
     method: "POST",
@@ -92,7 +95,7 @@ async function runOpenAiVision(buffer, mimeType) {
       Authorization: `Bearer ${backendEnv.openaiApiKey}`,
     },
     body: JSON.stringify({
-      model: backendEnv.openaiVisionModel,
+      model: modelName || backendEnv.openaiVisionModel,
       input: [
         {
           role: "user",
@@ -102,7 +105,7 @@ async function runOpenAiVision(buffer, mimeType) {
           ],
         },
       ],
-      max_output_tokens: 450,
+      max_output_tokens: 500,
     }),
   });
 
@@ -129,7 +132,6 @@ function mergeProviderCandidates(providerResults) {
   };
 
   const aggregate = new Map();
-
   providerResults.forEach((result) => {
     const weight = weightedByProvider[result.provider] ?? 0.5;
     result.candidates.forEach((candidate) => {
@@ -140,7 +142,6 @@ function mergeProviderCandidates(providerResults) {
         weightSum: 0,
         visibleSymptoms: new Set(),
       };
-
       existing.weightedScore += candidate.confidence * weight;
       existing.weightSum += weight;
       candidate.visibleSymptoms.forEach((symptom) => existing.visibleSymptoms.add(symptom));
@@ -152,53 +153,142 @@ function mergeProviderCandidates(providerResults) {
     .map((entry) => ({
       name: entry.name,
       confidence: sanitizeConfidence(entry.weightedScore / Math.max(0.01, entry.weightSum)),
-      visibleSymptoms: Array.from(entry.visibleSymptoms).slice(0, 5),
+      visibleSymptoms: Array.from(entry.visibleSymptoms).slice(0, 6),
     }))
     .sort((a, b) => b.confidence - a.confidence);
 }
 
 function fallbackFromFilename(filename) {
   const hash = crypto.createHash("sha1").update(filename.toLowerCase()).digest("hex");
-  const bucket = parseInt(hash.slice(0, 2), 16) % 3;
-  if (bucket === 0) {
-    return [{ name: "Leaf Spot", confidence: 62, visibleSymptoms: ["Spotted lesions on leaf surface"] }];
+  const bucket = parseInt(hash.slice(0, 2), 16) % 4;
+  if (bucket === 0) return [{ name: "Leaf Spot", confidence: 62, visibleSymptoms: ["Spotted lesions on leaf surface"] }];
+  if (bucket === 1) return [{ name: "Early Blight", confidence: 60, visibleSymptoms: ["Dark concentric lesions on older leaves"] }];
+  if (bucket === 2) return [{ name: "Powdery Mildew", confidence: 58, visibleSymptoms: ["White powdery film on foliage"] }];
+  return [{ name: "Uncertain foliar disease", confidence: 52, visibleSymptoms: ["General stress pattern"] }];
+}
+
+function estimateImageQuality(file) {
+  const issues = [];
+  let score = 100;
+
+  if (file.size < 45_000) {
+    issues.push("small_file");
+    score -= 26;
   }
-  if (bucket === 1) {
-    return [{ name: "Early Blight", confidence: 60, visibleSymptoms: ["Dark concentric lesions on older leaves"] }];
+  if (file.size > 6_500_000) {
+    issues.push("very_large_file");
+    score -= 10;
   }
-  return [{ name: "Powdery Mildew", confidence: 58, visibleSymptoms: ["White powdery film on foliage"] }];
+  if (!file.mimetype.startsWith("image/")) {
+    issues.push("invalid_mime");
+    score = 20;
+  }
+  if (!["image/jpeg", "image/png", "image/webp", "image/jpg"].includes(file.mimetype.toLowerCase())) {
+    issues.push("uncommon_format");
+    score -= 8;
+  }
+
+  return {
+    score: Math.max(5, Math.min(100, Math.round(score))),
+    issues,
+  };
+}
+
+function estimateUncertainty(candidates, quality) {
+  const top = candidates[0];
+  if (!top) {
+    return {
+      isUnknown: true,
+      score: 0.92,
+      reason: "no_candidates",
+    };
+  }
+
+  const second = candidates[1];
+  const topConfidence = top.confidence / 100;
+  const margin = second ? (top.confidence - second.confidence) / 100 : topConfidence;
+  const qualityPenalty = Math.max(0, (70 - quality.score) / 100);
+  const raw = 1 - (topConfidence * 0.7 + Math.max(0, margin) * 0.3) + qualityPenalty;
+  const score = Math.max(0.01, Math.min(0.99, Number(raw.toFixed(2))));
+
+  const isUnknown = score >= backendEnv.diseaseUnknownThreshold;
+  let reason = "low_margin";
+  if (quality.score < backendEnv.diseaseLowQualityThreshold) reason = "low_image_quality";
+  if (top.confidence < 55) reason = "weak_signal";
+
+  return { isUnknown, score, reason };
+}
+
+function buildModelMeta(providersUsed, providersTried, routingSelection) {
+  const mode = providersUsed.includes("fallback")
+    ? "fallback"
+    : providersUsed.length > 1
+      ? "ensemble"
+      : "single";
+
+  return {
+    pipelineVersion: PIPELINE_VERSION,
+    modelVersionId: routingSelection?.selected?.id ?? "inline-default",
+    route: routingSelection?.route ?? "stable",
+    bucket: routingSelection?.bucket ?? 0,
+    mode,
+    providersTried,
+    providersUsed,
+    supportsOpenSet: true,
+  };
 }
 
 export async function detectDiseaseCandidates(file) {
-  const providers = [runPlantId(file.buffer, file.mimetype), runOpenAiVision(file.buffer, file.mimetype)];
+  const quality = estimateImageQuality(file);
+  const routingSelection = await selectDiseaseModelVersion(`${file.originalname}:${file.size}:${file.mimetype}`);
+  const configuredProviders = Array.isArray(routingSelection.selected?.providers)
+    ? routingSelection.selected.providers
+    : ["plant_id", "openai_vision"];
+  const providersTried = configuredProviders;
+  const providerCalls = [];
+  if (configuredProviders.includes("plant_id")) {
+    providerCalls.push(runPlantId(file.buffer, file.mimetype));
+  }
+  if (configuredProviders.includes("openai_vision")) {
+    providerCalls.push(runOpenAiVision(file.buffer, file.mimetype, routingSelection.selected?.openAiVisionModel));
+  }
+  const providers = providerCalls.length > 0
+    ? providerCalls
+    : [runPlantId(file.buffer, file.mimetype), runOpenAiVision(file.buffer, file.mimetype, routingSelection.selected?.openAiVisionModel)];
   const settled = await Promise.allSettled(providers);
 
   const fulfilled = settled
     .filter((entry) => entry.status === "fulfilled" && entry.value)
     .map((entry) => entry.value);
 
+  const providerErrors = settled
+    .filter((entry) => entry.status === "rejected")
+    .map((entry) => String(entry.reason?.message ?? entry.reason));
+
   if (fulfilled.length === 0) {
+    const candidates = fallbackFromFilename(file.originalname);
+    const uncertainty = estimateUncertainty(candidates, quality);
     return {
-      candidates: fallbackFromFilename(file.originalname),
+      candidates,
       providersUsed: ["fallback"],
-      providerErrors: settled
-        .filter((entry) => entry.status === "rejected")
-        .map((entry) => String(entry.reason?.message ?? entry.reason)),
+      providerErrors,
       analysisSummary: "Fallback diagnosis used because no external AI provider was configured or reachable.",
       severity: "Medium",
+      quality,
+      uncertainty,
+      model: buildModelMeta(["fallback"], providersTried, routingSelection),
     };
   }
 
   const merged = mergeProviderCandidates(fulfilled);
   const top = merged[0];
   const severity = top.confidence >= 85 ? "High" : top.confidence >= 65 ? "Medium" : "Low";
+  const uncertainty = estimateUncertainty(merged, quality);
 
   return {
     candidates: merged.length > 0 ? merged : fallbackFromFilename(file.originalname),
     providersUsed: fulfilled.map((entry) => entry.provider),
-    providerErrors: settled
-      .filter((entry) => entry.status === "rejected")
-      .map((entry) => String(entry.reason?.message ?? entry.reason)),
+    providerErrors,
     analysisSummary:
       fulfilled.find((entry) => typeof entry.analysisSummary === "string" && entry.analysisSummary.trim())?.analysisSummary
       ?? "The image was evaluated for visible foliar symptoms and matched to likely diseases.",
@@ -206,5 +296,8 @@ export async function detectDiseaseCandidates(file) {
       typeof fulfilled.find((entry) => entry.severity)?.severity === "string"
         ? fulfilled.find((entry) => entry.severity).severity
         : severity,
+    quality,
+    uncertainty,
+    model: buildModelMeta(fulfilled.map((entry) => entry.provider), providersTried, routingSelection),
   };
 }

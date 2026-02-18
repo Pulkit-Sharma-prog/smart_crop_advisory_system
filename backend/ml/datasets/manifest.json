@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-02-18T00:00:00.000Z",
+  "datasets": [
+    {
+      "id": "plantvillage_reference",
+      "source": "PlantVillage",
+      "split": "train",
+      "imagesPath": "./images/train",
+      "labelsPath": "./labels/train.json",
+      "sampleCount": 0,
+      "labelSpaceVersion": "v1"
+    },
+    {
+      "id": "field_validation_set",
+      "source": "FieldCapture",
+      "split": "val",
+      "imagesPath": "./images/val",
+      "labelsPath": "./labels/val.json",
+      "sampleCount": 0,
+      "labelSpaceVersion": "v1"
+    },
+    {
+      "id": "holdout_benchmark",
+      "source": "FieldCapture",
+      "split": "test",
+      "imagesPath": "./images/test",
+      "labelsPath": "./labels/test.json",
+      "sampleCount": 0,
+      "labelSpaceVersion": "v1"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 ﻿import { Calendar, CheckCircle, ChevronRight, Droplets, Sparkles, Sprout, Wheat } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import FeatureSidebar from "../components/FeatureSidebar";
 import { useAsyncData } from "../hooks/useAsyncData";
 import { getSchedulePhases } from "../services/scheduleService";
 
@@ -60,8 +61,10 @@ export default function FarmingSchedule() {
 
   return (
     <div className="page-wrap">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-6">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 md:gap-5">
+        <FeatureSidebar />
+        <main className="min-w-0">
+        <div className="mb-4">
           <h1 className="section-title">{t("schedule.title")}</h1>
           <p className="section-subtitle">{t("schedule.subtitle")}</p>
         </div>
@@ -157,6 +160,7 @@ export default function FarmingSchedule() {
             );
           })}
         </div>
+        </main>
       </div>
     </div>
   );

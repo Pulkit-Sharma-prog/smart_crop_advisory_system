@@ -12,6 +12,7 @@ const toNumber = (value, fallback) => {
 };
 
 export const backendEnv = {
+  backendRoot,
   port: toNumber(process.env.PORT, 3000),
   frontendOrigins: (process.env.FRONTEND_ORIGIN ?? "http://localhost:5173")
     .split(",")
@@ -29,5 +30,13 @@ export const backendEnv = {
   openaiApiKey: process.env.OPENAI_API_KEY ?? "",
   openAiVisionEndpoint: process.env.OPENAI_VISION_ENDPOINT ?? "https://api.openai.com/v1/responses",
   openaiVisionModel: process.env.OPENAI_VISION_MODEL ?? "gpt-4.1-mini",
+  diseaseUnknownThreshold: toNumber(process.env.DISEASE_UNKNOWN_THRESHOLD, 0.45),
+  diseaseLowQualityThreshold: toNumber(process.env.DISEASE_LOW_QUALITY_THRESHOLD, 65),
+  modelCanaryPercent: toNumber(process.env.DISEASE_MODEL_CANARY_PERCENT, 0.2),
+  datasetManifestPath: process.env.DATASET_MANIFEST_PATH ?? path.join(backendRoot, "ml", "datasets", "manifest.json"),
+  checkpointRegistryPath: process.env.CHECKPOINT_REGISTRY_PATH ?? path.join(backendRoot, "ml", "checkpoints", "registry.json"),
+  feedbackPath: process.env.DISEASE_FEEDBACK_PATH ?? path.join(backendRoot, "ml", "feedback", "feedback.jsonl"),
+  retrainingQueuePath: process.env.DISEASE_RETRAINING_QUEUE_PATH ?? path.join(backendRoot, "ml", "feedback", "retraining_queue.jsonl"),
+  trainingJobsPath: process.env.DISEASE_TRAINING_JOBS_PATH ?? path.join(backendRoot, "ml", "training", "jobs.json"),
   googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
 };

@@ -1,6 +1,7 @@
 ﻿import { AlertTriangle, Cloud, CloudRain, Droplet, Droplets, LocateFixed, MapPin, Sun, Wind } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import FeatureSidebar from "../components/FeatureSidebar";
 import LocationPickerMap from "../components/LocationPickerMap";
 import { useAsyncData } from "../hooks/useAsyncData";
 import { getForecast, getWeatherSnapshot, type WeatherLocationInput } from "../services/weatherService";
@@ -117,7 +118,9 @@ export default function WeatherAdvisory() {
 
   return (
     <div className="page-wrap">
-      <div className="max-w-6xl mx-auto space-y-4">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 md:gap-5">
+        <FeatureSidebar />
+        <main className="min-w-0 space-y-4">
         <div>
           <h1 className="section-title">{t("weather.title")}</h1>
           <p className="section-subtitle">{t("weather.subtitle")}</p>
@@ -263,9 +266,8 @@ export default function WeatherAdvisory() {
             </ul>
           </div>
         </div>
+        </main>
       </div>
     </div>
   );
 }
-
-

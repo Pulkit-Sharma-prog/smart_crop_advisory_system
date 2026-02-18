@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "updatedAt": "2026-02-18T14:50:35.392Z",
+  "jobs": [
+    {
+      "jobId": "1e3d4116-abd3-4685-8780-5619ea9cf8b0",
+      "status": "queued",
+      "createdAt": "2026-02-18T14:50:35.376Z",
+      "updatedAt": "2026-02-18T14:50:35.376Z",
+      "requestedBy": "tick-test",
+      "priority": "normal",
+      "trainerConfigPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\trainer.config.json",
+      "datasetManifestPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\datasets\\manifest.json",
+      "targetVersionId": "canary-v4",
+      "notes": "",
+      "scheduleAt": null,
+      "events": [
+        {
+          "at": "2026-02-18T14:50:35.376Z",
+          "type": "queued",
+          "message": "Training job queued."
+        }
+      ]
+    },
+    {
+      "jobId": "ec6c8089-967f-4d72-8fa0-a24e369cb43b",
+      "status": "completed",
+      "createdAt": "2026-02-18T14:50:35.339Z",
+      "updatedAt": "2026-02-18T14:50:35.364Z",
+      "requestedBy": "integration-test",
+      "priority": "high",
+      "trainerConfigPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\trainer.config.json",
+      "datasetManifestPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\datasets\\manifest.json",
+      "targetVersionId": "canary-v3",
+      "notes": "",
+      "scheduleAt": null,
+      "events": [
+        {
+          "at": "2026-02-18T14:50:35.339Z",
+          "type": "queued",
+          "message": "Training job queued."
+        },
+        {
+          "at": "2026-02-18T14:50:35.347Z",
+          "type": "running",
+          "message": "Worker picked the training job"
+        },
+        {
+          "at": "2026-02-18T14:50:35.357Z",
+          "type": "heartbeat",
+          "message": "epoch 4/10 completed"
+        },
+        {
+          "at": "2026-02-18T14:50:35.364Z",
+          "type": "completed",
+          "message": "Job updated: completed"
+        }
+      ],
+      "startedAt": "2026-02-18T14:50:35.347Z",
+      "attempt": 1,
+      "workerId": "worker-1",
+      "progress": 100,
+      "lastHeartbeatAt": "2026-02-18T14:50:35.357Z",
+      "finishedAt": "2026-02-18T14:50:35.364Z",
+      "metrics": {
+        "top1": 0.84,
+        "macroF1": 0.8
+      },
+      "checkpointVersionId": "canary-v3"
+    },
+    {
+      "jobId": "02f3745f-3ad4-4f5c-bf75-3c38fbfe1817",
+      "status": "queued",
+      "createdAt": "2026-02-18T14:50:35.323Z",
+      "updatedAt": "2026-02-18T14:50:35.323Z",
+      "requestedBy": "integration-test",
+      "priority": "normal",
+      "trainerConfigPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\trainer.config.json",
+      "datasetManifestPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\datasets\\manifest.json",
+      "targetVersionId": "canary-v2",
+      "notes": "scaffold queue test",
+      "scheduleAt": null,
+      "events": [
+        {
+          "at": "2026-02-18T14:50:35.323Z",
+          "type": "queued",
+          "message": "Training job queued."
+        }
+      ]
+    },
+    {
+      "jobId": "0ce60033-bfc7-41d2-9946-2eb929acd48a",
+      "status": "completed",
+      "createdAt": "2026-02-18T14:47:45.318Z",
+      "updatedAt": "2026-02-18T14:47:45.349Z",
+      "requestedBy": "integration-test",
+      "priority": "high",
+      "trainerConfigPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\trainer.config.json",
+      "datasetManifestPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\datasets\\manifest.json",
+      "targetVersionId": "canary-v3",
+      "notes": "",
+      "scheduleAt": null,
+      "events": [
+        {
+          "at": "2026-02-18T14:47:45.318Z",
+          "type": "queued",
+          "message": "Training job queued."
+        },
+        {
+          "at": "2026-02-18T14:47:45.330Z",
+          "type": "running",
+          "message": "Worker picked the training job"
+        },
+        {
+          "at": "2026-02-18T14:47:45.342Z",
+          "type": "heartbeat",
+          "message": "epoch 4/10 completed"
+        },
+        {
+          "at": "2026-02-18T14:47:45.349Z",
+          "type": "completed",
+          "message": "Job updated: completed"
+        }
+      ],
+      "startedAt": "2026-02-18T14:47:45.330Z",
+      "attempt": 1,
+      "workerId": "worker-1",
+      "progress": 100,
+      "lastHeartbeatAt": "2026-02-18T14:47:45.342Z",
+      "finishedAt": "2026-02-18T14:47:45.349Z",
+      "metrics": {
+        "top1": 0.84,
+        "macroF1": 0.8
+      },
+      "checkpointVersionId": "canary-v3"
+    },
+    {
+      "jobId": "8289014c-7bd9-48d7-9a95-79129b0dc0aa",
+      "status": "queued",
+      "createdAt": "2026-02-18T14:47:45.304Z",
+      "updatedAt": "2026-02-18T14:47:45.304Z",
+      "requestedBy": "integration-test",
+      "priority": "normal",
+      "trainerConfigPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\trainer.config.json",
+      "datasetManifestPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\datasets\\manifest.json",
+      "targetVersionId": "canary-v2",
+      "notes": "scaffold queue test",
+      "scheduleAt": null,
+      "events": [
+        {
+          "at": "2026-02-18T14:47:45.304Z",
+          "type": "queued",
+          "message": "Training job queued."
+        }
+      ]
+    },
+    {
+      "jobId": "09592ef7-cff6-4027-a9e0-959976419d96",
+      "status": "completed",
+      "createdAt": "2026-02-18T14:36:30.207Z",
+      "updatedAt": "2026-02-18T14:50:35.392Z",
+      "requestedBy": "integration-test",
+      "priority": "normal",
+      "trainerConfigPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\trainer.config.json",
+      "datasetManifestPath": "C:\\Users\\Himanshi\\OneDrive\\Desktop\\smart_crop_advisory_system\\backend\\ml\\datasets\\manifest.json",
+      "targetVersionId": "canary-v2",
+      "notes": "scaffold queue test",
+      "scheduleAt": null,
+      "events": [
+        {
+          "at": "2026-02-18T14:36:30.207Z",
+          "type": "queued",
+          "message": "Training job queued."
+        },
+        {
+          "at": "2026-02-18T14:50:35.385Z",
+          "type": "running",
+          "message": "Worker picked up queued training job."
+        },
+        {
+          "at": "2026-02-18T14:50:35.385Z",
+          "type": "heartbeat",
+          "message": "Worker heartbeat. Progress 60%"
+        },
+        {
+          "at": "2026-02-18T14:50:35.392Z",
+          "type": "heartbeat",
+          "message": "Worker heartbeat. Progress 100%"
+        },
+        {
+          "at": "2026-02-18T14:50:35.392Z",
+          "type": "completed",
+          "message": "Training job auto-completed by demo worker tick."
+        }
+      ],
+      "startedAt": "2026-02-18T14:50:35.385Z",
+      "workerId": "demo-worker-A",
+      "lastHeartbeatAt": "2026-02-18T14:50:35.392Z",
+      "progress": 100,
+      "attempt": 1,
+      "finishedAt": "2026-02-18T14:50:35.392Z",
+      "checkpointVersionId": "canary-v2"
+    }
+  ]
+}

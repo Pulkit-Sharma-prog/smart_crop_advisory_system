@@ -1,6 +1,7 @@
 ﻿import { Info, MapPin, Star, TrendingDown, TrendingUp, Truck } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import FeatureSidebar from "../components/FeatureSidebar";
 import { useAsyncData } from "../hooks/useAsyncData";
 import { getMarketPrices } from "../services/marketService";
 
@@ -104,7 +105,9 @@ export default function MarketPrices() {
 
   return (
     <div className="page-wrap">
-      <div className="max-w-7xl mx-auto space-y-4 md:space-y-5">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 md:gap-5">
+        <FeatureSidebar />
+        <main className="min-w-0 space-y-4 md:space-y-5">
         <div>
           <h1 className="section-title">{t("market.title")}</h1>
           <p className="section-subtitle">{t("market.subtitle")}</p>
@@ -338,6 +341,7 @@ export default function MarketPrices() {
             </table>
           </div>
         </div>
+        </main>
       </div>
     </div>
   );

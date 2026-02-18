@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
+import FeatureSidebar from "../components/FeatureSidebar";
 import LocationPickerMap from "../components/LocationPickerMap";
 import { saveLastLocationAdvisory, saveLastSoilResult } from "../services/farmProfileService";
 import { getLocationAdvisory, type LocationAdvisoryResult } from "../services/locationAdvisoryService";
@@ -135,16 +136,18 @@ export default function SoilCropRecommendation() {
 
   return (
     <div className="page-wrap">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 md:gap-5">
+        <FeatureSidebar />
+        <main className="min-w-0">
+        <div className="mb-4">
           <h1 className="section-title">{t("soil.title")}</h1>
           <p className="section-subtitle">{t("soil.subtitle")}</p>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 fade-up">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 fade-up">
+          <div className="space-y-4">
             <div className="surface-card-strong p-5">
-              <h2 className="text-xl font-bold text-forest-900 mb-6">{t("soil.formTitle")}</h2>
+              <h2 className="text-xl font-bold text-forest-900 mb-4">{t("soil.formTitle")}</h2>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 stagger-in" noValidate>
                 <div>
                   <label htmlFor="nitrogen" className="flex items-center gap-2 text-sm font-semibold text-forest-800 mb-2"><FlaskConical className="h-4 w-4 text-forest-600" /> {t("soil.nitrogen")}</label>
@@ -325,10 +328,8 @@ export default function SoilCropRecommendation() {
             )}
           </div>
         </div>
+        </main>
       </div>
     </div>
   );
 }
-
-
-

@@ -1,6 +1,7 @@
 ﻿import { Calculator, Save, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import FeatureSidebar from "../components/FeatureSidebar";
 import {
   calculateProfitability,
   loadProfile,
@@ -96,7 +97,9 @@ export default function FarmTools() {
 
   return (
     <div className="page-wrap">
-      <div className="max-w-7xl mx-auto space-y-4 md:space-y-5">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 md:gap-5">
+        <FeatureSidebar />
+        <main className="min-w-0 space-y-4 md:space-y-5">
         <div>
           <h1 className="section-title">{t("farmTools.title")}</h1>
           <p className="section-subtitle">{t("farmTools.subtitle")}</p>
@@ -223,6 +226,7 @@ export default function FarmTools() {
             </div>
           </div>
         </div>
+        </main>
       </div>
     </div>
   );

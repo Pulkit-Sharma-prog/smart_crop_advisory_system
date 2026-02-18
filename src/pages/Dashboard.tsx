@@ -1,10 +1,7 @@
 ﻿import {
   AlertTriangle,
-  Calendar,
-  Cloud,
   CloudRain,
   Droplets,
-  LayoutDashboard,
   RefreshCw,
   Server,
   Sprout,
@@ -14,6 +11,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import FeatureSidebar from "../components/FeatureSidebar";
 import { useAsyncData } from "../hooks/useAsyncData";
 import { generateAdvisoryAlerts, type AdvisoryAlert } from "../services/alertService";
 import {
@@ -308,57 +306,9 @@ export default function Dashboard() {
   return (
     <div className="page-wrap">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 md:gap-5">
-        <aside
-          className="surface-card-strong p-2 h-fit lg:sticky lg:top-20"
-          aria-label={t("dashboard.menu") || "Dashboard menu"}
-        >
-          <div className="space-y-2">
-            <button
-              onClick={() => navigate(routes.dashboard)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-800 bg-forest-50 rounded-lg font-semibold text-sm"
-            >
-              <LayoutDashboard className="h-5 w-5" />
-              <span>{t("dashboard.overview")}</span>
-            </button>
-            <button
-              onClick={() => navigate(routes.weather)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-700 hover:bg-forest-50 rounded-lg font-semibold text-sm transition-colors"
-            >
-              <Cloud className="h-5 w-5" />
-              <span>{t("weather.title")}</span>
-            </button>
-            <button
-              onClick={() => navigate(routes.advisory)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-700 hover:bg-forest-50 rounded-lg font-semibold text-sm transition-colors"
-            >
-              <Sprout className="h-5 w-5" />
-              <span>{t("soil.title")}</span>
-            </button>
-            <button
-              onClick={() => navigate(routes.diseaseDetection)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-700 hover:bg-forest-50 rounded-lg font-semibold text-sm transition-colors"
-            >
-              <AlertTriangle className="h-5 w-5" />
-              <span>{t("disease.title")}</span>
-            </button>
-            <button
-              onClick={() => navigate(routes.farmingSchedule)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-700 hover:bg-forest-50 rounded-lg font-semibold text-sm transition-colors"
-            >
-              <Calendar className="h-5 w-5" />
-              <span>{t("schedule.title")}</span>
-            </button>
-            <button
-              onClick={() => navigate(routes.marketPrices)}
-              className="w-full flex items-center space-x-2.5 px-3 py-2 text-forest-700 hover:bg-forest-50 rounded-lg font-semibold text-sm transition-colors"
-            >
-              <TrendingUp className="h-5 w-5" />
-              <span>{t("market.title")}</span>
-            </button>
-          </div>
-        </aside>
+        <FeatureSidebar />
 
-        <main>
+        <main className="min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
             <div>
               <h1 className="section-title">{t("dashboard.overview")}</h1>

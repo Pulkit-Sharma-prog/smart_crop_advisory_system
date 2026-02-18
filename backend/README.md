@@ -49,6 +49,18 @@ npm run test
 - `GET /api/system/config-status`
 - `POST /api/recommendations/soil`
 - `POST /api/disease/analyze` (multipart field `file`)
+- `GET /api/disease/model/status`
+- `GET /api/disease/ml/checkpoints`
+- `POST /api/disease/ml/checkpoints`
+- `PATCH /api/disease/ml/routing`
+- `GET /api/disease/ml/datasets/manifest`
+- `POST /api/disease/ml/datasets/ingest`
+- `POST /api/disease/feedback`
+- `POST /api/disease/train/jobs`
+- `GET /api/disease/train/jobs`
+- `GET /api/disease/train/jobs/:jobId`
+- `PATCH /api/disease/train/jobs/:jobId`
+- `POST /api/disease/train/workers/tick`
 - `POST /api/auth/google/verify`
 - `POST /api/copilot/chat`
 
@@ -64,3 +76,15 @@ npm run test
   - If providers are unavailable, backend returns low-confidence fallback diagnosis.
 - Startup behavior:
   - Backend auto-creates required MySQL tables if they do not exist.
+
+## Phase-2 ML Scaffolding
+
+- Dataset manifest:
+  - `backend/ml/datasets/manifest.json`
+- Trainer config:
+  - `backend/ml/trainer.config.json`
+- Checkpoint registry:
+  - `backend/ml/checkpoints/registry.json`
+- Feedback + retraining queue (JSONL):
+  - `backend/ml/feedback/feedback.jsonl`
+  - `backend/ml/feedback/retraining_queue.jsonl`
