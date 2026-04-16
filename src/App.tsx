@@ -18,7 +18,6 @@ const SoilCropRecommendation = lazy(() => import("./pages/SoilCropRecommendation
 const DiseaseDetection = lazy(() => import("./pages/DiseaseDetection"));
 const FarmingSchedule = lazy(() => import("./pages/FarmingSchedule"));
 const MarketPrices = lazy(() => import("./pages/MarketPrices"));
-const FarmTools = lazy(() => import("./pages/FarmTools"));
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -56,8 +55,6 @@ function App() {
                   <Route path={routes.diseaseDetection} element={<ProtectedRoute><DiseaseDetection /></ProtectedRoute>} />
                   <Route path={routes.farmingSchedule} element={<ProtectedRoute><FarmingSchedule /></ProtectedRoute>} />
                   <Route path={routes.marketPrices} element={<ProtectedRoute><MarketPrices /></ProtectedRoute>} />
-                  <Route path={routes.farmTools} element={<ProtectedRoute><FarmTools /></ProtectedRoute>} />
-
                   <Route path="*" element={<Navigate to={isAuthenticated ? routes.dashboard : routes.home} replace />} />
                 </Routes>
               </motion.div>

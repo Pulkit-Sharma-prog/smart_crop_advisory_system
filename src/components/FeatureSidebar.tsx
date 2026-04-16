@@ -10,7 +10,6 @@ import {
   MapPinned,
   Sprout,
   TrendingUp,
-  Wrench,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,7 +23,6 @@ const navItems = [
   { path: routes.diseaseDetection, icon: AlertTriangle, labelKey: "disease.title" },
   { path: routes.farmingSchedule, icon: Calendar, labelKey: "schedule.title" },
   { path: routes.marketPrices, icon: TrendingUp, labelKey: "market.title" },
-  { path: routes.farmTools, icon: Wrench, labelKey: "farmTools.title" },
 ] as const;
 
 const CHECKLIST_KEY_PREFIX = "smart_crop_sidebar_checklist";

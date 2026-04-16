@@ -111,17 +111,6 @@ export default function Navbar() {
                 >
                   <button
                     type="button"
-                    className="w-full text-left rounded-lg px-3 py-2 text-sm font-semibold text-forest-800 hover:bg-forest-50"
-                    role="menuitem"
-                    onClick={() => {
-                      setProfileOpen(false);
-                      navigate(routes.farmTools);
-                    }}
-                  >
-                    {t("nav.profile")}
-                  </button>
-                  <button
-                    type="button"
                     className="w-full text-left rounded-lg px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-50"
                     role="menuitem"
                     onClick={() => {

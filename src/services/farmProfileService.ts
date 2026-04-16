@@ -5,25 +5,6 @@
   landSizeAcres: number;
 }
 
-export interface ProfitabilityScenario {
-  crop: string;
-  areaAcres: number;
-  expectedYieldKgPerAcre: number;
-  sellingPricePerKg: number;
-  seedCost: number;
-  fertilizerCost: number;
-  laborCost: number;
-  irrigationCost: number;
-}
-
-export interface ProfitabilityResult {
-  revenue: number;
-  cost: number;
-  profit: number;
-  profitPerAcre: number;
-  breakEvenPrice: number;
-}
-
 const PROFILE_KEY = "smart_crop_profile";
 const SOIL_RESULT_KEY = "smart_crop_last_soil_result";
 const DISEASE_RESULT_KEY = "smart_crop_last_disease_result";
@@ -90,17 +71,3 @@ export function loadRecentInsights(): {
   };
 }
 
-export function calculateProfitability(input: ProfitabilityScenario): ProfitabilityResult {
-  const totalYield = input.areaAcres * input.expectedYieldKgPerAcre;
-  const revenue = totalYield * input.sellingPricePerKg;
-  const cost = input.seedCost + input.fertilizerCost + input.laborCost + input.irrigationCost;
-  const profit = revenue - cost;
-
-  return {
-    revenue,
-    cost,
-    profit,
-    profitPerAcre: profit / input.areaAcres,
-    breakEvenPrice: totalYield > 0 ? cost / totalYield : 0,
-  };
-}

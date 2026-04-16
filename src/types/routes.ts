@@ -8,7 +8,6 @@
   diseaseDetection: "/disease-detection",
   farmingSchedule: "/farming-schedule",
   marketPrices: "/market-prices",
-  farmTools: "/farm-tools",
 } as const;
 
 export type AppRoute = (typeof routes)[keyof typeof routes];
@@ -18,5 +17,4 @@ export const primaryNavItems: Array<{ labelKey: string; path: AppRoute; protecte
   { labelKey: "nav.dashboard", path: routes.dashboard, protected: true },
   { labelKey: "nav.advisory", path: routes.advisory, protected: true },
   { labelKey: "nav.marketPrices", path: routes.marketPrices, protected: true },
-  { labelKey: "nav.farmTools", path: routes.farmTools, protected: true },
 ];
